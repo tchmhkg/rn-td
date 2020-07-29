@@ -12,6 +12,7 @@ import {showMessage} from 'react-native-flash-message';
 
 import NewsRow from '~/Component/News/Row';
 import {HK_NEWS_API} from '~/Util/apiUrls';
+import {useTheme} from '@react-navigation/native';
 
 function News() {
   const [news, setNews] = useState([]);
@@ -19,6 +20,7 @@ function News() {
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const {colors} = useTheme();
 
   const fetchNews = () => {
     setIsLoading(true);
@@ -96,8 +98,8 @@ function News() {
     <>
       <SafeAreaView style={styles.wrapper}>
         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-          <Text>Fetched News: {news.length}</Text>
-          <Text>Total News: {totalCount}</Text>
+          <Text style={{color: colors.text}}>Fetched News: {news.length}</Text>
+          <Text style={{color: colors.text}}>Total News: {totalCount}</Text>
         </View>
         <FlatList
           data={news}

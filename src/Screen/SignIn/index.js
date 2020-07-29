@@ -3,6 +3,7 @@ import Styled from 'styled-components/native';
 
 import {UserContext} from '~/Context/User';
 import Button from '~/Component/Button';
+import {useTheme} from '@react-navigation/native';
 
 const Container = Styled.View`
   flex: 1;
@@ -18,10 +19,12 @@ const ButtonContainer = Styled.View`
 
 const SignIn = ({navigation}) => {
   const {login} = useContext(UserContext);
+  const {colors} = useTheme();
+  console.log(colors);
 
   return (
-    <Container>
-      <Label>This is SignIn Screen</Label>
+    <Container style={{backgroundColor: colors.background}}>
+      <Label style={{color: colors.text}}>This is SignIn Screen</Label>
       <Button
         label="SignIn"
         onPress={() => login('peter@email.com', 'password')}

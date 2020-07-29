@@ -1,5 +1,6 @@
 import React from 'react';
 import Styled from 'styled-components/native';
+import {useTheme} from '@react-navigation/native';
 
 const Container = Styled.TouchableOpacity`
   border-radius: 50px;
@@ -12,8 +13,9 @@ const Label = Styled.Text`
 `;
 
 const Button = ({label, onPress}) => {
+  const {colors} = useTheme();
   return (
-    <Container onPress={onPress}>
+    <Container onPress={onPress} style={{backgroundColor: colors.primary}}>
       <Label>{label}</Label>
     </Container>
   );

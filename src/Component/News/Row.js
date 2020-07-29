@@ -8,11 +8,12 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import moment from 'moment';
 
 const NewsRow = ({item}) => {
   const navigation = useNavigation();
+  const {colors} = useTheme();
 
   const handlePress = useCallback(
     async (url) => {
@@ -30,7 +31,14 @@ const NewsRow = ({item}) => {
 
   return (
     <TouchableOpacity onPress={() => handlePress(item.url)}>
-      <View style={styles.wrapper}>
+      <View
+        style={[
+          styles.wrapper,
+          {
+            backgroundColor: colors.background,
+            borderBottomColor: colors.border,
+          },
+        ]}>
         <View style={styles.row}>
           {item.urlToImage && (
             <View style={styles.thumbnailWrapper}>
@@ -38,15 +46,21 @@ const NewsRow = ({item}) => {
             </View>
           )}
           <View style={styles.contentWrapper}>
-            <Text style={styles.title} numberOfLines={1}>
+            <Text
+              style={[styles.title, {color: colors.text}]}
+              numberOfLines={1}>
               {item.title}
             </Text>
-            <Text numberOfLines={2}>{item.description}</Text>
+            <Text numberOfLines={2} style={{color: colors.text}}>
+              {item.description}
+            </Text>
           </View>
         </View>
         <View style={[styles.row, styles.metadataRow]}>
-          <Text>Source: {item.source?.name}</Text>
-          <Text>Published at: {moment(item.publishedAt).fromNow()}</Text>
+          <Text style={{color: colors.text}}>Source: {item.source?.name}</Text>
+          <Text style={{color: colors.text}}>
+            Published at: {moment(item.publishedAt).fromNow()}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>

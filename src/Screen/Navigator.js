@@ -1,5 +1,9 @@
 import React, {useContext} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from '@react-navigation/native';
 import {createNativeStackNavigator} from 'react-native-screens/native-stack';
 // import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -12,6 +16,7 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {AppearanceProvider, useColorScheme} from 'react-native-appearance';
 
 import {UserContext} from '~/Context/User';
 
@@ -23,7 +28,7 @@ import ResetPassword from './ResetPassword';
 import TabFirst from './TabFirst';
 import TabSecond from './TabSecond';
 import News from './News';
-import TabFourth from './TabFourth';
+import Setting from './Setting';
 import Modal from './Modal';
 import WebView from './WebView';
 
@@ -33,6 +38,13 @@ const Drawer = createDrawerNavigator();
 const MaterialTab = createMaterialBottomTabNavigator();
 const MaterialTopTab = createMaterialTopTabNavigator();
 
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'rgb(255, 45, 85)',
+  },
+};
 const LoginStackNavi = () => {
   return (
     <Stack.Navigator
@@ -136,10 +148,10 @@ const TabNavi = () => {
         }}
       />
       <Tab.Screen
-        name="TabFourth"
-        component={TabFourth}
+        name="Setting"
+        component={Setting}
         options={{
-          tabBarLabel: 'Fourth',
+          tabBarLabel: 'Setting',
           tabBarIcon: ({color}) => (
             <Icon name="settings" color={color} size={26} />
           ),
@@ -184,11 +196,11 @@ const MaterialTabNavi = () => {
         }}
       />
       <MaterialTab.Screen
-        name="TabFourth"
-        component={TabFourth}
+        name="Setting"
+        component={Setting}
         options={{
           tabBarColor: '#83463f',
-          tabBarLabel: 'Fourth',
+          tabBarLabel: 'Setting',
           tabBarIcon: ({color}) => (
             <Icon name="settings" color={color} size={26} />
           ),
@@ -204,7 +216,7 @@ const MaterialTopTabNavi = () => {
       <MaterialTopTab.Screen name="TabFirst" component={TabFirst} />
       <MaterialTopTab.Screen name="TabSecond" component={TabSecond} />
       <MaterialTopTab.Screen name="News" component={News} />
-      <MaterialTopTab.Screen name="TabFourth" component={TabFourth} />
+      <MaterialTopTab.Screen name="Setting" component={Setting} />
     </MaterialTopTab.Navigator>
   );
 };
@@ -270,11 +282,14 @@ const MainNavi = () => {
   );
 };
 export default () => {
+  const scheme = useColorScheme();
   const {userInfo} = useContext(UserContext);
 
   return (
-    <NavigationContainer>
-      {userInfo ? <MainNavi /> : <LoginStackNavi />}
-    </NavigationContainer>
+    <AppearanceProvider>
+      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+        {userInfo ? <MainNavi /> : <LoginStackNavi />}
+      </NavigationContainer>
+    </AppearanceProvider>
   );
 };

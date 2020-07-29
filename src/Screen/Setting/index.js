@@ -9,12 +9,12 @@ const Container = Styled.View`
 
 const Label = Styled.Text``;
 
-const TabFourth = () => {
+const Setting = () => {
   return (
     <Container>
-      <Label>This is Fourth Tab</Label>
+      <Label>This is Setting</Label>
     </Container>
   );
 };
 
-export default TabFourth;
+export default Setting;
