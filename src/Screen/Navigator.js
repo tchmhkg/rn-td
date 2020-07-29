@@ -1,9 +1,7 @@
 import React, {useContext} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {
-  createStackNavigator,
-  StackHeaderLeftButtonProps,
-} from '@react-navigation/stack';
+import {createNativeStackNavigator} from 'react-native-screens/native-stack';
+// import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -12,9 +10,6 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
   DrawerItem,
-  DrawerContentComponentProps,
-  DrawerContentOptions,
-  DrawerNavigationProp,
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -31,11 +26,11 @@ import TabThird from './TabThird';
 import TabFourth from './TabFourth';
 import Modal from './Modal';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 const MaterialTab = createMaterialBottomTabNavigator();
-const MaterailTopTab = createMaterialTopTabNavigator();
+const MaterialTopTab = createMaterialTopTabNavigator();
 
 const LoginStackNavi = () => {
   return (
@@ -191,12 +186,12 @@ const MaterialTabNavi = () => {
 
 const MaterialTopTabNavi = () => {
   return (
-    <MaterailTopTab.Navigator>
-      <MaterailTopTab.Screen name="TabFirst" component={TabFirst} />
-      <MaterailTopTab.Screen name="TabSecond" component={TabSecond} />
-      <MaterailTopTab.Screen name="TabThird" component={TabThird} />
-      <MaterailTopTab.Screen name="TabFourth" component={TabFourth} />
-    </MaterailTopTab.Navigator>
+    <MaterialTopTab.Navigator>
+      <MaterialTopTab.Screen name="TabFirst" component={TabFirst} />
+      <MaterialTopTab.Screen name="TabSecond" component={TabSecond} />
+      <MaterialTopTab.Screen name="TabThird" component={TabThird} />
+      <MaterialTopTab.Screen name="TabFourth" component={TabFourth} />
+    </MaterialTopTab.Navigator>
   );
 };
 

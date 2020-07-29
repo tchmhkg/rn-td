@@ -1,6 +1,5 @@
 import React from 'react';
 import Styled from 'styled-components/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 
 import Button from '~/Component/Button';
 
