@@ -22,9 +22,10 @@ import SignUp from './SignUp';
 import ResetPassword from './ResetPassword';
 import TabFirst from './TabFirst';
 import TabSecond from './TabSecond';
-import TabThird from './TabThird';
+import News from './News';
 import TabFourth from './TabFourth';
 import Modal from './Modal';
+import WebView from './WebView';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -54,24 +55,33 @@ const LoginStackNavi = () => {
       <Stack.Screen
         name="SignUp"
         component={SignUp}
-        options={{headerBackTitleVisible: false}}
+        options={{stackPresentation: 'modal'}}
       />
-      <Stack.Screen name="ResetPassword" component={ResetPassword} />
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPassword}
+        options={{stackPresentation: 'modal'}}
+      />
     </Stack.Navigator>
   );
 };
 
 const TabFirstStackNavi = ({navigation}) => {
+  const {logout} = useContext(UserContext);
+
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#ff66ee',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerRight: (props) => (
+          <IconButton iconName="power-settings-new" onPress={logout} />
+        ),
       }}>
       <Stack.Screen
         name="TabFirst"
@@ -85,7 +95,11 @@ const TabFirstStackNavi = ({navigation}) => {
           ),
         }}
       />
-      <Stack.Screen name="Modal" component={Modal} />
+      <Stack.Screen
+        name="Modal"
+        component={Modal}
+        options={{stackPresentation: 'modal'}}
+      />
     </Stack.Navigator>
   );
 };
@@ -112,10 +126,10 @@ const TabNavi = () => {
         }}
       />
       <Tab.Screen
-        name="TabThird"
-        component={TabThird}
+        name="News"
+        component={News}
         options={{
-          tabBarLabel: 'Third',
+          tabBarLabel: 'News',
           tabBarIcon: ({color}) => (
             <Icon name="message" color={color} size={26} />
           ),
@@ -142,7 +156,7 @@ const MaterialTabNavi = () => {
         name="TabFirstStackNavi"
         component={TabFirstStackNavi}
         options={{
-          tabBarColor: '#281b39',
+          tabBarColor: '#336723',
           tabBarLabel: 'Frist',
           tabBarIcon: ({color}) => <Icon name="home" color={color} size={26} />,
         }}
@@ -151,7 +165,7 @@ const MaterialTabNavi = () => {
         name="TabSecond"
         component={TabSecond}
         options={{
-          tabBarColor: '#0e141d',
+          tabBarColor: '#3f0103',
           tabBarLabel: 'Second',
           tabBarIcon: ({color}) => (
             <Icon name="people" color={color} size={26} />
@@ -159,11 +173,11 @@ const MaterialTabNavi = () => {
         }}
       />
       <MaterialTab.Screen
-        name="TabThird"
-        component={TabThird}
+        name="News"
+        component={News}
         options={{
-          tabBarColor: '#E64A19',
-          tabBarLabel: 'Third',
+          tabBarColor: '#227ff2',
+          tabBarLabel: 'News',
           tabBarIcon: ({color}) => (
             <Icon name="message" color={color} size={26} />
           ),
@@ -173,7 +187,7 @@ const MaterialTabNavi = () => {
         name="TabFourth"
         component={TabFourth}
         options={{
-          tabBarColor: '#524365',
+          tabBarColor: '#83463f',
           tabBarLabel: 'Fourth',
           tabBarIcon: ({color}) => (
             <Icon name="settings" color={color} size={26} />
@@ -189,7 +203,7 @@ const MaterialTopTabNavi = () => {
     <MaterialTopTab.Navigator>
       <MaterialTopTab.Screen name="TabFirst" component={TabFirst} />
       <MaterialTopTab.Screen name="TabSecond" component={TabSecond} />
-      <MaterialTopTab.Screen name="TabThird" component={TabThird} />
+      <MaterialTopTab.Screen name="News" component={News} />
       <MaterialTopTab.Screen name="TabFourth" component={TabFourth} />
     </MaterialTopTab.Navigator>
   );
@@ -247,6 +261,11 @@ const MainNavi = () => {
         }}
       />
       <Stack.Screen name="FullModal" component={Modal} />
+      <Stack.Screen
+        name="WebView"
+        component={WebView}
+        options={{stackPresentation: 'modal'}}
+      />
     </Stack.Navigator>
   );
 };
