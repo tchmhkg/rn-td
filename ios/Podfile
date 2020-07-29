@@ -1,0 +1,22 @@
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+platform :ios, '11.0'
+
+target 'react_navigation_v5_exercise' do
+  config = use_native_modules!
+  use_react_native!(:path => config["reactNativePath"])
+
+  target 'react_navigation_v5_exerciseTests' do
+    inherit! :search_paths
+  end
+
+  use_native_modules!
+end
+
+target 'react_navigation_v5_exercise-tvOS' do
+  target 'react_navigation_v5_exercise-tvOSTests' do
+    inherit! :search_paths
+  end
+
+end
