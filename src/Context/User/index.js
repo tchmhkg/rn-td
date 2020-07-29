@@ -1,40 +1,36 @@
 import React, {createContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 
-const defaultContext: IUserContext = {
+const defaultContext = {
   userInfo: undefined,
-  login: (email: string, password: string) => {},
+  login: (email, password) => {},
   getUserInfo: () => {},
   logout: () => {},
 };
 
 const UserContext = createContext(defaultContext);
 
-interface Props {
-  children: JSX.Element | Array<JSX.Element>;
-}
+const UserContextProvider = ({children}) => {
+  const [userInfo, setUserInfo] = useState(undefined);
 
-const UserContextProvider = ({children}: Props) => {
-  const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
-
-  const login = (email: string, password: string): void => {
+  const login = (email, password) => {
     // Use Eamil and Passowrd for login API
     // Get token and UserInfo via Login API
     AsyncStorage.setItem('token', 'save your token').then(() => {
       setUserInfo({
-        name: 'dev-yakuza',
-        email: 'dev.yakuza@gamil.com',
+        name: 'peter',
+        email: 'peter@email.com',
       });
     });
   };
 
-  const getUserInfo = (): void => {
+  const getUserInfo = () => {
     AsyncStorage.getItem('token')
-      .then(value => {
+      .then((value) => {
         if (value) {
           setUserInfo({
-            name: 'dev-yakuza',
-            email: 'dev.yakuza@gamil.com',
+            name: 'peter',
+            email: 'peter@email.com',
           });
         }
       })
@@ -43,7 +39,7 @@ const UserContextProvider = ({children}: Props) => {
       });
   };
 
-  const logout = (): void => {
+  const logout = () => {
     AsyncStorage.removeItem('token');
     setUserInfo(undefined);
   };

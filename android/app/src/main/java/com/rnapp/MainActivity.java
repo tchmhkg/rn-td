@@ -1,4 +1,4 @@
-package com.react_navigation_v5_exercise;
+package com.rnapp;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "react_navigation_v5_exercise";
+    return "RNApp";
   }
 }

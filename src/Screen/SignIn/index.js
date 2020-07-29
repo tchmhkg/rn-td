@@ -17,19 +17,15 @@ const ButtonContainer = Styled.View`
   margin-top: 20px;
 `;
 
-type NavigationProp = StackNavigationProp<LoginStackNaviParamList, 'SignIn'>;
-interface Props {
-  navigation: NavigationProp;
-}
-const SignIn = ({navigation}: Props) => {
-  const {login} = useContext<IUserContext>(UserContext);
+const SignIn = ({navigation}) => {
+  const {login} = useContext(UserContext);
 
   return (
     <Container>
       <Label>This is SignIn Screen</Label>
       <Button
         label="SignIn"
-        onPress={() => login('dev.yakuza@gamil.com', 'password')}
+        onPress={() => login('peter@email.com', 'password')}
       />
 
       <ButtonContainer>

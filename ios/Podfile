@@ -3,19 +3,19 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-target 'react_navigation_v5_exercise' do
+target 'RNApp' do
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
 
-  target 'react_navigation_v5_exerciseTests' do
+  target 'RNAppTests' do
     inherit! :search_paths
   end
 
   use_native_modules!
 end
 
-target 'react_navigation_v5_exercise-tvOS' do
-  target 'react_navigation_v5_exercise-tvOSTests' do
+target 'RNApp-tvOS' do
+  target 'RNApp-tvOSTests' do
     inherit! :search_paths
   end
 

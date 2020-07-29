@@ -1,4 +1,4 @@
-package com.react_navigation_v5_exercise;
+package com.rnapp;
 
 import android.app.Application;
 import android.content.Context;

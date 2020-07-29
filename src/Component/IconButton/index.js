@@ -11,12 +11,7 @@ const Container = Styled.TouchableOpacity`
   margin-left: 8px;
 `;
 
-interface Props {
-  iconName: string;
-  color?: string;
-  onPress?: () => void;
-}
-const IconButton = ({iconName, color, onPress}: Props) => {
+const IconButton = ({iconName, color, onPress}) => {
   return (
     <Container onPress={onPress}>
       <Icon name={iconName} color={color ? color : 'white'} size={24} />

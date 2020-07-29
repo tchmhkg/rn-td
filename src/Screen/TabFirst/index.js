@@ -12,11 +12,7 @@ const Container = Styled.View`
 
 const Label = Styled.Text``;
 
-type NavigationProp = StackNavigationProp<TabFirstStackNaviParamList, 'Modal'>;
-interface Props {
-  navigation: NavigationProp;
-}
-const TabFirst = ({navigation}: Props) => {
+const TabFirst = ({navigation}) => {
   return (
     <Container>
       <Label>This is First Tab</Label>

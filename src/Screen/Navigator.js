@@ -37,19 +37,6 @@ const Drawer = createDrawerNavigator();
 const MaterialTab = createMaterialBottomTabNavigator();
 const MaterailTopTab = createMaterialTopTabNavigator();
 
-type TypeDrawerProp = DrawerNavigationProp<
-  {
-    TabNavi: undefined;
-    MaterialTabNavi: undefined;
-    MaterialTopTabNaviStackNavi: undefined;
-    Logout: undefined;
-  },
-  'TabNavi'
->;
-interface DrawerProp {
-  navigation: TypeDrawerProp;
-}
-
 const LoginStackNavi = () => {
   return (
     <Stack.Navigator
@@ -79,7 +66,7 @@ const LoginStackNavi = () => {
   );
 };
 
-const TabFirstStackNavi = ({navigation}: DrawerProp) => {
+const TabFirstStackNavi = ({navigation}) => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -95,7 +82,7 @@ const TabFirstStackNavi = ({navigation}: DrawerProp) => {
         name="TabFirst"
         component={TabFirst}
         options={{
-          headerLeft: (props: StackHeaderLeftButtonProps) => (
+          headerLeft: (props) => (
             <IconButton
               iconName="menu"
               onPress={() => navigation.openDrawer()}
@@ -213,11 +200,11 @@ const MaterialTopTabNavi = () => {
   );
 };
 
-const MaterialTopTabNaviStackNavi = ({navigation}: DrawerProp) => {
+const MaterialTopTabNaviStackNavi = ({navigation}) => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerLeft: (props: StackHeaderLeftButtonProps) => (
+        headerLeft: (props) => (
           <IconButton
             iconName="menu"
             onPress={() => navigation.openDrawer()}
@@ -230,10 +217,7 @@ const MaterialTopTabNaviStackNavi = ({navigation}: DrawerProp) => {
   );
 };
 
-const CustomDrawerContent = (
-  props: DrawerContentComponentProps<DrawerContentOptions>,
-  logout: () => void,
-) => {
+const CustomDrawerContent = (props, logout) => {
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
@@ -242,11 +226,11 @@ const CustomDrawerContent = (
   );
 };
 const DrawNavi = () => {
-  const {logout} = useContext<IUserContext>(UserContext);
+  const {logout} = useContext(UserContext);
 
   return (
     <Drawer.Navigator
-      drawerContent={props => CustomDrawerContent(props, logout)}>
+      drawerContent={(props) => CustomDrawerContent(props, logout)}>
       <Drawer.Screen name="TabNavi" component={TabNavi} />
       <Drawer.Screen name="MaterialTabNavi" component={MaterialTabNavi} />
       <Drawer.Screen
@@ -272,7 +256,7 @@ const MainNavi = () => {
   );
 };
 export default () => {
-  const {userInfo} = useContext<IUserContext>(UserContext);
+  const {userInfo} = useContext(UserContext);
 
   return (
     <NavigationContainer>
