@@ -2,18 +2,34 @@ import React, {useCallback} from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   Image,
   Linking,
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation, useTheme} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
+import Styled from 'styled-components/native';
+
+const Container = Styled.View`
+  padding: 10px;
+  border-bottom-width: 1px;
+  border-bottom-color: ${(props) => props.theme.text};
+  background-color: ${(props) => props.theme.background};
+`;
+
+const Title = Styled.Text`
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: ${(props) => props.theme.text};
+`;
+
+const Text = Styled.Text`
+  color: ${(props) => props.theme.text};
+`;
 
 const NewsRow = ({item}) => {
   const navigation = useNavigation();
-  const {colors} = useTheme();
 
   const handlePress = useCallback(
     async (url) => {
@@ -31,14 +47,7 @@ const NewsRow = ({item}) => {
 
   return (
     <TouchableOpacity onPress={() => handlePress(item.url)}>
-      <View
-        style={[
-          styles.wrapper,
-          {
-            backgroundColor: colors.background,
-            borderBottomColor: colors.border,
-          },
-        ]}>
+      <Container>
         <View style={styles.row}>
           {item.urlToImage && (
             <View style={styles.thumbnailWrapper}>
@@ -46,23 +55,15 @@ const NewsRow = ({item}) => {
             </View>
           )}
           <View style={styles.contentWrapper}>
-            <Text
-              style={[styles.title, {color: colors.text}]}
-              numberOfLines={1}>
-              {item.title}
-            </Text>
-            <Text numberOfLines={2} style={{color: colors.text}}>
-              {item.description}
-            </Text>
+            <Title numberOfLines={1}>{item.title}</Title>
+            <Text numberOfLines={2}>{item.description}</Text>
           </View>
         </View>
         <View style={[styles.row, styles.metadataRow]}>
-          <Text style={{color: colors.text}}>Source: {item.source?.name}</Text>
-          <Text style={{color: colors.text}}>
-            Published at: {moment(item.publishedAt).fromNow()}
-          </Text>
+          <Text>Source: {item.source?.name}</Text>
+          <Text>Published at: {moment(item.publishedAt).fromNow()}</Text>
         </View>
-      </View>
+      </Container>
     </TouchableOpacity>
   );
 };
@@ -92,10 +93,6 @@ const styles = StyleSheet.create({
   },
   contentWrapper: {
     flex: 2,
-  },
-  title: {
-    fontWeight: 'bold',
-    marginBottom: 5,
   },
   metadataRow: {
     marginTop: 10,

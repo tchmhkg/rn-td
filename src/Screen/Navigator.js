@@ -17,6 +17,7 @@ import {
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {AppearanceProvider, useColorScheme} from 'react-native-appearance';
+import ThemeManager from '~/Theme';
 
 import {UserContext} from '~/Context/User';
 
@@ -38,13 +39,13 @@ const Drawer = createDrawerNavigator();
 const MaterialTab = createMaterialBottomTabNavigator();
 const MaterialTopTab = createMaterialTopTabNavigator();
 
-const MyTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: 'rgb(255, 45, 85)',
-  },
-};
+// const MyTheme = {
+//   ...DefaultTheme,
+//   colors: {
+//     ...DefaultTheme.colors,
+//     primary: 'rgb(255, 45, 85)',
+//   },
+// };
 const LoginStackNavi = () => {
   return (
     <Stack.Navigator
@@ -286,10 +287,10 @@ export default () => {
   const {userInfo} = useContext(UserContext);
 
   return (
-    <AppearanceProvider>
+    <ThemeManager>
       <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
         {userInfo ? <MainNavi /> : <LoginStackNavi />}
       </NavigationContainer>
-    </AppearanceProvider>
+    </ThemeManager>
   );
 };

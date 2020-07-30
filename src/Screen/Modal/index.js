@@ -5,9 +5,12 @@ const Container = Styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
+  background-color: ${(props) => props.theme.background}
 `;
 
-const Label = Styled.Text``;
+const Label = Styled.Text`
+  color: ${(props) => props.theme.text}
+`;
 
 const Modal = () => {
   return (

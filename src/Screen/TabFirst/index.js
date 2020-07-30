@@ -7,9 +7,12 @@ const Container = Styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
+  background: ${(props) => props.theme.background};
 `;
 
-const Label = Styled.Text``;
+const Label = Styled.Text`
+  color: ${(props) => props.theme.text};
+`;
 
 const TabFirst = ({navigation}) => {
   return (

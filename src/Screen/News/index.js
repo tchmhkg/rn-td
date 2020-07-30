@@ -9,18 +9,31 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import {showMessage} from 'react-native-flash-message';
+import Styled from 'styled-components/native';
 
 import NewsRow from '~/Component/News/Row';
 import {HK_NEWS_API} from '~/Util/apiUrls';
-import {useTheme} from '@react-navigation/native';
 
-function News() {
+const Label = Styled.Text`
+  color: ${(props) => props.theme.text};
+`;
+
+const LabelWrapper = Styled.View`
+  flex-direction: row;
+  justify-content: space-around;
+`;
+
+const Container = Styled.SafeAreaView`
+  flex: 1;
+  background: ${(props) => props.theme.background};
+`;
+
+function News(props) {
   const [news, setNews] = useState([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const {colors} = useTheme();
 
   const fetchNews = () => {
     setIsLoading(true);
@@ -96,11 +109,11 @@ function News() {
 
   return (
     <>
-      <SafeAreaView style={styles.wrapper}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-          <Text style={{color: colors.text}}>Fetched News: {news.length}</Text>
-          <Text style={{color: colors.text}}>Total News: {totalCount}</Text>
-        </View>
+      <Container>
+        <LabelWrapper>
+          <Label>Fetched News: {news.length}</Label>
+          <Label>Total News: {totalCount}</Label>
+        </LabelWrapper>
         <FlatList
           data={news}
           renderItem={renderItem}
@@ -111,15 +124,12 @@ function News() {
           onEndReachedThreshold={0.1}
           onEndReached={handleLoadMore}
         />
-      </SafeAreaView>
+      </Container>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-  },
   loadingWrapper: {
     paddingVertical: 20,
   },
