@@ -5,6 +5,9 @@ const dark = {
     backgroundAlt: '#575c66',
     borderAlt: '#2E3440',
     text: '#ECEFF4',
+    buttonText: '#171717',
+    primary: '#ff2da7',
+    inactive: '#ededed',
   },
 };
 

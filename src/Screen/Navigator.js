@@ -1,9 +1,5 @@
 import React, {useContext} from 'react';
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from 'react-native-screens/native-stack';
 // import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -16,8 +12,7 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {AppearanceProvider, useColorScheme} from 'react-native-appearance';
-import ThemeManager from '~/Theme';
+import ThemeManager, {useTheme} from '~/Theme';
 
 import {UserContext} from '~/Context/User';
 
@@ -27,11 +22,14 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 import ResetPassword from './ResetPassword';
 import TabFirst from './TabFirst';
-import TabSecond from './TabSecond';
+import StockList from './StockList';
 import News from './News';
 import Setting from './Setting';
 import Modal from './Modal';
 import WebView from './WebView';
+import SearchTicker from './SearchTicker';
+import Stock from './Stock';
+import Styled from 'styled-components/native';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,13 +37,6 @@ const Drawer = createDrawerNavigator();
 const MaterialTab = createMaterialBottomTabNavigator();
 const MaterialTopTab = createMaterialTopTabNavigator();
 
-// const MyTheme = {
-//   ...DefaultTheme,
-//   colors: {
-//     ...DefaultTheme.colors,
-//     primary: 'rgb(255, 45, 85)',
-//   },
-// };
 const LoginStackNavi = () => {
   return (
     <Stack.Navigator
@@ -81,12 +72,13 @@ const LoginStackNavi = () => {
 
 const TabFirstStackNavi = ({navigation}) => {
   const {logout} = useContext(UserContext);
+  const {colors} = useTheme();
 
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#ff66ee',
+          backgroundColor: colors?.primary,
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -117,24 +109,82 @@ const TabFirstStackNavi = ({navigation}) => {
   );
 };
 
-const TabNavi = () => {
+const StockStackNavi = ({navigation}) => {
+  const {colors} = useTheme();
   return (
-    <Tab.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors?.primary,
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Stack.Screen
+        name="StockList"
+        component={StockList}
+        options={{
+          headerTitle: 'Stocks',
+          headerLeft: (props) => (
+            <IconButton
+              iconName="menu"
+              onPress={() => navigation.openDrawer()}
+            />
+          ),
+          headerRight: (props) => (
+            <IconButton
+              iconName="search"
+              onPress={() => {
+                console.log('clicked search');
+                navigation.push('SearchTicker');
+              }}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="SearchTicker"
+        component={SearchTicker}
+        options={{stackPresentation: 'modal'}}
+      />
+      <Stack.Screen name="Stock" component={Stock} />
+      <Stack.Screen
+        name="Modal"
+        component={Modal}
+        options={{stackPresentation: 'modal'}}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const TabNavi = () => {
+  const {colors} = useTheme();
+  return (
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: colors.primary,
+        inactiveBackgroundColor: colors.background,
+        activeBackgroundColor: colors.background,
+        inactiveTintColor: colors.inactive,
+      }}>
       <Tab.Screen
         name="TabFirstStackNavi"
         component={TabFirstStackNavi}
         options={{
-          tabBarLabel: 'Frist',
+          tabBarLabel: 'First',
           tabBarIcon: ({color}) => <Icon name="home" color={color} size={26} />,
         }}
       />
       <Tab.Screen
-        name="TabSecond"
-        component={TabSecond}
+        name="Stocks"
+        component={StockStackNavi}
         options={{
-          tabBarLabel: 'Second',
+          headerShown: true,
+          tabBarLabel: 'Stocks',
           tabBarIcon: ({color}) => (
-            <Icon name="people" color={color} size={26} />
+            <Icon name="trending-up" color={color} size={26} />
           ),
         }}
       />
@@ -170,16 +220,16 @@ const MaterialTabNavi = () => {
         component={TabFirstStackNavi}
         options={{
           tabBarColor: '#336723',
-          tabBarLabel: 'Frist',
+          tabBarLabel: 'First',
           tabBarIcon: ({color}) => <Icon name="home" color={color} size={26} />,
         }}
       />
       <MaterialTab.Screen
-        name="TabSecond"
-        component={TabSecond}
+        name="StockStackNavi"
+        component={StockStackNavi}
         options={{
           tabBarColor: '#3f0103',
-          tabBarLabel: 'Second',
+          tabBarLabel: 'Stocks',
           tabBarIcon: ({color}) => (
             <Icon name="people" color={color} size={26} />
           ),
@@ -215,7 +265,7 @@ const MaterialTopTabNavi = () => {
   return (
     <MaterialTopTab.Navigator>
       <MaterialTopTab.Screen name="TabFirst" component={TabFirst} />
-      <MaterialTopTab.Screen name="TabSecond" component={TabSecond} />
+      <MaterialTopTab.Screen name="StockList" component={StockList} />
       <MaterialTopTab.Screen name="News" component={News} />
       <MaterialTopTab.Screen name="Setting" component={Setting} />
     </MaterialTopTab.Navigator>
@@ -282,15 +332,20 @@ const MainNavi = () => {
     </Stack.Navigator>
   );
 };
+
+const SafeAreaBottom = Styled.SafeAreaView`
+  background-color: ${props => props.theme.background};
+`;
+
 export default () => {
-  const scheme = useColorScheme();
   const {userInfo} = useContext(UserContext);
 
   return (
     <ThemeManager>
-      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <NavigationContainer>
         {userInfo ? <MainNavi /> : <LoginStackNavi />}
       </NavigationContainer>
+      <SafeAreaBottom />
     </ThemeManager>
   );
 };

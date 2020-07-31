@@ -24,7 +24,7 @@ const defaultMode = async () => await getModeFromStorage();
 const ThemeContext = createContext({
   mode: getModeFromStorage(),
   setMode: (mode) => console.log(mode),
-  theme: {},
+  colors: {},
 });
 
 export const useTheme = () => React.useContext(ThemeContext);
@@ -34,12 +34,20 @@ const ManageThemeProvider = ({children}) => {
   const setMode = (mode) => {
     AsyncStorage.setItem('mode', mode);
     setThemeState(mode);
+    // StatusBar.setBarStyle(
+    //   mode === 'dark' ? 'light-content' : 'dark-content',
+    //   true,
+    // );
   };
 
   useEffect(() => {
     const getDefaultMode = async () => {
       const mode = await getModeFromStorage();
       setThemeState(mode);
+      // StatusBar.setBarStyle(
+      //   mode === 'dark' ? 'light-content' : 'dark-content',
+      //   true,
+      // );
     };
     getDefaultMode();
   }, []);
@@ -48,6 +56,10 @@ const ManageThemeProvider = ({children}) => {
     const subscription = Appearance.addChangeListener(({colorScheme}) => {
       AsyncStorage.setItem('mode', colorScheme);
       setThemeState(colorScheme);
+      // StatusBar.setBarStyle(
+      //   colorScheme === 'dark' ? 'light-content' : 'dark-content',
+      //   true,
+      // );
     });
     return () => subscription.remove();
   }, []);
@@ -56,7 +68,7 @@ const ManageThemeProvider = ({children}) => {
       value={{
         mode: themeState,
         setMode,
-        theme: themeState === 'dark' ? darkTheme.theme : lightTheme.theme,
+        colors: themeState === 'dark' ? darkTheme.theme : lightTheme.theme,
       }}>
       <ThemeProvider
         theme={themeState === 'dark' ? darkTheme.theme : lightTheme.theme}>
