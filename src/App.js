@@ -5,16 +5,19 @@ import FlashMessage from 'react-native-flash-message';
 
 import {UserContextProvider} from '~/Context/User';
 
-import Navigator from './Screen/Navigator';
+import Navigator from '~/Screen/Navigator';
+import LocaleProvider from '~/I18n';
 
 enableScreens();
 const App = () => {
   const flashMessageRef = createRef();
   return (
-    <UserContextProvider>
-      <Navigator />
-      <FlashMessage ref={flashMessageRef} />
-    </UserContextProvider>
+    <LocaleProvider>
+      <UserContextProvider>
+        <Navigator />
+        <FlashMessage ref={flashMessageRef} />
+      </UserContextProvider>
+    </LocaleProvider>
   );
 };
 

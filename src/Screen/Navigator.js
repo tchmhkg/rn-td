@@ -30,6 +30,7 @@ import WebView from './WebView';
 import SearchTicker from './SearchTicker';
 import Stock from './Stock';
 import Styled from 'styled-components/native';
+import {useLocale} from '~/I18n';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -111,6 +112,7 @@ const TabFirstStackNavi = ({navigation}) => {
 
 const StockStackNavi = ({navigation}) => {
   const {colors} = useTheme();
+  const {t} = useLocale();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -126,7 +128,7 @@ const StockStackNavi = ({navigation}) => {
         name="StockList"
         component={StockList}
         options={{
-          headerTitle: 'Stocks',
+          headerTitle: t('Stocks'),
           headerLeft: (props) => (
             <IconButton
               iconName="menu"
@@ -137,7 +139,6 @@ const StockStackNavi = ({navigation}) => {
             <IconButton
               iconName="search"
               onPress={() => {
-                console.log('clicked search');
                 navigation.push('SearchTicker');
               }}
             />
@@ -149,7 +150,11 @@ const StockStackNavi = ({navigation}) => {
         component={SearchTicker}
         options={{stackPresentation: 'modal'}}
       />
-      <Stack.Screen name="Stock" component={Stock} />
+      <Stack.Screen
+        name="Stock"
+        component={Stock}
+        options={{headerTitle: t('Stock')}}
+      />
       <Stack.Screen
         name="Modal"
         component={Modal}
@@ -161,6 +166,7 @@ const StockStackNavi = ({navigation}) => {
 
 const TabNavi = () => {
   const {colors} = useTheme();
+  const {t} = useLocale();
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -182,7 +188,7 @@ const TabNavi = () => {
         component={StockStackNavi}
         options={{
           headerShown: true,
-          tabBarLabel: 'Stocks',
+          tabBarLabel: t('Stocks'),
           tabBarIcon: ({color}) => (
             <Icon name="trending-up" color={color} size={26} />
           ),
@@ -192,7 +198,7 @@ const TabNavi = () => {
         name="News"
         component={News}
         options={{
-          tabBarLabel: 'News',
+          tabBarLabel: t('News'),
           tabBarIcon: ({color}) => (
             <Icon name="message" color={color} size={26} />
           ),
@@ -202,7 +208,7 @@ const TabNavi = () => {
         name="Setting"
         component={Setting}
         options={{
-          tabBarLabel: 'Setting',
+          tabBarLabel: t('Setting'),
           tabBarIcon: ({color}) => (
             <Icon name="settings" color={color} size={26} />
           ),
@@ -334,7 +340,7 @@ const MainNavi = () => {
 };
 
 const SafeAreaBottom = Styled.SafeAreaView`
-  background-color: ${props => props.theme.background};
+  background-color: ${(props) => props.theme.background};
 `;
 
 export default () => {

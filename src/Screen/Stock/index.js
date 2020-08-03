@@ -12,6 +12,9 @@ import LatestPrice from '~/Component/LatestPrice';
 import {getAdvancedStatsApi, CANDLES_API} from '~/Util/apiUrls';
 import {IEX_SANDBOX_API_KEY, FINNHUB_API_KEY} from '~/Util/config';
 import {chartOptionFormatter} from '~/Helper';
+import {useTheme} from '~/Theme';
+import Styled from 'styled-components/native';
+import {useLocale} from '~/I18n';
 
 export default function Stock() {
   const route = useRoute();
@@ -22,6 +25,24 @@ export default function Stock() {
   const [chartOption, setChartOption] = useState({});
   const {data, info} = selectedStock;
   const chartRef = useRef(null);
+  const {mode, colors} = useTheme();
+  const [saved, setSaved] = useState(false);
+  const {t} = useLocale();
+
+  const Container = Styled.View`
+    flex: 1;
+    background-color: ${(props) => props.theme.background};
+  `;
+  const LoadingContainer = Styled.View`
+    padding: 20px 0;
+    background-color: ${(props) => props.theme.background}
+  `;
+
+  const CompanyName = Styled.Text`
+    color: ${(props) => props.theme.text};
+    font-size: 22px;
+    font-weight: bold;
+  `;
 
   const onPressSaveSymbol = async () => {
     try {
@@ -31,7 +52,7 @@ export default function Stock() {
       const isExisted = _.find(existingJson, ['symbol', ticker]);
       if (isExisted) {
         showMessage({
-          message: 'Saved already!',
+          message: t('Saved already!'),
           type: 'warning',
           icon: 'auto',
           duration: 2000,
@@ -40,12 +61,13 @@ export default function Stock() {
       }
       const newList = [
         ...existingJson,
-        {name: info['companyName'], symbol: ticker},
+        {id: moment().unix(), name: info['companyName'], symbol: ticker},
       ];
 
       await AsyncStorage.setItem('symbols', JSON.stringify(newList));
+      setSaved(true);
       showMessage({
-        message: 'Saved successfully!',
+        message: t('Saved successfully!'),
         type: 'success',
         icon: 'auto',
         duration: 2000,
@@ -53,7 +75,7 @@ export default function Stock() {
     } catch (e) {
       console.log(e);
       showMessage({
-        message: 'Something went wrong!',
+        message: t('Something went wrong!'),
         type: 'danger',
         icon: 'auto',
         duration: 2000,
@@ -61,15 +83,61 @@ export default function Stock() {
     }
   };
 
+  // const onPressRemoveSymbol = async () => {
+  //   try {
+  //     const existing = await AsyncStorage.getItem('symbols');
+
+  //     const existingJson = existing ? JSON.parse(existing) : [];
+  //     const newList = _.filter(
+  //       existingJson,
+  //       (stock) => stock.symbol !== ticker,
+  //     );
+
+  //     await AsyncStorage.setItem('symbols', JSON.stringify(newList));
+  //     setSaved(false);
+  //     showMessage({
+  //       message: 'Removed successfully!',
+  //       type: 'success',
+  //       icon: 'auto',
+  //       duration: 2000,
+  //     });
+  //   } catch (e) {
+  //     console.log(e);
+  //     showMessage({
+  //       message: 'Something went wrong!',
+  //       type: 'danger',
+  //       icon: 'auto',
+  //       duration: 2000,
+  //     });
+  //   }
+  // };
+
+  useEffect(() => {
+    const getStatusFromStorage = async () => {
+      const existing = await AsyncStorage.getItem('symbols');
+
+      const existingJson = existing ? JSON.parse(existing) : [];
+      const isExisted = _.find(existingJson, ['symbol', ticker]);
+      setSaved(isExisted);
+    };
+    getStatusFromStorage();
+  }, []);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
+        // saved ? (
+        //   <TouchableOpacity onPress={loading ? () => {} : onPressRemoveSymbol}>
+        //     <Text style={styles.buttonText}>Remove</Text>
+        //   </TouchableOpacity>
+        // ) : (
         <TouchableOpacity onPress={loading ? () => {} : onPressSaveSymbol}>
-          <Text style={styles.buttonText}>Save</Text>
+          <Text style={styles.buttonText}>{t('Save')}</Text>
         </TouchableOpacity>
+        // ),
       ),
     });
-  }, [navigation, loading]);
+  }, [navigation, loading, saved]);
 
   useEffect(() => {
     fetchStock();
@@ -122,29 +190,29 @@ export default function Stock() {
   };
 
   useEffect(() => {
-    const {option} = chartOptionFormatter(data);
+    const {option} = chartOptionFormatter(data, mode);
     setChartOption(option);
     chartRef.current?.setOption(option);
-  }, [data]);
+  }, [data, mode]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors?.background}]}>
       <View style={styles.titleView}>
         {info && (
-          <Text style={styles.title}>
+          <CompanyName>
             {info['companyName']} <Text style={styles.ticker}>({ticker})</Text>
-          </Text>
+          </CompanyName>
         )}
       </View>
       <LatestPrice />
       {!loading && data ? (
         <ECharts ref={chartRef} option={chartOption} />
       ) : (
-        <View style={styles.loadingWrapper}>
+        <LoadingContainer>
           <ActivityIndicator animating size="large" />
-        </View>
+        </LoadingContainer>
       )}
-      <View style={styles.container} />
+      <Container />
     </View>
   );
 }

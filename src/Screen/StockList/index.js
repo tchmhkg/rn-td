@@ -23,7 +23,7 @@ const EmptyContainer = Styled.SafeAreaView`
 function StockList() {
   const navigation = useNavigation();
   const [stocks, setStocks] = useState([]);
-  const modalizeRef = useRef(null);
+  // const modalizeRef = useRef(null);
 
   // useLayoutEffect(() => {
   //   navigation.setOptions({
@@ -35,10 +35,10 @@ function StockList() {
   //   });
   // }, [navigation]);
 
-  const onPressSearch = () => {
-    modalizeRef.current?.open();
-    // navigation.navigate('SearchTicker');
-  };
+  // const onPressSearch = () => {
+  //   modalizeRef.current?.open();
+  //   // navigation.navigate('SearchTicker');
+  // };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
@@ -85,7 +85,7 @@ function StockList() {
             data={stocks}
             renderItem={renderItem}
             ItemSeparatorComponent={renderSeparator}
-            keyExtractor={(item) => item.symbol}
+            keyExtractor={(item) => item.id.toString()}
           />
           <TouchableOpacity onPress={onPressClear}>
             <Text style={styles.buttonText}>Clear list</Text>

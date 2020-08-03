@@ -1,4 +1,6 @@
 import moment from 'moment';
+import lightTheme from '~/Theme/light';
+import darkTheme from '~/Theme/dark';
 
 function calculateMA(dayCount, data) {
   var result = [];
@@ -19,7 +21,8 @@ function calculateMA(dayCount, data) {
 export const timestampToDate = (timestamp, format = 'YYYY-MM-DD') =>
   moment.unix(timestamp).format(format);
 
-export const chartOptionFormatter = (data) => {
+export const chartOptionFormatter = (data, mode = 'dark') => {
+  const theme = mode === 'dark' ? darkTheme.theme : lightTheme.theme;
   let values = [];
   let dates = [];
   data?.t?.forEach((d, i) => {
@@ -27,27 +30,25 @@ export const chartOptionFormatter = (data) => {
     values.push([data?.o[i], data?.c[i], data?.l[i], data?.h[i]]);
   });
   const option = {
-    backgroundColor: '#121212',
+    backgroundColor: theme?.background,
     tooltip: {
       trigger: 'axis',
       axisPointer: {
         animation: false,
         type: 'cross',
         lineStyle: {
-          color: '#f3f3f3',
+          color: theme?.chartLine,
           width: 2,
-          opacity: 0.87,
         },
-        label: {color: '#121212'},
+        label: {color: theme?.tooltipLabel},
       },
       confine: true,
     },
     legend: {
       data: ['MA5', 'MA10', 'MA20', 'MA30'],
-      inactiveColor: '#777',
+      inactiveColor: theme?.inactiveLegend,
       textStyle: {
-        color: '#fff',
-        opacity: 0.87,
+        color: theme?.text,
       },
     },
     toolbox: {
@@ -59,14 +60,14 @@ export const chartOptionFormatter = (data) => {
       {
         type: 'category',
         data: dates,
-        axisLine: {lineStyle: {color: '#fff', opacity: 0.87}},
+        axisLine: {lineStyle: {color: theme?.chartLine}},
       },
     ],
     yAxis: [
       {
         scale: true,
         axisLine: {
-          lineStyle: {color: '#fff', opacity: 0.87},
+          lineStyle: {color: theme?.chartLine},
         },
         splitLine: {show: false},
       },
@@ -88,24 +89,22 @@ export const chartOptionFormatter = (data) => {
     dataZoom: [
       {
         textStyle: {
-          color: '#fff',
-          opacity: 0.87,
+          color: theme?.text,
         },
         handleIcon:
           'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
         handleSize: '80%',
         dataBackground: {
           areaStyle: {
-            color: '#8392A5',
+            color: theme?.chartDataZoomBackground,
           },
           lineStyle: {
             opacity: 0.8,
-            color: '#8392A5',
+            color: theme?.chartDataZoomBackground,
           },
         },
         handleStyle: {
-          color: '#fff',
-          opacity: 0.87,
+          color: theme?.text,
           shadowBlur: 3,
           shadowColor: 'rgba(0, 0, 0, 0.6)',
           shadowOffsetX: 2,
@@ -127,10 +126,10 @@ export const chartOptionFormatter = (data) => {
         data: values,
         itemStyle: {
           normal: {
-            color: '#FD1050',
-            color0: '#0CF49B',
-            borderColor: '#FD1050',
-            borderColor0: '#0CF49B',
+            color: '#0CF49B',
+            color0: '#FD1050',
+            borderColor: '#0CF49B',
+            borderColor0: '#FD1050',
           },
         },
       },

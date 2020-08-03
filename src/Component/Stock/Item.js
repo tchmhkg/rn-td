@@ -82,7 +82,7 @@ const StockItem = ({item}) => {
 
   return (
     <TouchableWithoutFeedback onPress={() => onPressStock(item.symbol)}>
-      <Container style={styles.symbolWrapper}>
+      <Container>
         <View style={styles.stockInfo}>
           <Name numberOfLines={1}>{item.name}</Name>
           <Symbol>{item.symbol}</Symbol>

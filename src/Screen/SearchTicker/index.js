@@ -3,6 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Styled from 'styled-components/native';
 import Button from '~/Component/Button';
+import { useLocale } from '~/I18n';
 
 const Container = Styled.SafeAreaView`
   flex: 1;
@@ -23,6 +24,7 @@ const Input = Styled.TextInput`
 function SearchTicker() {
   const navigation = useNavigation();
   const [ticker, setTicker] = useState('');
+  const {t} = useLocale();
 
   const onPressSubmit = () => {
     if (!ticker) {
@@ -44,7 +46,7 @@ function SearchTicker() {
             autoFocus
           />
         </View>
-        <Button label="Search" onPress={onPressSubmit} />
+        <Button label={t('Search')} onPress={onPressSubmit} />
       </Container>
     </>
   );

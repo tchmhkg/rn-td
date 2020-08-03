@@ -5,12 +5,25 @@ import {FINNHUB_API_KEY} from '~/Util/config';
 import {timestampToDate} from '~/Helper';
 import axios from 'axios';
 import {QUOTE_API} from '~/Util/apiUrls';
+import Styled from 'styled-components/native';
+
+const Price = Styled.Text`
+  color: ${(props) => props.theme.text}
+  font-size: 32px;
+  font-weight: bold;
+`;
+
+const LastUpdate = Styled.Text`
+  color: ${(props) => props.theme.text}
+  font-size: 12px;
+`;
 
 export default () => {
   const route = useRoute();
   const {ticker} = route.params;
   const [latestPrice, setLatestPrice] = useState({});
   const [previousClosePrice, setPreviousClosePrice] = useState({});
+  let mounted = true;
 
   useEffect(() => {
     const getPreviousClosePrice = async () => {
@@ -41,7 +54,7 @@ export default () => {
     ws.onmessage = (e) => {
       // console.log('Message from server ', e.data);
       const data = JSON.parse(e.data);
-      if (data?.data?.[0]?.p) {
+      if (data?.data?.[0]?.p && mounted) {
         setLatestPrice({
           price: data?.data?.[0]?.p,
           lastUpdateTime: data?.data?.[0]?.t
@@ -63,6 +76,7 @@ export default () => {
 
     // Unsubscribe
     return () => {
+      mounted = false;
       ws.send(JSON.stringify({type: 'unsubscribe', symbol: ticker}));
       ws.close();
       console.log('unsubscribe => ', ticker);
@@ -97,13 +111,11 @@ export default () => {
 
   return (
     <View style={styles.titleView}>
-      <Text style={[styles.title, getPriceColor()]}>
+      <Price style={getPriceColor()}>
         {latestPrice?.price?.toFixed(3)}{' '}
         <Text style={styles.priceDiff}>{getPriceDiff()}</Text>
-      </Text>
-      <Text style={styles.lastUpdateTime}>
-        Last updated at: {latestPrice?.lastUpdateTime}
-      </Text>
+      </Price>
+      <LastUpdate>Last updated at: {latestPrice?.lastUpdateTime}</LastUpdate>
     </View>
   );
 };
