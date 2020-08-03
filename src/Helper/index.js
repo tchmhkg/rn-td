@@ -126,9 +126,9 @@ export const chartOptionFormatter = (data, mode = 'dark') => {
         data: values,
         itemStyle: {
           normal: {
-            color: '#0CF49B',
+            color: '#4DBD33',
             color0: '#FD1050',
-            borderColor: '#0CF49B',
+            borderColor: '#4DBD33',
             borderColor0: '#FD1050',
           },
         },

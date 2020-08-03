@@ -105,10 +105,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   stockInfo: {
-    flex: 0.7,
+    flex: 0.6,
   },
   stockPrice: {
-    flex: 0.3,
+    flex: 0.4,
     alignItems: 'flex-end',
   },
   positive: {

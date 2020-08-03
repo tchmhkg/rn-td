@@ -6,6 +6,7 @@ import {timestampToDate} from '~/Helper';
 import axios from 'axios';
 import {QUOTE_API} from '~/Util/apiUrls';
 import Styled from 'styled-components/native';
+import {useLocale} from '~/I18n';
 
 const Price = Styled.Text`
   color: ${(props) => props.theme.text}
@@ -23,6 +24,7 @@ export default () => {
   const {ticker} = route.params;
   const [latestPrice, setLatestPrice] = useState({});
   const [previousClosePrice, setPreviousClosePrice] = useState({});
+  const {t} = useLocale();
   let mounted = true;
 
   useEffect(() => {
@@ -115,7 +117,9 @@ export default () => {
         {latestPrice?.price?.toFixed(3)}{' '}
         <Text style={styles.priceDiff}>{getPriceDiff()}</Text>
       </Price>
-      <LastUpdate>Last updated at: {latestPrice?.lastUpdateTime}</LastUpdate>
+      <LastUpdate>
+        {t('Last updated at:')} {latestPrice?.lastUpdateTime}
+      </LastUpdate>
     </View>
   );
 };
@@ -139,7 +143,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   positive: {
-    color: '#0CF49B',
+    color: '#4DBD33',
   },
   negative: {
     color: '#FD1050',
