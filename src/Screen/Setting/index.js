@@ -113,10 +113,10 @@ const Setting = () => {
       <RBSheet
         ref={bottomSheetRef}
         closeOnDragDown
+        height={170}
         customStyles={{
           container: {
             backgroundColor: theme.colors.background,
-            height: 170,
           },
         }}>
         {renderContent()}
