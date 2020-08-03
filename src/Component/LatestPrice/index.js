@@ -8,6 +8,10 @@ import {QUOTE_API} from '~/Util/apiUrls';
 import Styled from 'styled-components/native';
 import {useLocale} from '~/I18n';
 
+const Container = Styled.View`
+  margin: 5px 10px;
+`;
+
 const Price = Styled.Text`
   color: ${(props) => props.theme.text}
   font-size: 32px;
@@ -112,7 +116,7 @@ export default () => {
   }
 
   return (
-    <View style={styles.titleView}>
+    <Container>
       <Price style={getPriceColor()}>
         {latestPrice?.price?.toFixed(3)}{' '}
         <Text style={styles.priceDiff}>{getPriceDiff()}</Text>
@@ -120,28 +124,10 @@ export default () => {
       <LastUpdate>
         {t('Last updated at:')} {latestPrice?.lastUpdateTime}
       </LastUpdate>
-    </View>
+    </Container>
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  titleView: {
-    marginHorizontal: 10,
-    marginVertical: 5,
-  },
-  title: {
-    color: '#fff',
-    fontSize: 32,
-    fontWeight: 'bold',
-    opacity: 0.87,
-  },
-  lastUpdateTime: {
-    color: '#fff',
-    opacity: 0.87,
-    fontSize: 12,
-  },
   positive: {
     color: '#4DBD33',
   },
