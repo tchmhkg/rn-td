@@ -27,7 +27,7 @@ export default function Stock() {
   const chartRef = useRef(null);
   const {mode, colors} = useTheme();
   const [saved, setSaved] = useState(false);
-  const {t} = useLocale();
+  const {t, locale} = useLocale();
 
   const Container = Styled.View`
     flex: 1;
@@ -137,7 +137,7 @@ export default function Stock() {
         // ),
       ),
     });
-  }, [navigation, loading, saved]);
+  }, [navigation, loading, saved, locale]);
 
   useEffect(() => {
     fetchStock();
