@@ -12,6 +12,8 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Host} from 'react-native-portalize';
+
 import ThemeManager, {useTheme} from '~/Theme';
 
 import {UserContext} from '~/Context/User';
@@ -168,53 +170,57 @@ const TabNavi = () => {
   const {colors} = useTheme();
   const {t} = useLocale();
   return (
-    <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: colors.primary,
-        inactiveBackgroundColor: colors.background,
-        activeBackgroundColor: colors.background,
-        inactiveTintColor: colors.inactive,
-      }}>
-      <Tab.Screen
-        name="TabFirstStackNavi"
-        component={TabFirstStackNavi}
-        options={{
-          tabBarLabel: 'First',
-          tabBarIcon: ({color}) => <Icon name="home" color={color} size={26} />,
-        }}
-      />
-      <Tab.Screen
-        name="Stocks"
-        component={StockStackNavi}
-        options={{
-          headerShown: true,
-          tabBarLabel: t('Stocks'),
-          tabBarIcon: ({color}) => (
-            <Icon name="trending-up" color={color} size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="News"
-        component={News}
-        options={{
-          tabBarLabel: t('News'),
-          tabBarIcon: ({color}) => (
-            <Icon name="message" color={color} size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Setting"
-        component={Setting}
-        options={{
-          tabBarLabel: t('Setting'),
-          tabBarIcon: ({color}) => (
-            <Icon name="settings" color={color} size={26} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+    <Host>
+      <Tab.Navigator
+        tabBarOptions={{
+          activeTintColor: colors.primary,
+          inactiveBackgroundColor: colors.background,
+          activeBackgroundColor: colors.background,
+          inactiveTintColor: colors.inactive,
+        }}>
+        <Tab.Screen
+          name="TabFirstStackNavi"
+          component={TabFirstStackNavi}
+          options={{
+            tabBarLabel: 'First',
+            tabBarIcon: ({color}) => (
+              <Icon name="home" color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Stocks"
+          component={StockStackNavi}
+          options={{
+            headerShown: true,
+            tabBarLabel: t('Stocks'),
+            tabBarIcon: ({color}) => (
+              <Icon name="trending-up" color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="News"
+          component={News}
+          options={{
+            tabBarLabel: t('News'),
+            tabBarIcon: ({color}) => (
+              <Icon name="message" color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Setting"
+          component={Setting}
+          options={{
+            tabBarLabel: t('Setting'),
+            tabBarIcon: ({color}) => (
+              <Icon name="settings" color={color} size={26} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </Host>
   );
 };
 

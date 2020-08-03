@@ -1,11 +1,10 @@
 import React, {useRef} from 'react';
 import Styled from 'styled-components/native';
-import {StyleSheet, ScrollView, Switch, FlatList} from 'react-native';
+import {StyleSheet, ScrollView, Switch, Pressable} from 'react-native';
 import {useTheme} from '~/Theme';
 import {useLocale} from '~/I18n';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import Button from '~/Component/Button';
+import {Modalize} from 'react-native-modalize';
+import {Portal} from 'react-native-portalize';
 
 const languages = ['en', 'zh-hk'];
 
@@ -50,6 +49,7 @@ const LangButton = Styled.TouchableOpacity`
 const LangButtonText = Styled.Text`
   color: ${(props) => props.theme.text};
   font-size: 16px;
+  opacity: ${(props) => (props.pressed ? 0.2 : 1)}
 `;
 
 const Setting = () => {
@@ -81,17 +81,6 @@ const Setting = () => {
     );
   };
 
-  const renderContent = () => {
-    return (
-      <FlatList
-        data={languages}
-        keyExtractor={(item) => item}
-        renderItem={renderItem}
-        scrollEnabled={false}
-      />
-    );
-  };
-
   return (
     <Container>
       <Label>{t('Setting')}</Label>
@@ -105,22 +94,31 @@ const Setting = () => {
         </Row>
         <Row>
           <ItemLebel>{t('Languages')}</ItemLebel>
-          <TouchableOpacity onPress={openBottomSheet}>
-            <LangButtonText>{t(locale)}</LangButtonText>
-          </TouchableOpacity>
+          <Pressable onPress={openBottomSheet} hitSlop={10}>
+            {({pressed}) => (
+              <LangButtonText pressed={pressed}>{t(locale)}</LangButtonText>
+            )}
+          </Pressable>
         </Row>
       </ScrollView>
-      <RBSheet
-        ref={bottomSheetRef}
-        closeOnDragDown
-        height={170}
-        customStyles={{
-          container: {
+      <Portal>
+        <Modalize
+          ref={bottomSheetRef}
+          modalHeight={170}
+          flatListProps={{
+            data: languages,
+            keyExtractor: (item) => item,
+            renderItem: renderItem,
+            scrollEnabled: false,
+          }}
+          handlePosition="inside"
+          modalStyle={{
+            paddingTop: 25,
             backgroundColor: theme.colors.background,
-          },
-        }}>
-        {renderContent()}
-      </RBSheet>
+          }}
+          handleStyle={{backgroundColor: theme.colors.text, opacity: 0.7}}
+        />
+      </Portal>
     </Container>
   );
 };
