@@ -14,13 +14,6 @@ const Container = Styled.SafeAreaView`
   background: ${(props) => props.theme.background};
 `;
 
-const Label = Styled.Text`
-  color: ${(props) => props.theme.text};
-  font-size: 28px;
-  margin: 0 15px;
-  font-weight: bold;
-`;
-
 const Row = Styled.View`
   flex: 1;
   flex-direction: row;
@@ -83,7 +76,6 @@ const Setting = () => {
 
   return (
     <Container>
-      <Label>{t('Setting')}</Label>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Row>
           <ItemLebel>{t('Dark Mode')}</ItemLebel>

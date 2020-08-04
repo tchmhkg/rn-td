@@ -166,6 +166,37 @@ const StockStackNavi = ({navigation}) => {
   );
 };
 
+const SettingStackNavi = ({navigation}) => {
+  const {colors} = useTheme();
+  const {t} = useLocale();
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors?.primary,
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Stack.Screen
+        name="Setting"
+        component={Setting}
+        options={{
+          headerTitle: t('Setting'),
+          headerLeft: (props) => (
+            <IconButton
+              iconName="menu"
+              onPress={() => navigation.openDrawer()}
+            />
+          ),
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const TabNavi = () => {
   const {colors} = useTheme();
   const {t} = useLocale();
@@ -211,7 +242,7 @@ const TabNavi = () => {
         />
         <Tab.Screen
           name="Setting"
-          component={Setting}
+          component={SettingStackNavi}
           options={{
             tabBarLabel: t('Setting'),
             tabBarIcon: ({color}) => (

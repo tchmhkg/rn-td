@@ -10,6 +10,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
 import Styled from 'styled-components/native';
+import {useLocale} from '~/I18n';
 
 const Container = Styled.View`
   padding: 10px;
@@ -30,6 +31,7 @@ const Text = Styled.Text`
 
 const NewsRow = ({item}) => {
   const navigation = useNavigation();
+  const {t} = useLocale();
 
   const handlePress = useCallback(
     async (url) => {
@@ -60,8 +62,12 @@ const NewsRow = ({item}) => {
           </View>
         </View>
         <View style={[styles.row, styles.metadataRow]}>
-          <Text>Source: {item.source?.name}</Text>
-          <Text>Published at: {moment(item.publishedAt).fromNow()}</Text>
+          <Text>
+            {t('Source:')} {item.source?.name}
+          </Text>
+          <Text>
+            {t('Published at:')} {moment(item.publishedAt).fromNow()}
+          </Text>
         </View>
       </Container>
     </TouchableOpacity>

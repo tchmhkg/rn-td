@@ -6,7 +6,7 @@ const dark = {
     borderAlt: '#575c66',
     text: '#ECEFF4',
     buttonText: '#171717',
-    primary: '#ff2da7',
+    primary: '#00b686',
     inactive: '#ededed',
     chartLine: '#ECEFF4',
     inactiveLegend: '#777777',
