@@ -137,14 +137,14 @@ const StockStackNavi = ({navigation}) => {
               onPress={() => navigation.openDrawer()}
             />
           ),
-          headerRight: (props) => (
-            <IconButton
-              iconName="search"
-              onPress={() => {
-                navigation.push('SearchTicker');
-              }}
-            />
-          ),
+          // headerRight: (props) => (
+          //   <IconButton
+          //     iconName="search"
+          //     onPress={() => {
+          //       navigation.push('SearchTicker');
+          //     }}
+          //   />
+          // ),
         }}
       />
       <Stack.Screen

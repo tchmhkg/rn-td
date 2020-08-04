@@ -32,10 +32,24 @@ const Diff = Styled.Text`
   font-size: 14px;
 `;
 
-const StockItem = ({item}) => {
+const StockItem = ({item, refreshing}) => {
   const navigation = useNavigation();
   const [price, setPrice] = useState('-');
   const [previousClosePrice, setPreviousClosePrice] = useState(null);
+
+  useEffect(() => {
+    const getPrice = async () => {
+      const res = await axios.get(QUOTE_API, {
+        params: {
+          symbol: item.symbol.toUpperCase(),
+          token: FINNHUB_API_KEY,
+        },
+      });
+      setPrice(res.data?.c);
+      setPreviousClosePrice(res.data?.pc);
+    };
+    getPrice();
+  }, []);
 
   useEffect(() => {
     const getPrice = async () => {
@@ -49,8 +63,10 @@ const StockItem = ({item}) => {
       setPrice(res.data?.c);
       setPreviousClosePrice(res.data?.pc);
     };
-    getPrice();
-  }, []);
+    if (refreshing) {
+      getPrice();
+    }
+  }, [refreshing]);
 
   const onPressStock = (symbol) => {
     navigation.navigate('Stock', {ticker: symbol});

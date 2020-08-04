@@ -1,21 +1,22 @@
 import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
-import {StyleSheet, Text, SafeAreaView} from 'react-native';
+import {StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import StockItem from '~/Component/Stock/Item';
 import Separator from '~/Component/Separator';
 import Styled from 'styled-components/native';
+import IconButton from '~/Component/IconButton';
+import SearchTickerModal from '~/Component/SearchTickerModal';
 // import SearchTickerModal from '~/Component/SearchTickerModal';
 
 const Container = Styled.SafeAreaView`
   flex: 1;
-  background-color: ${props => props.theme.background};
+  background-color: ${(props) => props.theme.background};
 `;
 
 const EmptyContainer = Styled.SafeAreaView`
   flex: 1;
-  background-color: ${props => props.theme.background};
+  background-color: ${(props) => props.theme.background};
   justify-content: center;
   align-items: center;
 `;
@@ -23,22 +24,19 @@ const EmptyContainer = Styled.SafeAreaView`
 function StockList() {
   const navigation = useNavigation();
   const [stocks, setStocks] = useState([]);
-  // const modalizeRef = useRef(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const modalizeRef = useRef(null);
 
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => (
-  //       <TouchableOpacity onPress={onPressSearch}>
-  //         <Text style={styles.buttonText}>Search</Text>
-  //       </TouchableOpacity>
-  //     ),
-  //   });
-  // }, [navigation]);
-
-  // const onPressSearch = () => {
-  //   modalizeRef.current?.open();
-  //   // navigation.navigate('SearchTicker');
-  // };
+  useLayoutEffect(() => {
+    const onPressSearch = () => {
+      modalizeRef.current?.open();
+    };
+    navigation.setOptions({
+      headerRight: (props) => (
+        <IconButton iconName="search" onPress={onPressSearch} />
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
@@ -70,12 +68,35 @@ function StockList() {
   };
 
   const renderItem = ({item}) => {
-    return <StockItem item={item} />;
+    return <StockItem item={item} refreshing={isRefreshing} />;
   };
 
   const renderSeparator = () => {
     return <Separator />;
   };
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+  };
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      try {
+        const data = await AsyncStorage.getItem('symbols');
+        if (data !== null) {
+          console.log(JSON.parse(data));
+          setStocks(JSON.parse(data));
+          setIsRefreshing(false);
+        }
+      } catch (e) {
+        console.log(e);
+        setIsRefreshing(false);
+      }
+    };
+    if (isRefreshing) {
+      fetchStocks();
+    }
+  }, [isRefreshing]);
 
   return (
     <>
@@ -86,6 +107,8 @@ function StockList() {
             renderItem={renderItem}
             ItemSeparatorComponent={renderSeparator}
             keyExtractor={(item) => item.id.toString()}
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
           />
           <TouchableOpacity onPress={onPressClear}>
             <Text style={styles.buttonText}>Clear list</Text>
@@ -103,7 +126,7 @@ function StockList() {
           </Text>
         </EmptyContainer>
       )}
-      {/* <SearchTickerModal ref={modalizeRef} /> */}
+      <SearchTickerModal ref={modalizeRef} />
     </>
   );
 }

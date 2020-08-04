@@ -23,15 +23,16 @@ const LastUpdate = Styled.Text`
   font-size: 12px;
 `;
 
-export default () => {
+export default (props) => {
   const route = useRoute();
-  const {ticker} = route.params;
+  const {ticker} = route?.params || props;
   const [latestPrice, setLatestPrice] = useState({});
   const [previousClosePrice, setPreviousClosePrice] = useState({});
   const {t} = useLocale();
   let mounted = true;
 
   useEffect(() => {
+    setLatestPrice({});
     const getPreviousClosePrice = async () => {
       const res = await axios.get(QUOTE_API, {
         params: {
@@ -42,7 +43,7 @@ export default () => {
       setPreviousClosePrice(res.data?.pc);
     };
     getPreviousClosePrice();
-  }, []);
+  }, [ticker]);
 
   useEffect(() => {
     // console.log('ticker => ', ticker);
