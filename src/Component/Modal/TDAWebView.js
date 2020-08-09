@@ -1,4 +1,10 @@
-import React, {useRef, useState, forwardRef, useCallback, useContext} from 'react';
+import React, {
+  useRef,
+  useState,
+  forwardRef,
+  useCallback,
+  useContext,
+} from 'react';
 import {
   Image,
   TouchableOpacity,
@@ -16,6 +22,7 @@ import {Portal} from 'react-native-portalize';
 import {TDContext} from '~/Context/TDA';
 
 import {useCombinedRefs} from '~/Util/useCombinedRefs';
+import {useTheme} from '~/Theme';
 
 const {width, height: initialHeight} = Dimensions.get('window');
 const isAndroid = Platform.OS === 'android';
@@ -88,7 +95,7 @@ export const TDAWebView = forwardRef((_, ref) => {
   const [documentHeight, setDocumentHeight] = useState(initialHeight);
   const height = isAndroid ? documentHeight : layoutHeight;
   const {login} = useContext(TDContext);
-
+  const theme = useTheme();
 
   const handleClose = () => {
     if (modalizeRef.current) {
@@ -162,15 +169,17 @@ export const TDAWebView = forwardRef((_, ref) => {
     //   return;
     // }
 
-    // switch (data.event) {
-    //   case 'documentHeight': {
-    //     if (data.documentHeight !== 0) {
-    //       setDocumentHeight(data.documentHeight);
-    //     }
+    if (isAndroid) {
+      switch (data.event) {
+        case 'documentHeight': {
+          if (data.documentHeight !== 0) {
+            setDocumentHeight(data.documentHeight);
+          }
 
-    //     break;
-    //   }
-    // }
+          break;
+        }
+      }
+    }
     if (data && data.access_token) {
       login(data);
       handleClose();
@@ -200,19 +209,18 @@ export const TDAWebView = forwardRef((_, ref) => {
           style={s.header__close}
           onPress={handleClose}
           activeOpacity={0.75}>
-          <Text>Cross</Text>
+          <Image source={require('~/Asset/cross.png')} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={{opacity: back ? 1 : 0.2}}
-          onPress={handleBack}
-          disabled={!back}
-          activeOpacity={0.75}>
-          <Text>Arrow</Text>
-        </TouchableOpacity>
+        <View style={{flex: 1}} />
 
         <View style={s.header__center}>
-          {secured && <Text>Lock</Text>}
+          {secured && (
+            <Image
+              style={{tintColor: '#31a14c'}}
+              source={require('~/Asset/lock.png')}
+            />
+          )}
           <Text
             style={[s.header__url, {color: secured ? '#31a14c' : '#5a6266'}]}
             numberOfLines={1}>
@@ -220,17 +228,8 @@ export const TDAWebView = forwardRef((_, ref) => {
           </Text>
         </View>
 
-        <TouchableOpacity
-          style={[s.header__arrowRight, {opacity: forward ? 1 : 0.2}]}
-          onPress={handleForward}
-          disabled={!forward}
-          activeOpacity={0.75}>
-          <Text>Arrow</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity disabled>
-          <Text>Dots</Text>
-        </TouchableOpacity>
+        <View style={{flex: 1}} />
+        <View style={{flex: 1} }/>
       </View>
 
       <Animated.View
@@ -261,7 +260,11 @@ export const TDAWebView = forwardRef((_, ref) => {
         ref={combinedRef}
         HeaderComponent={renderHeader}
         scrollViewProps={{showsVerticalScrollIndicator: false}}
-        onLayout={handleLayout}>
+        // onLayout={handleLayout}
+        modalHeight={height - 105}
+        modalStyle={{
+          backgroundColor: theme.colors.background,
+        }}>
         <RNWebView
           ref={webViewRef}
           source={{
@@ -286,7 +289,7 @@ export const TDAWebView = forwardRef((_, ref) => {
 const s = StyleSheet.create({
   header: {
     height: 44,
-
+    backgroundColor: '#ffffff',
     borderBottomColor: '#c1c4c7',
     borderBottomWidth: 1,
     borderTopLeftRadius: 12,
