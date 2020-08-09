@@ -83,34 +83,34 @@ export default function Stock() {
     }
   };
 
-  // const onPressRemoveSymbol = async () => {
-  //   try {
-  //     const existing = await AsyncStorage.getItem('symbols');
+  const onPressRemoveSymbol = async () => {
+    try {
+      const existing = await AsyncStorage.getItem('symbols');
 
-  //     const existingJson = existing ? JSON.parse(existing) : [];
-  //     const newList = _.filter(
-  //       existingJson,
-  //       (stock) => stock.symbol !== ticker,
-  //     );
+      const existingJson = existing ? JSON.parse(existing) : [];
+      const newList = _.filter(
+        existingJson,
+        (stock) => stock.symbol !== ticker,
+      );
 
-  //     await AsyncStorage.setItem('symbols', JSON.stringify(newList));
-  //     setSaved(false);
-  //     showMessage({
-  //       message: 'Removed successfully!',
-  //       type: 'success',
-  //       icon: 'auto',
-  //       duration: 2000,
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //     showMessage({
-  //       message: 'Something went wrong!',
-  //       type: 'danger',
-  //       icon: 'auto',
-  //       duration: 2000,
-  //     });
-  //   }
-  // };
+      await AsyncStorage.setItem('symbols', JSON.stringify(newList));
+      setSaved(false);
+      showMessage({
+        message: 'Removed successfully!',
+        type: 'success',
+        icon: 'auto',
+        duration: 2000,
+      });
+    } catch (e) {
+      console.log(e);
+      showMessage({
+        message: 'Something went wrong!',
+        type: 'danger',
+        icon: 'auto',
+        duration: 2000,
+      });
+    }
+  };
 
   useEffect(() => {
     const getStatusFromStorage = async () => {
@@ -125,17 +125,16 @@ export default function Stock() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        // saved ? (
-        //   <TouchableOpacity onPress={loading ? () => {} : onPressRemoveSymbol}>
-        //     <Text style={styles.buttonText}>Remove</Text>
-        //   </TouchableOpacity>
-        // ) : (
-        <TouchableOpacity onPress={loading ? () => {} : onPressSaveSymbol}>
-          <Text style={styles.buttonText}>{t('Save')}</Text>
-        </TouchableOpacity>
-        // ),
-      ),
+      headerRight: () =>
+        saved ? (
+          <TouchableOpacity onPress={loading ? () => {} : onPressRemoveSymbol}>
+            <Text style={styles.buttonText}>Remove</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={loading ? () => {} : onPressSaveSymbol}>
+            <Text style={styles.buttonText}>{t('Save')}</Text>
+          </TouchableOpacity>
+        ),
     });
   }, [navigation, loading, saved, locale]);
 

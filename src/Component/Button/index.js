@@ -14,9 +14,9 @@ const Label = Styled.Text`
   font-size: 16px;
 `;
 
-const Button = ({label, onPress}) => {
+const Button = ({label, onPress, style}) => {
   return (
-    <Container onPress={onPress}>
+    <Container onPress={onPress} style={style}>
       <Label>{label}</Label>
     </Container>
   );

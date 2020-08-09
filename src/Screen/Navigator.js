@@ -29,6 +29,7 @@ import News from './News';
 import Setting from './Setting';
 import Modal from './Modal';
 import WebView from './WebView';
+import TDAWebView from './WebView/TDA';
 import SearchTicker from './SearchTicker';
 import Stock from './Stock';
 import Styled from 'styled-components/native';
@@ -371,6 +372,11 @@ const MainNavi = () => {
         name="WebView"
         component={WebView}
         options={{stackPresentation: 'modal'}}
+      />
+      <Stack.Screen
+        name="TDAWebView"
+        component={TDAWebView}
+        // options={{stackPresentation: 'modal'}}
       />
     </Stack.Navigator>
   );

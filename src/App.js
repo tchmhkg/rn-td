@@ -4,6 +4,7 @@ import {enableScreens} from 'react-native-screens';
 import FlashMessage from 'react-native-flash-message';
 
 import {UserContextProvider} from '~/Context/User';
+import {TDContextProvider} from '~/Context/TDA';
 
 import Navigator from '~/Screen/Navigator';
 import LocaleProvider from '~/I18n';
@@ -14,8 +15,10 @@ const App = () => {
   return (
     <LocaleProvider>
       <UserContextProvider>
-        <Navigator />
-        <FlashMessage ref={flashMessageRef} />
+        <TDContextProvider>
+          <Navigator />
+          <FlashMessage ref={flashMessageRef} />
+        </TDContextProvider>
       </UserContextProvider>
     </LocaleProvider>
   );
