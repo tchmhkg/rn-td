@@ -8,3 +8,4 @@ export const NEWS_API_KEY = 'cf74bbcf13fb4c998cc9c487c6acfc85';
 export const FINNHUB_API_KEY = 'bsdev0vrh5r8dht9873g';
 export const IEX_API_KEY = 'pk_9c3fe20063a14458a236fbba151b3523';
 export const IEX_SANDBOX_API_KEY = 'Tsk_9b260400520a4d23abfe1ef6cb0d3feb';
+export const TDA_CLIENT_ID = '1AQTLQTIRXA05MXOGHCE96NC5BFRTQFH';

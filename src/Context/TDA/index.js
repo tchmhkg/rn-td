@@ -2,52 +2,79 @@ import React, {createContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const defaultContext = {
+  tdToken: '',
+  authInfo: {},
   login: (authData) => {},
-  getTDToken: () => {},
+  getTDAuthInfo: () => {},
+  logout: () => {},
+  // refreshAccessToken: () => {},
 };
 
 const TDContext = createContext(defaultContext);
 
 const TDContextProvider = ({children}) => {
-  const [userInfo, setUserInfo] = useState(undefined);
+  const [authInfo, setAuthInfo] = useState(undefined);
 
   const login = (authData) => {
     // Use Eamil and Passowrd for login API
     // Get token and UserInfo via Login API
-    console.log('in TDContext login', authData);
-    AsyncStorage.setItem('access_token', authData.access_token).then(() => {
-      setUserInfo(authData.access_token);
+    // console.log('in TDContext login', authData);
+    AsyncStorage.setItem('tda_auth', JSON.stringify(authData)).then(() => {
+      setAuthInfo(authData);
     });
   };
 
-  const getTDToken = () => {
-    AsyncStorage.getItem('access_token')
+  const getTDAuthInfo = () => {
+    AsyncStorage.getItem('tda_auth')
       .then((value) => {
         if (value) {
-          console.log(value);
-          setUserInfo(value);
+          // console.log(value);
+          setAuthInfo(JSON.parse(value));
         }
       })
       .catch(() => {
-        setUserInfo(undefined);
+        setAuthInfo(undefined);
       });
   };
 
+  // const refreshAccessToken = (token) => {
+  //   AsyncStorage.getItem('tda_auth')
+  //     .then((value) => {
+  //       if (value) {
+  //         const jsonValue = JSON.parse(value);
+  //         const withNewAccessToken = {...jsonValue, access_token: token};
+  //         // console.log(withNewAccessToken);
+  //         AsyncStorage.setItem(
+  //           'tda_auth',
+  //           JSON.stringify(withNewAccessToken),
+  //         ).then(() => {
+  //           setAuthInfo(JSON.parse(withNewAccessToken));
+  //         });
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setAuthInfo(undefined);
+  //     });
+  // };
+
   const logout = () => {
-    AsyncStorage.removeItem('access_token');
-    setUserInfo(undefined);
+    AsyncStorage.removeItem('tda_auth');
+    setAuthInfo(undefined);
   };
 
   useEffect(() => {
-    getTDToken();
+    getTDAuthInfo();
   }, []);
 
   return (
     <TDContext.Provider
       value={{
-        tdToken: userInfo,
+        tdToken: authInfo,
+        authInfo,
         login,
-        getTDToken,
+        getTDAuthInfo,
+        logout,
+        // refreshAccessToken,
       }}>
       {children}
     </TDContext.Provider>

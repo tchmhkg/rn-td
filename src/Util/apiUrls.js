@@ -5,6 +5,8 @@ import {
   IEX_BASE_URL,
   IEX_API_KEY,
   IEX_SANDBOX_BASE_URL,
+  TDA_BASE_URL,
+  TDA_CLIENT_ID,
 } from './config';
 
 export const LOGIN_API = API_BASE_URL + '/login';
@@ -24,3 +26,14 @@ export const getYearPriceApi = (ticker) =>
   IEX_BASE_URL + `/stock/${ticker}/chart/1y`;
 export const getAdvancedStatsApi = (ticker) =>
   IEX_SANDBOX_BASE_URL + `/stock/${ticker}/advanced-stats`;
+
+export const getTDARefreshTokenUrl = (token) => {
+  return (
+    TDA_BASE_URL +
+    `/oauth2/token?grant_type=refresh_token&refresh_token=${encodeURIComponent(
+      token,
+    )}&access_type=&code&client_id=${encodeURIComponent(
+      TDA_CLIENT_ID,
+    )}&redirect_uri=`
+  );
+};

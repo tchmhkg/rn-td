@@ -17,6 +17,7 @@ import {Host} from 'react-native-portalize';
 import ThemeManager, {useTheme} from '~/Theme';
 
 import {UserContext} from '~/Context/User';
+import {TDContext} from '~/Context/TDA';
 
 import IconButton from '~/Component/IconButton';
 
@@ -32,6 +33,9 @@ import WebView from './WebView';
 import TDAWebView from './WebView/TDA';
 import SearchTicker from './SearchTicker';
 import Stock from './Stock';
+
+import Overview from './Portfolio/Overview';
+
 import Styled from 'styled-components/native';
 import {useLocale} from '~/I18n';
 
@@ -95,6 +99,45 @@ const TabFirstStackNavi = ({navigation}) => {
       <Stack.Screen
         name="TabFirst"
         component={TabFirst}
+        options={{
+          headerLeft: (props) => (
+            <IconButton
+              iconName="menu"
+              onPress={() => navigation.openDrawer()}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="Modal"
+        component={Modal}
+        options={{stackPresentation: 'modal'}}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const PortfolioStackNavi = ({navigation}) => {
+  const {logout} = useContext(TDContext);
+  const {colors} = useTheme();
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors?.primary,
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        headerRight: (props) => (
+          <IconButton iconName="power-settings-new" onPress={logout} />
+        ),
+      }}>
+      <Stack.Screen
+        name="Overview"
+        component={Overview}
         options={{
           headerLeft: (props) => (
             <IconButton
@@ -211,12 +254,12 @@ const TabNavi = () => {
           inactiveTintColor: colors.inactive,
         }}>
         <Tab.Screen
-          name="TabFirstStackNavi"
-          component={TabFirstStackNavi}
+          name="PortfolioStackNavi"
+          component={PortfolioStackNavi}
           options={{
-            tabBarLabel: 'First',
+            tabBarLabel: 'Portfolio',
             tabBarIcon: ({color}) => (
-              <Icon name="home" color={color} size={26} />
+              <Icon name="account-box" color={color} size={26} />
             ),
           }}
         />
@@ -260,11 +303,11 @@ const MaterialTabNavi = () => {
   return (
     <MaterialTab.Navigator>
       <MaterialTab.Screen
-        name="TabFirstStackNavi"
-        component={TabFirstStackNavi}
+        name="PortfolioStackNavi"
+        component={PortfolioStackNavi}
         options={{
           tabBarColor: '#336723',
-          tabBarLabel: 'First',
+          tabBarLabel: 'Portfolio',
           tabBarIcon: ({color}) => <Icon name="home" color={color} size={26} />,
         }}
       />

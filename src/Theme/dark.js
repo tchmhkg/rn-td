@@ -3,7 +3,7 @@ const dark = {
     background: '#2E3440',
     border: '#575c66',
     backgroundAlt: '#2a3030',
-    borderAlt: '#575c66',
+    borderAlt: '#8f8f8f',
     text: '#ECEFF4',
     buttonText: '#171717',
     primary: '#00b686',
