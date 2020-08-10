@@ -69,7 +69,7 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
                 onChangeText={setTicker}
                 autoCapitalize="characters"
                 autoCorrect={false}
-                value={ticker}
+                // value={ticker}
                 autoFocus
               />
             </View>

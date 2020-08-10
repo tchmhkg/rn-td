@@ -195,21 +195,21 @@ export const TDAWebView = forwardRef((_, ref) => {
     }
   }, []);
 
-  const handleBack = () => {
-    if (webViewRef.current) {
-      webViewRef.current.goBack();
-    }
-  };
+  // const handleBack = () => {
+  //   if (webViewRef.current) {
+  //     webViewRef.current.goBack();
+  //   }
+  // };
 
-  const handleForward = () => {
-    if (webViewRef.current) {
-      webViewRef.current.goForward();
-    }
-  };
+  // const handleForward = () => {
+  //   if (webViewRef.current) {
+  //     webViewRef.current.goForward();
+  //   }
+  // };
 
-  const handleLayout = ({layout}) => {
-    setLayoutHeight(layout.height);
-  };
+  // const handleLayout = ({layout}) => {
+  //   setLayoutHeight(layout.height);
+  // };
 
   const renderHeader = () => (
     <View style={s.header}>

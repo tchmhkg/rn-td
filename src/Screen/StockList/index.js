@@ -7,6 +7,7 @@ import Separator from '~/Component/Separator';
 import Styled from 'styled-components/native';
 import IconButton from '~/Component/IconButton';
 import SearchTickerModal from '~/Component/SearchTickerModal';
+import {useLocale} from '~/I18n';
 // import SearchTickerModal from '~/Component/SearchTickerModal';
 
 const Container = Styled.SafeAreaView`
@@ -23,7 +24,7 @@ const EmptyContainer = Styled.SafeAreaView`
 
 const EmptyDataText = Styled.Text`
   font-size: 24px;
-  color: ${props => props.theme.text};
+  color: ${(props) => props.theme.text};
 `;
 
 function StockList() {
@@ -33,6 +34,7 @@ function StockList() {
   const modalizeRef = useRef(null);
   const [screenIsFocused, setScreenIsFocused] = useState(false);
   const isFocused = useIsFocused();
+  const {t} = useLocale();
 
   useLayoutEffect(() => {
     const onPressSearch = () => {
@@ -124,18 +126,18 @@ function StockList() {
             onRefresh={handleRefresh}
           />
           <TouchableOpacity onPress={onPressClear}>
-            <Text style={styles.buttonText}>Clear list</Text>
+            <Text style={styles.buttonText}>{t('Clear list')}</Text>
           </TouchableOpacity>
         </Container>
       ) : (
         <EmptyContainer>
-          <EmptyDataText>No any symbol saved.</EmptyDataText>
+          <EmptyDataText>{t('No any symbol saved')}</EmptyDataText>
           <EmptyDataText>
-            Click{' '}
+            {t('Click ')}
             <Text style={styles.touchableText} onPress={onPressSearchStock}>
-              here
-            </Text>{' '}
-            to search stock
+              {t('here')}
+            </Text>
+            {t(' to search')}
           </EmptyDataText>
         </EmptyContainer>
       )}
