@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import {StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import StockItem from '~/Component/Stock/Item';
 import Separator from '~/Component/Separator';
@@ -21,14 +21,22 @@ const EmptyContainer = Styled.SafeAreaView`
   align-items: center;
 `;
 
+const EmptyDataText = Styled.Text`
+  font-size: 24px;
+  color: ${props => props.theme.text};
+`;
+
 function StockList() {
   const navigation = useNavigation();
   const [stocks, setStocks] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const modalizeRef = useRef(null);
+  const [screenIsFocused, setScreenIsFocused] = useState(false);
+  const isFocused = useIsFocused();
 
   useLayoutEffect(() => {
     const onPressSearch = () => {
+      console.log('onPressSearch');
       modalizeRef.current?.open();
     };
     navigation.setOptions({
@@ -36,7 +44,12 @@ function StockList() {
         <IconButton iconName="search" onPress={onPressSearch} />
       ),
     });
-  }, [navigation]);
+  }, [navigation, isFocused]);
+
+  useEffect(() => {
+    console.log('isFocused', isFocused);
+    setScreenIsFocused(isFocused);
+  }, [isFocused]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
@@ -116,14 +129,14 @@ function StockList() {
         </Container>
       ) : (
         <EmptyContainer>
-          <Text style={styles.noDataText}>No any symbol saved.</Text>
-          <Text style={styles.noDataText}>
+          <EmptyDataText>No any symbol saved.</EmptyDataText>
+          <EmptyDataText>
             Click{' '}
             <Text style={styles.touchableText} onPress={onPressSearchStock}>
               here
             </Text>{' '}
             to search stock
-          </Text>
+          </EmptyDataText>
         </EmptyContainer>
       )}
       <SearchTickerModal ref={modalizeRef} />

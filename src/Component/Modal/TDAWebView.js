@@ -23,6 +23,8 @@ import {TDContext} from '~/Context/TDA';
 
 import {useCombinedRefs} from '~/Util/useCombinedRefs';
 import {useTheme} from '~/Theme';
+import { showMessage } from 'react-native-flash-message';
+import { useLocale } from '~/I18n';
 
 const {width, height: initialHeight} = Dimensions.get('window');
 const isAndroid = Platform.OS === 'android';
@@ -96,10 +98,11 @@ export const TDAWebView = forwardRef((_, ref) => {
   const height = isAndroid ? documentHeight : layoutHeight;
   const {login} = useContext(TDContext);
   const theme = useTheme();
+  const {t} = useLocale();
 
   const handleClose = () => {
     if (modalizeRef.current) {
-      modalizeRef.current.close();
+      modalizeRef.current?.close();
     }
   };
 
@@ -183,6 +186,12 @@ export const TDAWebView = forwardRef((_, ref) => {
     if (data && data.access_token) {
       login(data);
       handleClose();
+      showMessage({
+        message: t('Login successful'),
+        type: 'success',
+        icon: 'auto',
+        duration: 2000,
+      });
     }
   }, []);
 
@@ -229,7 +238,7 @@ export const TDAWebView = forwardRef((_, ref) => {
         </View>
 
         <View style={{flex: 1}} />
-        <View style={{flex: 1} }/>
+        <View style={{flex: 1}} />
       </View>
 
       <Animated.View

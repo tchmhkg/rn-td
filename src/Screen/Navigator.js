@@ -34,7 +34,7 @@ import TDAWebView from './WebView/TDA';
 import SearchTicker from './SearchTicker';
 import Stock from './Stock';
 
-import Overview from './Portfolio/Overview';
+import Summary from './Portfolio/Summary';
 
 import Styled from 'styled-components/native';
 import {useLocale} from '~/I18n';
@@ -120,6 +120,7 @@ const TabFirstStackNavi = ({navigation}) => {
 const PortfolioStackNavi = ({navigation}) => {
   const {logout} = useContext(TDContext);
   const {colors} = useTheme();
+  const {t} = useLocale();
 
   return (
     <Stack.Navigator
@@ -136,9 +137,10 @@ const PortfolioStackNavi = ({navigation}) => {
         ),
       }}>
       <Stack.Screen
-        name="Overview"
-        component={Overview}
+        name="Summary"
+        component={Summary}
         options={{
+          headerTitle: t('Summary'),
           headerLeft: (props) => (
             <IconButton
               iconName="menu"
@@ -257,7 +259,7 @@ const TabNavi = () => {
           name="PortfolioStackNavi"
           component={PortfolioStackNavi}
           options={{
-            tabBarLabel: 'Portfolio',
+            tabBarLabel: t('Portfolio'),
             tabBarIcon: ({color}) => (
               <Icon name="account-box" color={color} size={26} />
             ),
@@ -267,7 +269,7 @@ const TabNavi = () => {
           name="Stocks"
           component={StockStackNavi}
           options={{
-            headerShown: true,
+            // headerShown: true,
             tabBarLabel: t('Stocks'),
             tabBarIcon: ({color}) => (
               <Icon name="trending-up" color={color} size={26} />
