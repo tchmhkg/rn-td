@@ -1,5 +1,11 @@
 import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
-import {StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import {useNavigation, useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import StockItem from '~/Component/Stock/Item';
@@ -8,6 +14,7 @@ import Styled from 'styled-components/native';
 import IconButton from '~/Component/IconButton';
 import SearchTickerModal from '~/Component/SearchTickerModal';
 import {useLocale} from '~/I18n';
+import {useTheme} from '~/Theme';
 // import SearchTickerModal from '~/Component/SearchTickerModal';
 
 const Container = Styled.SafeAreaView`
@@ -35,6 +42,7 @@ function StockList() {
   const [screenIsFocused, setScreenIsFocused] = useState(false);
   const isFocused = useIsFocused();
   const {t} = useLocale();
+  const theme = useTheme();
 
   useLayoutEffect(() => {
     const onPressSearch = () => {
@@ -122,8 +130,14 @@ function StockList() {
             renderItem={renderItem}
             ItemSeparatorComponent={renderSeparator}
             keyExtractor={(item) => item.id.toString()}
-            refreshing={isRefreshing}
-            onRefresh={handleRefresh}
+            refreshControl={
+              <RefreshControl
+                colors={[theme.colors.text]}
+                refreshing={isRefreshing}
+                onRefresh={handleRefresh}
+                tintColor={theme.colors.text}
+              />
+            }
           />
           <TouchableOpacity onPress={onPressClear}>
             <Text style={styles.buttonText}>{t('Clear list')}</Text>

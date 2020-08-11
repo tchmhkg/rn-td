@@ -82,6 +82,7 @@ const Setting = () => {
           <Switch
             value={theme.mode === 'dark'}
             onValueChange={(value) => theme.setMode(value ? 'dark' : 'light')}
+            trackColor={{true: theme.colors.primary}}
           />
         </Row>
         <Row>

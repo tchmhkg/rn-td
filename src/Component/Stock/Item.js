@@ -26,6 +26,7 @@ const Symbol = Styled.Text`
 const Price = Styled.Text`
   font-size: 24px;
   font-weight: bold;
+  color: ${(props) => props.theme.text};
 `;
 
 const Diff = Styled.Text`

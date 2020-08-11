@@ -20,6 +20,7 @@ import {useIsFocused} from '@react-navigation/native';
 import Separator from '~/Component/Separator';
 import {useLocale} from '~/I18n';
 import Spinner from '~/Component/Spinner';
+import { useTheme } from '~/Theme';
 
 const Container = Styled.View`
   flex: 1;
@@ -55,6 +56,7 @@ const Summary = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
   const {t} = useLocale();
+  const theme = useTheme();
 
   const openTDWeb = () => {
     modalizeRef.current?.open();
@@ -228,6 +230,8 @@ const Summary = ({navigation}) => {
             <RefreshControl
               refreshing={isRefreshing}
               onRefresh={handleRefresh}
+              tintColor={theme.colors.text}
+              colors={[theme.colors.text]}
             />
           }>
           <Accordion

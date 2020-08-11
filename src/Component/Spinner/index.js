@@ -1,6 +1,7 @@
 import React from 'react';
 import Styled from 'styled-components/native';
 import {ActivityIndicator} from 'react-native';
+import {useTheme} from '~/Theme';
 
 const Container = Styled.View`
   justify-content: center;
@@ -13,16 +14,20 @@ const FullscreenContainer = Styled.View`
   align-items: center;
 `;
 
-const Spinner = ({fullscreen = true, size = 'small', color = '#999999'}) => {
+const Spinner = ({fullscreen = true, size = 'small', color}) => {
+  const theme = useTheme();
+  color = color || theme.colors.text;
   if (fullscreen) {
-    <FullscreenContainer>
-      <ActivityIndicator size={size} color={color} />
-    </FullscreenContainer>;
+    return (
+      <FullscreenContainer>
+        <ActivityIndicator size={size} color={color} />
+      </FullscreenContainer>
+    );
   }
   return (
-    <Container>
+    <FullscreenContainer>
       <ActivityIndicator size={size} color={color} />
-    </Container>
+    </FullscreenContainer>
   );
 };
 
