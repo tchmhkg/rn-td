@@ -1,5 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, RefreshControl, StatusBar} from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {
+  FlatList,
+  RefreshControl,
+  StatusBar,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import axios from 'axios';
 import {showMessage} from 'react-native-flash-message';
 import Styled from 'styled-components/native';
@@ -8,15 +14,28 @@ import NewsRow from '~/Component/News/Row';
 import {HK_NEWS_API} from '~/Util/apiUrls';
 import Spinner from '~/Component/Spinner';
 import {useTheme} from '~/Theme';
+import CategoryPicker from '~/Component/News/CategoryPicker';
+import {useLocale} from '~/I18n';
 
-// const Label = Styled.Text`
-//   color: ${(props) => props.theme.text};
-// `;
+const Label = Styled.Text`
+  color: ${(props) => props.theme.text};
+`;
 
-// const LabelWrapper = Styled.View`
-//   flex-direction: row;
-//   justify-content: space-around;
-// `;
+const LabelWrapper = Styled.View`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+`;
+
+const SelectedCategory = Styled.TouchableOpacity`
+  flex: 1;
+  padding: 10px;
+  border-width: 1px;
+  border-color: ${(props) => props.theme.border};
+  justify-content: center;
+  align-items: center;
+`;
 
 const Container = Styled.SafeAreaView`
   flex: 1;
@@ -29,7 +48,10 @@ function News(props) {
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [category, setCategory] = useState('general');
+  const categoryPickerRef = useRef(null);
   const theme = useTheme();
+  const {t} = useLocale();
 
   const fetchNews = () => {
     setIsLoading(true);
@@ -40,7 +62,7 @@ function News(props) {
           params: {
             country: 'hk',
             page,
-            category: 'technology',
+            category,
           },
         })
         .then((res) => {
@@ -68,7 +90,7 @@ function News(props) {
     if (!isLoading) {
       fetchNews();
     }
-  }, [page]);
+  }, [page, category]);
 
   useEffect(() => {
     if (isRefreshing) {
@@ -99,16 +121,24 @@ function News(props) {
     return <Spinner />;
   };
 
+  const openCategoryPicker = () => {
+    categoryPickerRef.current?.open();
+  };
+
   return (
     <>
       <StatusBar
         barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
       />
       <Container>
-        {/* <LabelWrapper>
-          <Label>Fetched News: {news.length}</Label>
-          <Label>Total News: {totalCount}</Label>
-        </LabelWrapper> */}
+        <LabelWrapper>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <Label>Category: </Label>
+          </View>
+          <SelectedCategory onPress={openCategoryPicker}>
+            <Label>{t(category)}</Label>
+          </SelectedCategory>
+        </LabelWrapper>
         <FlatList
           data={news}
           renderItem={renderItem}
@@ -126,6 +156,11 @@ function News(props) {
           }
         />
       </Container>
+      <CategoryPicker
+        ref={categoryPickerRef}
+        category={category}
+        setCategory={setCategory}
+      />
     </>
   );
 }

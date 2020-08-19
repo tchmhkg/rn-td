@@ -47,7 +47,8 @@ const LocaleProvider = ({children}) => {
 
   const localizationContext = React.useMemo(
     () => ({
-      t: (scope, options) => i18n.t(scope, {locale, ...options}) || scope,
+      t: (scope, options) =>
+        i18n.t(scope, {locale, defaultValue: scope, ...options}),
       locale,
       setLocale: storeLocale,
     }),

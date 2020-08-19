@@ -7,16 +7,5 @@ target 'RNApp' do
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
 
-  target 'RNAppTests' do
-    inherit! :search_paths
-  end
-
   use_native_modules!
-end
-
-target 'RNApp-tvOS' do
-  target 'RNApp-tvOSTests' do
-    inherit! :search_paths
-  end
-
 end
