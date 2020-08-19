@@ -1,10 +1,11 @@
-import React, {useRef} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import Styled from 'styled-components/native';
 import {StyleSheet, ScrollView, Switch, Pressable} from 'react-native';
 import {useTheme} from '~/Theme';
 import {useLocale} from '~/I18n';
 import {Modalize} from 'react-native-modalize';
 import {Portal} from 'react-native-portalize';
+import {useIsFocused} from '@react-navigation/native';
 
 const languages = ['en', 'zh-hk'];
 
@@ -47,21 +48,27 @@ const LangButtonText = Styled.Text`
 
 const Setting = () => {
   const theme = useTheme();
+  const [screenIsFocused, setScreenIsFocused] = useState(false);
   const {setLocale, t, locale} = useLocale();
   const bottomSheetRef = useRef(null);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    setScreenIsFocused(isFocused);
+  }, [isFocused]);
 
   const onPressLanguage = (lang) => {
     if (!lang) {
       return;
     }
-    bottomSheetRef.current.close();
+    bottomSheetRef.current?.close();
     setTimeout(() => {
       setLocale(lang);
     }, 200);
   };
 
   const openBottomSheet = () => {
-    bottomSheetRef.current.open();
+    bottomSheetRef.current?.open();
   };
 
   const renderItem = ({item}) => {

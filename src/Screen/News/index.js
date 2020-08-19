@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, RefreshControl} from 'react-native';
+import {FlatList, RefreshControl, StatusBar} from 'react-native';
 import axios from 'axios';
 import {showMessage} from 'react-native-flash-message';
 import Styled from 'styled-components/native';
@@ -101,6 +101,9 @@ function News(props) {
 
   return (
     <>
+      <StatusBar
+        barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
+      />
       <Container>
         {/* <LabelWrapper>
           <Label>Fetched News: {news.length}</Label>

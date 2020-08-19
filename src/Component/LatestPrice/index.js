@@ -7,6 +7,7 @@ import axios from 'axios';
 import {QUOTE_API} from '~/Util/apiUrls';
 import Styled from 'styled-components/native';
 import {useLocale} from '~/I18n';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 const Container = Styled.View`
   margin: 5px 10px;
@@ -52,7 +53,7 @@ export default (props) => {
       // console.log('ticker not valid, quit');
       return;
     }
-    const ws = new WebSocket('wss://ws.finnhub.io?token=' + FINNHUB_API_KEY);
+    const ws = new ReconnectingWebSocket('wss://ws.finnhub.io?token=' + FINNHUB_API_KEY);
     // Connection opened -> Subscribe
     ws.onopen = (e) => {
       // console.log('subscribe', e);

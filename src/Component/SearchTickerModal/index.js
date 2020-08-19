@@ -75,7 +75,11 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
             </View>
             <Button label={t('Search')} onPress={onPressSubmit} />
             {submitted && submittedTicker ? (
-              <TickerPreview ticker={submittedTicker} closeModal={closeModal} />
+              <TickerPreview
+                ticker={submittedTicker}
+                closeModal={closeModal}
+                navigation={navigation}
+              />
             ) : null}
           </Container>
         </>

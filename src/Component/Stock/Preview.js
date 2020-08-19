@@ -2,12 +2,13 @@ import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, View, TouchableWithoutFeedback} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import axios from 'axios';
-import moment from 'moment';
-import _ from 'lodash';
+// import moment from 'moment';
+// import _ from 'lodash';
 import {getAdvancedStatsApi, CANDLES_API, QUOTE_API} from '~/Util/apiUrls';
 import {IEX_SANDBOX_API_KEY, FINNHUB_API_KEY} from '~/Util/config';
 import Styled from 'styled-components/native';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 const Container = Styled.View`
   flex: 1;
@@ -16,7 +17,6 @@ const Container = Styled.View`
   align-items: center;
   justify-content: space-between;
   background-color: ${(props) => props.theme.background};
-
 `;
 
 const Name = Styled.Text`
@@ -29,15 +29,17 @@ const Symbol = Styled.Text`
 `;
 
 const Price = Styled.Text`
+  color: ${(props) => props.theme.text}
   font-size: 24px;
   font-weight: bold;
 `;
 
 const Diff = Styled.Text`
+  color: ${(props) => props.theme.text}
   font-size: 14px;
 `;
-export default function TickerPreview({ticker, ...props}) {
-  const navigation = useNavigation();
+export default function TickerPreview({ticker, navigation, ...props}) {
+  // const navigation = useNavigation();
   const [selectedStock, setSelectedStock] = useState({info: {}});
   const [loading, setLoading] = useState(true);
   const [latestPrice, setLatestPrice] = useState({});
@@ -106,7 +108,9 @@ export default function TickerPreview({ticker, ...props}) {
     if (!ticker) {
       return;
     }
-    const ws = new WebSocket('wss://ws.finnhub.io?token=' + FINNHUB_API_KEY);
+    const ws = new ReconnectingWebSocket(
+      'wss://ws.finnhub.io?token=' + FINNHUB_API_KEY,
+    );
     // Connection opened -> Subscribe
     ws.onopen = (e) => {
       // console.log('subscribe', e);

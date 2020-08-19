@@ -46,7 +46,6 @@ function StockList() {
 
   useLayoutEffect(() => {
     const onPressSearch = () => {
-      console.log('onPressSearch');
       modalizeRef.current?.open();
     };
     navigation.setOptions({
