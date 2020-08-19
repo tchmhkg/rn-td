@@ -29,7 +29,6 @@ export default (props) => {
   const [latestPrice, setLatestPrice] = useState({});
   const [previousClosePrice, setPreviousClosePrice] = useState({});
   const {t} = useLocale();
-  let mounted = true;
 
   useEffect(() => {
     setLatestPrice({});
@@ -46,6 +45,8 @@ export default (props) => {
   }, [ticker]);
 
   useEffect(() => {
+    let mounted = true;
+
     // console.log('ticker => ', ticker);
     if (!ticker) {
       // console.log('ticker not valid, quit');

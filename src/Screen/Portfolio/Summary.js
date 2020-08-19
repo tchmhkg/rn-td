@@ -20,7 +20,7 @@ import {useIsFocused} from '@react-navigation/native';
 import Separator from '~/Component/Separator';
 import {useLocale} from '~/I18n';
 import Spinner from '~/Component/Spinner';
-import { useTheme } from '~/Theme';
+import {useTheme} from '~/Theme';
 
 const Container = Styled.View`
   flex: 1;
@@ -63,15 +63,11 @@ const Summary = ({navigation}) => {
   };
 
   useEffect(() => {
-    console.log('isFocused', isFocused);
     setScreenIsFocused(isFocused);
   }, [isFocused]);
 
   useEffect(() => {
-    // console.log('authInfo', authInfo);
-    if (authInfo?.access_token) {
-      getTDAccounts();
-    }
+    getTDAccounts();
   }, [authInfo?.access_token]);
 
   // const refreshToken = async (callback) => {
@@ -107,27 +103,23 @@ const Summary = ({navigation}) => {
 
   const getTDAccounts = async () => {
     try {
-      const res = await axios.get(TDA_BASE_URL + '/accounts', {
-        headers: {
-          Authorization: 'Bearer ' + authInfo.access_token,
-        },
-        params: {
-          fields: 'positions',
-        },
-      });
-      if (res.data && res.data.length) {
-        setAccounts(res.data);
-        if (!activeSections?.length) {
-          setActiveSections([0]);
+      if (authInfo?.access_token) {
+        const res = await axios.get(TDA_BASE_URL + '/accounts', {
+          headers: {
+            Authorization: 'Bearer ' + authInfo.access_token,
+          },
+          params: {
+            fields: 'positions',
+          },
+        });
+        if (res.data && res.data.length) {
+          setAccounts(res.data);
+          if (!activeSections?.length) {
+            setActiveSections([0]);
+          }
         }
-        if (isRefreshing) {
-          setIsRefreshing(false);
-        }
-        if (isLoading) {
-          setIsLoading(false);
-        }
+        console.log(res.data);
       }
-      console.log(res.data);
     } catch (error) {
       console.log(error.response);
 
@@ -144,13 +136,14 @@ const Summary = ({navigation}) => {
         });
         setAccounts([]);
         setActiveSections([]);
-        if (isRefreshing) {
-          setIsRefreshing(false);
-        }
-        if (isLoading) {
-          setIsLoading(false);
-        }
       }
+    }
+
+    if (isRefreshing) {
+      setIsRefreshing(false);
+    }
+    if (isLoading) {
+      setIsLoading(false);
     }
   };
 

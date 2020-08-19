@@ -43,7 +43,6 @@ export default function TickerPreview({ticker, ...props}) {
   const [latestPrice, setLatestPrice] = useState({});
   const [previousClosePrice, setPreviousClosePrice] = useState({});
   const {info} = selectedStock;
-  mounted = true;
 
   useEffect(() => {
     setLatestPrice({});
@@ -65,16 +64,20 @@ export default function TickerPreview({ticker, ...props}) {
   }, [ticker]);
 
   useEffect(() => {
+    let mounted = true;
     const interval = setInterval(() => {
       fetchStock();
     }, 60 * 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
   }, [ticker]);
 
   const fetchStock = async () => {
     try {
-      if (!ticker || !mounted) {
+      if (!ticker) {
         return;
       }
       const infoRes = await axios.get(getAdvancedStatsApi(ticker), {
@@ -99,6 +102,7 @@ export default function TickerPreview({ticker, ...props}) {
   };
 
   useEffect(() => {
+    let mounted = true;
     if (!ticker) {
       return;
     }

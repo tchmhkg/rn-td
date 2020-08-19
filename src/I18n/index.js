@@ -11,7 +11,8 @@ console.log('Locales => ', locales);
 
 const translations = {
   en,
-  'zh-hk': hk,
+  zh: hk,
+  yue: hk,
 };
 
 if (Array.isArray(locales)) {
