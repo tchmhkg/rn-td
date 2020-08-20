@@ -35,5 +35,19 @@
   "Click ": "Click ",
   "here": "here",
   " to search": " to search",
-  "Clear list": "Clear list"
+  "Clear list": "Clear list",
+  "Category": "Category",
+  "BUSINESS": "Business",
+  "ENTERTAINMENT": "Entertainment",
+  "GENERAL": "General",
+  "HEALTH": "Health",
+  "SCIENCE": "Science",
+  "SPORTS": "Sports",
+  "TECHNOLOGY": "Technology",
+  "HK": "Hong Kong",
+  "US": "USA",
+  "GB": "UK",
+  "Country": "Country",
+  "Done": "Done",
+  "Close": "Close"
 }

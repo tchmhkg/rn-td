@@ -1,11 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {
-  FlatList,
-  RefreshControl,
-  StatusBar,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, RefreshControl, StatusBar, StyleSheet} from 'react-native';
 import axios from 'axios';
 import {showMessage} from 'react-native-flash-message';
 import Styled from 'styled-components/native';
@@ -14,22 +8,31 @@ import NewsRow from '~/Component/News/Row';
 import {HK_NEWS_API} from '~/Util/apiUrls';
 import Spinner from '~/Component/Spinner';
 import {useTheme} from '~/Theme';
-import CategoryPicker from '~/Component/News/CategoryPicker';
+import PickerModal from '~/Component/News/PickerModal';
 import {useLocale} from '~/I18n';
+import {NEWS_CATEGORIES, NEWS_COUNTRIES} from '~/Helper/constraint';
 
 const Label = Styled.Text`
+  font-size: 18px;
   color: ${(props) => props.theme.text};
 `;
 
-const LabelWrapper = Styled.View`
+const FilterWrapper = Styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
   padding: 10px;
 `;
 
-const SelectedCategory = Styled.TouchableOpacity`
+const FilterItemWrapper = Styled.View`
   flex: 1;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const SelectedFilter = Styled.TouchableOpacity`
+  flex: 1;
+  margin-left: 10px;
   padding: 10px;
   border-width: 1px;
   border-color: ${(props) => props.theme.border};
@@ -49,7 +52,10 @@ function News(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [category, setCategory] = useState('general');
+  const [country, setCountry] = useState('hk');
   const categoryPickerRef = useRef(null);
+  const countryPickerRef = useRef(null);
+  const flatListRef = useRef(null);
   const theme = useTheme();
   const {t} = useLocale();
 
@@ -60,9 +66,10 @@ function News(props) {
       axios
         .get(HK_NEWS_API, {
           params: {
-            country: 'hk',
+            country,
             page,
             category,
+            pageSize: 15,
           },
         })
         .then((res) => {
@@ -90,7 +97,7 @@ function News(props) {
     if (!isLoading) {
       fetchNews();
     }
-  }, [page, category]);
+  }, [page, category, country]);
 
   useEffect(() => {
     if (isRefreshing) {
@@ -125,21 +132,46 @@ function News(props) {
     categoryPickerRef.current?.open();
   };
 
+  const openCountryPicker = () => {
+    countryPickerRef.current?.open();
+  };
+
+  const handleChangeCategory = (cate) => {
+    setCategory(cate);
+    handleRefresh();
+    flatListRef.current?.scrollToIndex({animated: true, index: 0});
+  };
+
+  const handleChangeCountry = (cty) => {
+    setCountry(cty);
+    handleRefresh();
+    flatListRef.current?.scrollToIndex({animated: true, index: 0});
+  };
+
   return (
     <>
       <StatusBar
         barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
       />
       <Container>
-        <LabelWrapper>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <Label>Category: </Label>
-          </View>
-          <SelectedCategory onPress={openCategoryPicker}>
-            <Label>{t(category)}</Label>
-          </SelectedCategory>
-        </LabelWrapper>
+        <FilterWrapper>
+          <FilterItemWrapper>
+            <Label>{t('Country')}:</Label>
+            <SelectedFilter
+              onPress={openCountryPicker}
+              style={styles.leftFilterButton}>
+              <Label>{t(country.toUpperCase())}</Label>
+            </SelectedFilter>
+          </FilterItemWrapper>
+          <FilterItemWrapper>
+            <Label>{t('Category')}:</Label>
+            <SelectedFilter onPress={openCategoryPicker}>
+              <Label>{t(category.toUpperCase())}</Label>
+            </SelectedFilter>
+          </FilterItemWrapper>
+        </FilterWrapper>
         <FlatList
+          ref={flatListRef}
           data={news}
           renderItem={renderItem}
           ListFooterComponent={renderFooter}
@@ -156,13 +188,26 @@ function News(props) {
           }
         />
       </Container>
-      <CategoryPicker
+      <PickerModal
         ref={categoryPickerRef}
-        category={category}
-        setCategory={setCategory}
+        data={NEWS_CATEGORIES}
+        selectedValue={category}
+        onValueChange={handleChangeCategory}
+      />
+      <PickerModal
+        ref={countryPickerRef}
+        data={NEWS_COUNTRIES}
+        selectedValue={country}
+        onValueChange={handleChangeCountry}
       />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  leftFilterButton: {
+    marginRight: 10,
+  },
+});
 
 export default News;

@@ -1,6 +1,5 @@
 import React, {useState, forwardRef} from 'react';
-import {StyleSheet, View, Text, Pressable} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {StyleSheet, Pressable, Dimensions} from 'react-native';
 import {Modalize} from 'react-native-modalize';
 import {Portal} from 'react-native-portalize';
 import Styled from 'styled-components/native';
@@ -8,6 +7,8 @@ import {Picker} from '@react-native-community/picker';
 
 import {useLocale} from '~/I18n';
 import {useTheme} from '~/Theme';
+
+const {width} = Dimensions.get('window');
 
 const Container = Styled.View`
   flex: 1;
@@ -25,34 +26,31 @@ const ActionsRow = Styled.View`
 `;
 
 const ActionLabel = Styled.Text`
-  font-size: 16px;
+  font-size: 18px;
   font-weight: ${(props) => (props.bold ? 'bold' : 'normal')};
   color: ${(props) => props.theme.primary};
   opacity: ${(props) => (props.pressed ? 0.2 : 1)}
 `;
 
-const CATEGORIES = [
-  'business',
-  'entertainment',
-  'general',
-  'health',
-  'science',
-  'sports',
-  'technology',
-];
-
-const CategoryPicker = forwardRef(({category, setCategory, ...props}, ref) => {
+const PickerModal = forwardRef(({selectedValue, onValueChange, data}, ref) => {
   const {t} = useLocale();
   const theme = useTheme();
-  const [currentCategory, setCurrentCategory] = useState(category);
+  const [currentValue, setCurrentValue] = useState(selectedValue);
 
   const closeModal = () => {
-    ref.current.close();
+    resetPicker();
+    ref.current?.close();
+  };
+
+  const resetPicker = () => {
+    setCurrentValue(selectedValue);
   };
 
   const onPressDone = () => {
-    setCategory(currentCategory);
-    ref.current.close();
+    if (currentValue !== selectedValue) {
+      onValueChange(currentValue);
+    }
+    ref.current?.close();
   };
 
   return (
@@ -64,38 +62,43 @@ const CategoryPicker = forwardRef(({category, setCategory, ...props}, ref) => {
         modalStyle={{
           backgroundColor: theme.colors.background,
         }}
-        handleStyle={{backgroundColor: theme.colors.text, opacity: 0.7}}>
+        handleStyle={{backgroundColor: theme.colors.text, opacity: 0.7}}
+        onOverlayPress={resetPicker}>
         <>
           <ActionsRow>
             <Pressable
               style={styles.pressable}
               onPress={closeModal}
-              hitSlop={10}>
+              hitSlop={1150}>
               {({pressed}) => (
-                <ActionLabel pressed={pressed}>Close</ActionLabel>
+                <ActionLabel pressed={pressed}>{t('Close')}</ActionLabel>
               )}
             </Pressable>
             <Pressable
               style={styles.pressable}
               onPress={onPressDone}
-              hitSlop={10}>
+              hitSlop={15}>
               {({pressed}) => (
                 <ActionLabel pressed={pressed} bold>
-                  Done
+                  {t('Done')}
                 </ActionLabel>
               )}
             </Pressable>
           </ActionsRow>
           <Container>
             <Picker
-              selectedValue={currentCategory}
-              style={{height: 150, width: 300}}
+              selectedValue={currentValue?.toLowerCase()}
+              style={{height: 150, width, marginBottom: 60}}
               itemStyle={{color: theme.colors.text}}
               onValueChange={(itemValue, itemIndex) =>
-                setCurrentCategory(itemValue)
+                setCurrentValue(itemValue)
               }>
-              {CATEGORIES.map((cate) => (
-                <Picker.Item key={cate} label={t(cate)} value={cate} />
+              {data.map((cate) => (
+                <Picker.Item
+                  key={cate}
+                  label={t(cate?.toUpperCase())}
+                  value={cate?.toLowerCase()}
+                />
               ))}
             </Picker>
           </Container>
@@ -112,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CategoryPicker;
+export default PickerModal;

@@ -35,5 +35,19 @@
   "Click ": "按",
   "here": "此",
   " to search": "搜尋",
-  "Clear list": "清除列表"
+  "Clear list": "清除列表",
+  "Category": "分類",
+  "BUSINESS": "商業",
+  "ENTERTAINMENT": "娛樂",
+  "GENERAL": "概括",
+  "HEALTH": "健康",
+  "SCIENCE": "科學",
+  "SPORTS": "體育",
+  "TECHNOLOGY": "科技",
+  "HK": "香港",
+  "US": "美國",
+  "GB": "英國",
+  "Country": "國家",
+  "Done": "完成",
+  "Close": "關閉"
 }

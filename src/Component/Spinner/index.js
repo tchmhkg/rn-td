@@ -6,6 +6,7 @@ import {useTheme} from '~/Theme';
 const Container = Styled.View`
   justify-content: center;
   align-items: center;
+  margin: 12px 0;
 `;
 
 const FullscreenContainer = Styled.View`
@@ -14,20 +15,26 @@ const FullscreenContainer = Styled.View`
   align-items: center;
 `;
 
-const Spinner = ({fullscreen = true, size = 'small', color}) => {
+const Spinner = ({
+  fullscreen = false,
+  size = 'small',
+  color,
+  containerStyle = {},
+  style = {},
+}) => {
   const theme = useTheme();
   color = color || theme.colors.text;
   if (fullscreen) {
     return (
-      <FullscreenContainer>
-        <ActivityIndicator size={size} color={color} />
+      <FullscreenContainer style={containerStyle}>
+        <ActivityIndicator size={size} color={color} style={style} />
       </FullscreenContainer>
     );
   }
   return (
-    <FullscreenContainer>
-      <ActivityIndicator size={size} color={color} />
-    </FullscreenContainer>
+    <Container style={containerStyle}>
+      <ActivityIndicator size={size} color={color} style={style} />
+    </Container>
   );
 };
 
