@@ -21,7 +21,7 @@ function calculateMA(dayCount, data) {
 export const timestampToDate = (timestamp, format = 'YYYY-MM-DD') =>
   moment.unix(timestamp).format(format);
 
-export const chartOptionFormatter = (data, mode = 'dark') => {
+export const candleChartOptionFormatter = (data, mode = 'dark') => {
   const theme = mode === 'dark' ? darkTheme.theme : lightTheme.theme;
   let values = [];
   let dates = [];
@@ -38,7 +38,7 @@ export const chartOptionFormatter = (data, mode = 'dark') => {
         type: 'cross',
         lineStyle: {
           color: theme?.chartLine,
-          width: 2,
+          width: 0.5,
         },
         label: {color: theme?.tooltipLabel},
       },
@@ -180,6 +180,114 @@ export const chartOptionFormatter = (data, mode = 'dark') => {
             width: 1,
           },
         },
+      },
+    ],
+  };
+  return {option, values, dates};
+};
+
+export const lineChartOptionFormatter = (data, mode = 'dark') => {
+  const theme = mode === 'dark' ? darkTheme.theme : lightTheme.theme;
+  let values = [];
+  let dates = [];
+  data?.t?.forEach((d, i) => {
+    dates.push(timestampToDate(d));
+    values.push(data?.c[i]);
+  });
+
+  const option = {
+    backgroundColor: theme?.background,
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      trigger: 'axis',
+      position: function (pt) {
+        return [pt[0], '10%'];
+      },
+      axisPointer: {
+        animation: false,
+        type: 'cross',
+        lineStyle: {
+          color: theme?.chartLine,
+          width: 0.5,
+        },
+        label: {color: theme?.tooltipLabel},
+      },
+      confine: true,
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: dates,
+      axisLine: {lineStyle: {color: theme?.chartLine}},
+    },
+    yAxis: {
+      scale: true,
+      axisLine: {
+        lineStyle: {color: theme?.chartLine},
+      },
+      splitLine: {show: false},
+      type: 'value',
+      boundaryGap: [0, '100%'],
+    },
+    dataZoom: [
+      {
+        textStyle: {
+          color: theme?.text,
+        },
+        handleIcon:
+          'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+        handleSize: '80%',
+        dataBackground: {
+          areaStyle: {
+            color: theme?.chartDataZoomBackground,
+          },
+          lineStyle: {
+            opacity: 0.8,
+            color: theme?.chartDataZoomBackground,
+          },
+        },
+        handleStyle: {
+          color: theme?.text,
+          shadowBlur: 3,
+          shadowColor: 'rgba(0, 0, 0, 0.6)',
+          shadowOffsetX: 2,
+          shadowOffsetY: 2,
+        },
+        start: 90,
+        end: 100,
+      },
+      {
+        type: 'inside',
+      },
+    ],
+    series: [
+      {
+        type: 'line',
+        smooth: true,
+        symbol: 'none',
+        sampling: 'average',
+        itemStyle: {
+          color: theme?.primary,
+        },
+        areaStyle: {
+          color: theme?.primary,
+        },
+        data: values,
+      },
+    ],
+    grid: [
+      {
+        top: 30,
+        left: '10%',
+        right: '8%',
+        height: '65%',
+      },
+      {
+        left: '10%',
+        right: '8%',
+        bottom: 20,
       },
     ],
   };

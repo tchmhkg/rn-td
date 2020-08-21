@@ -8,4 +8,4 @@ export const NEWS_CATEGORIES = [
   'TECHNOLOGY',
 ];
 
-export const NEWS_COUNTRIES = ['HK', 'US', 'GB'];
+export const NEWS_COUNTRIES = ['HK', 'GB', 'US'];

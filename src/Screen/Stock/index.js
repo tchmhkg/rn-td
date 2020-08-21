@@ -1,8 +1,13 @@
 import {ECharts} from 'react-native-echarts-wrapper';
 import React, {useEffect, useState, useRef, useLayoutEffect} from 'react';
-import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
@@ -11,10 +16,14 @@ import _ from 'lodash';
 import LatestPrice from '~/Component/LatestPrice';
 import {getAdvancedStatsApi, CANDLES_API} from '~/Util/apiUrls';
 import {IEX_SANDBOX_API_KEY, FINNHUB_API_KEY} from '~/Util/config';
-import {chartOptionFormatter} from '~/Helper';
+import {candleChartOptionFormatter, lineChartOptionFormatter} from '~/Helper';
 import {useTheme} from '~/Theme';
 import Styled from 'styled-components/native';
 import {useLocale} from '~/I18n';
+import Spinner from '~/Component/Spinner';
+
+const LineChart = ECharts;
+const CandleChart = ECharts;
 
 export default function Stock() {
   const route = useRoute();
@@ -23,10 +32,13 @@ export default function Stock() {
   const [selectedStock, setSelectedStock] = useState({data: [], info: null});
   const [loading, setLoading] = useState(true);
   const [chartOption, setChartOption] = useState({});
+  const [lineChartOption, setLineChartOption] = useState({});
   const {data, info} = selectedStock;
   const chartRef = useRef(null);
+  const lineChartRef = useRef(null);
   const {mode, colors} = useTheme();
   const [saved, setSaved] = useState(false);
+  const [chartType, setChartType] = useState('candleStick');
   const {t, locale} = useLocale();
 
   const Container = Styled.View`
@@ -42,6 +54,21 @@ export default function Stock() {
     color: ${(props) => props.theme.text};
     font-size: 22px;
     font-weight: bold;
+  `;
+
+  const ChartTypeButton = Styled.TouchableOpacity`
+    background-color: ${(props) =>
+      props.selected ? props.theme.primary : props.theme.background};
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 4px;
+  `;
+
+  const ChartTypeButtonText = Styled.Text`
+    color: ${(props) =>
+      props.selected ? props.theme.buttonText : props.theme.text};
+    font-size: 16px;
   `;
 
   const onPressSaveSymbol = async () => {
@@ -189,10 +216,21 @@ export default function Stock() {
   };
 
   useEffect(() => {
-    const {option} = chartOptionFormatter(data, mode);
-    setChartOption(option);
-    chartRef.current?.setOption(option);
-  }, [data, mode]);
+    if (chartType === 'candleStick') {
+      const {option} = candleChartOptionFormatter(data, mode);
+      setChartOption(option);
+      chartRef.current?.setOption(option);
+    } else {
+      const {option} = lineChartOptionFormatter(data, mode);
+      setChartOption(option);
+      chartRef.current?.setOption(option);
+    }
+  }, [data, mode, chartType]);
+
+  useEffect(() => {
+    chartRef.current?.setOption(chartOption);
+
+  }, [chartOption])
 
   return (
     <View style={[styles.container, {backgroundColor: colors?.background}]}>
@@ -204,14 +242,29 @@ export default function Stock() {
         )}
       </View>
       <LatestPrice />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <ChartTypeButton
+          selected={chartType === 'candleStick'}
+          onPress={() => setChartType('candleStick')}>
+          <ChartTypeButtonText>{t('CandleStick Chart')}</ChartTypeButtonText>
+        </ChartTypeButton>
+        <ChartTypeButton
+          selected={chartType === 'line'}
+          onPress={() => setChartType('line')}>
+          <ChartTypeButtonText>{t('Line Chart')}</ChartTypeButtonText>
+        </ChartTypeButton>
+      </View>
       {!loading && data ? (
-        <ECharts ref={chartRef} option={chartOption} />
+          <ECharts ref={chartRef} option={chartOption} />
       ) : (
-        <LoadingContainer>
-          <ActivityIndicator animating size="large" />
-        </LoadingContainer>
+        <Spinner fullscreen />
       )}
-      <Container />
+      {/* <Container /> */}
     </View>
   );
 }

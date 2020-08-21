@@ -160,13 +160,13 @@ function News(props) {
             <SelectedFilter
               onPress={openCountryPicker}
               style={styles.leftFilterButton}>
-              <Label>{t(country.toUpperCase())}</Label>
+              <Label numberOfLines={1}>{t(country.toUpperCase())}</Label>
             </SelectedFilter>
           </FilterItemWrapper>
           <FilterItemWrapper>
             <Label>{t('Category')}:</Label>
             <SelectedFilter onPress={openCategoryPicker}>
-              <Label>{t(category.toUpperCase())}</Label>
+              <Label numberOfLines={1}>{t(category.toUpperCase())}</Label>
             </SelectedFilter>
           </FilterItemWrapper>
         </FilterWrapper>

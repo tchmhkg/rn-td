@@ -55,6 +55,7 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
       <Modalize
         ref={ref}
         adjustToContentHeight
+        keyboardAvoidingOffset={30}
         handlePosition="inside"
         modalStyle={{
           paddingTop: 25,
@@ -69,6 +70,7 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
                 onChangeText={setTicker}
                 autoCapitalize="characters"
                 autoCorrect={false}
+                returnKeyType="done"
                 // value={ticker}
                 autoFocus
               />
@@ -91,6 +93,7 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
 const styles = StyleSheet.create({
   inputWrapper: {
     paddingVertical: 10,
+    marginBottom: 20,
   },
 });
 

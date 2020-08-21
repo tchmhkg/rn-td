@@ -387,7 +387,7 @@ const TabNavi = () => {
 const CustomDrawerContent = (props, logout) => {
   return (
     <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
+      {/* <DrawerItemList {...props} /> */}
       <DrawerItem label="Logout" onPress={() => logout()} />
     </DrawerContentScrollView>
   );
