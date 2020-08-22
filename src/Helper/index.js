@@ -229,7 +229,6 @@ export const lineChartOptionFormatter = (data, mode = 'dark') => {
       },
       splitLine: {show: false},
       type: 'value',
-      boundaryGap: [0, '100%'],
     },
     dataZoom: [
       {

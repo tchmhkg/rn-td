@@ -1,12 +1,5 @@
-import {ECharts} from 'react-native-echarts-wrapper';
 import React, {useEffect, useState, useRef, useLayoutEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useRoute, useNavigation} from '@react-navigation/native';
@@ -16,14 +9,12 @@ import _ from 'lodash';
 import LatestPrice from '~/Component/LatestPrice';
 import {getAdvancedStatsApi, CANDLES_API} from '~/Util/apiUrls';
 import {IEX_SANDBOX_API_KEY, FINNHUB_API_KEY} from '~/Util/config';
-import {candleChartOptionFormatter, lineChartOptionFormatter} from '~/Helper';
 import {useTheme} from '~/Theme';
 import Styled from 'styled-components/native';
 import {useLocale} from '~/I18n';
 import Spinner from '~/Component/Spinner';
-
-const LineChart = ECharts;
-const CandleChart = ECharts;
+import CandleChart from '~/Component/Chart/CandleChart';
+import LineChart from '~/Component/Chart/LineChart';
 
 export default function Stock() {
   const route = useRoute();
@@ -31,24 +22,13 @@ export default function Stock() {
   const {ticker} = route.params;
   const [selectedStock, setSelectedStock] = useState({data: [], info: null});
   const [loading, setLoading] = useState(true);
-  const [chartOption, setChartOption] = useState({});
-  const [lineChartOption, setLineChartOption] = useState({});
   const {data, info} = selectedStock;
   const chartRef = useRef(null);
   const lineChartRef = useRef(null);
-  const {mode, colors} = useTheme();
+  const {colors} = useTheme();
   const [saved, setSaved] = useState(false);
   const [chartType, setChartType] = useState('candleStick');
   const {t, locale} = useLocale();
-
-  const Container = Styled.View`
-    flex: 1;
-    background-color: ${(props) => props.theme.background};
-  `;
-  const LoadingContainer = Styled.View`
-    padding: 20px 0;
-    background-color: ${(props) => props.theme.background}
-  `;
 
   const CompanyName = Styled.Text`
     color: ${(props) => props.theme.text};
@@ -215,23 +195,6 @@ export default function Stock() {
     }
   };
 
-  useEffect(() => {
-    if (chartType === 'candleStick') {
-      const {option} = candleChartOptionFormatter(data, mode);
-      setChartOption(option);
-      chartRef.current?.setOption(option);
-    } else {
-      const {option} = lineChartOptionFormatter(data, mode);
-      setChartOption(option);
-      chartRef.current?.setOption(option);
-    }
-  }, [data, mode, chartType]);
-
-  useEffect(() => {
-    chartRef.current?.setOption(chartOption);
-
-  }, [chartOption])
-
   return (
     <View style={[styles.container, {backgroundColor: colors?.background}]}>
       <View style={styles.titleView}>
@@ -242,28 +205,33 @@ export default function Stock() {
         )}
       </View>
       <LatestPrice />
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
+      <View style={styles.chartTypeRow}>
         <ChartTypeButton
           selected={chartType === 'candleStick'}
           onPress={() => setChartType('candleStick')}>
-          <ChartTypeButtonText>{t('CandleStick Chart')}</ChartTypeButtonText>
+          <ChartTypeButtonText selected={chartType === 'candleStick'}>
+            {t('CandleStick Chart')}
+          </ChartTypeButtonText>
         </ChartTypeButton>
         <ChartTypeButton
           selected={chartType === 'line'}
           onPress={() => setChartType('line')}>
-          <ChartTypeButtonText>{t('Line Chart')}</ChartTypeButtonText>
+          <ChartTypeButtonText selected={chartType === 'line'}>
+            {t('Line Chart')}
+          </ChartTypeButtonText>
         </ChartTypeButton>
       </View>
-      {!loading && data ? (
-          <ECharts ref={chartRef} option={chartOption} />
-      ) : (
-        <Spinner fullscreen />
-      )}
+      <View style={{height: '55%'}}>
+        {!loading && data ? (
+          chartType === 'candleStick' ? (
+            <CandleChart ref={chartRef} data={data} chartType={chartType} />
+          ) : (
+            <LineChart ref={lineChartRef} data={data} chartType={chartType} />
+          )
+        ) : (
+          <Spinner fullscreen />
+        )}
+      </View>
       {/* <Container /> */}
     </View>
   );
@@ -313,8 +281,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  loadingWrapper: {
-    paddingVertical: 20,
-    backgroundColor: '#121212',
+  chartTypeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
