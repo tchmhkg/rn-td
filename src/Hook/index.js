@@ -1,0 +1,76 @@
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+import {HK_NEWS_API} from '~/Util/apiUrls';
+import {showMessage} from 'react-native-flash-message';
+
+export const useNewsApi = () => {
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [category, setCategory] = useState('general');
+  const [country, setCountry] = useState('hk');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading) {
+      fetchData();
+    }
+  }, [page, category, country]);
+
+  useEffect(() => {
+    if (isRefreshing) {
+      fetchData();
+    }
+  }, [isRefreshing]);
+
+  const fetchData = async () => {
+    setIsError(false);
+    setIsLoading(true);
+
+    try {
+      const res = await axios.get(HK_NEWS_API, {
+        params: {
+          country,
+          page,
+          category,
+          pageSize: 15,
+        },
+      });
+
+      const resData = res.data?.articles || [];
+      setData(page === 1 ? resData : [...data, ...resData]);
+      setTotalCount(res.data?.totalResults);
+      setIsRefreshing(false);
+      setIsLoading(false);
+    } catch (error) {
+      setIsRefreshing(false);
+      setIsError(true);
+      showMessage({
+        message: error.response?.data?.message,
+        type: 'danger',
+        icon: 'auto',
+        duration: 2000,
+      });
+    }
+    setIsLoading(false);
+  };
+
+  return [
+    {
+      data,
+      isLoading,
+      isError,
+      totalCount,
+      page,
+      country,
+      category,
+      isRefreshing,
+    },
+    setPage,
+    setCategory,
+    setCountry,
+    setIsRefreshing,
+  ];
+};

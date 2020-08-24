@@ -1,16 +1,14 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useRef} from 'react';
 import {FlatList, RefreshControl, StatusBar, StyleSheet} from 'react-native';
-import axios from 'axios';
-import {showMessage} from 'react-native-flash-message';
 import Styled from 'styled-components/native';
 
 import NewsRow from '~/Component/News/Row';
-import {HK_NEWS_API} from '~/Util/apiUrls';
 import Spinner from '~/Component/Spinner';
 import {useTheme} from '~/Theme';
 import PickerModal from '~/Component/News/PickerModal';
 import {useLocale} from '~/I18n';
 import {NEWS_CATEGORIES, NEWS_COUNTRIES} from '~/Helper/constraint';
+import {useNewsApi} from '~/Hook';
 
 const Label = Styled.Text`
   font-size: 18px;
@@ -46,64 +44,18 @@ const Container = Styled.SafeAreaView`
 `;
 
 function News(props) {
-  const [news, setNews] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [category, setCategory] = useState('general');
-  const [country, setCountry] = useState('hk');
   const categoryPickerRef = useRef(null);
   const countryPickerRef = useRef(null);
   const flatListRef = useRef(null);
   const theme = useTheme();
   const {t} = useLocale();
-
-  const fetchNews = () => {
-    setIsLoading(true);
-
-    setTimeout(() => {
-      axios
-        .get(HK_NEWS_API, {
-          params: {
-            country,
-            page,
-            category,
-            pageSize: 15,
-          },
-        })
-        .then((res) => {
-          const data = res.data?.articles || [];
-          setNews(page === 1 ? data : [...news, ...data]);
-          setTotalCount(res.data?.totalResults);
-          setIsRefreshing(false);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          setIsRefreshing(false);
-          setIsLoading(false);
-          showMessage({
-            message: err.response?.data?.message,
-            type: 'danger',
-            icon: 'auto',
-            duration: 2000,
-          });
-          console.log(err.response);
-        });
-    }, 100);
-  };
-
-  useEffect(() => {
-    if (!isLoading) {
-      fetchNews();
-    }
-  }, [page, category, country]);
-
-  useEffect(() => {
-    if (isRefreshing) {
-      fetchNews();
-    }
-  }, [isRefreshing]);
+  const [
+    {data, isLoading, totalCount, page, country, category, isRefreshing},
+    setPage,
+    setCategory,
+    setCountry,
+    setIsRefreshing,
+  ] = useNewsApi();
 
   const renderItem = ({item}) => {
     return <NewsRow item={item} />;
@@ -115,7 +67,7 @@ function News(props) {
   };
 
   const handleLoadMore = () => {
-    if (isLoading || news.length >= totalCount) {
+    if (isLoading || data.length >= totalCount) {
       return false;
     }
     setPage(page + 1);
@@ -172,7 +124,7 @@ function News(props) {
         </FilterWrapper>
         <FlatList
           ref={flatListRef}
-          data={news}
+          data={data}
           renderItem={renderItem}
           ListFooterComponent={renderFooter}
           keyExtractor={(item) => item.title}
