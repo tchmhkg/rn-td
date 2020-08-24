@@ -87,7 +87,7 @@ const PickerModal = forwardRef(({selectedValue, onValueChange, data}, ref) => {
           </ActionsRow>
           <Container>
             <Picker
-              selectedValue={currentValue?.toLowerCase()}
+              selectedValue={currentValue}
               style={{height: 150, width, marginBottom: 60}}
               itemStyle={{color: theme.colors.text}}
               onValueChange={(itemValue, itemIndex) =>

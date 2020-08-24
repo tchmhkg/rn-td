@@ -1,5 +1,11 @@
 import React, {useEffect, useState, useRef, useLayoutEffect} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useRoute, useNavigation} from '@react-navigation/native';
@@ -15,6 +21,28 @@ import {useLocale} from '~/I18n';
 import Spinner from '~/Component/Spinner';
 import CandleChart from '~/Component/Chart/CandleChart';
 import LineChart from '~/Component/Chart/LineChart';
+import {TabView, TabBar} from 'react-native-tab-view';
+
+const CompanyName = Styled.Text`
+  color: ${(props) => props.theme.text};
+  font-size: 22px;
+  font-weight: bold;
+`;
+
+const ChartTypeButton = Styled.TouchableOpacity`
+  background-color: ${(props) =>
+    props.selected ? props.theme.primary : props.theme.background};
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 4px;
+`;
+
+const ChartTypeButtonText = Styled.Text`
+  color: ${(props) =>
+    props.selected ? props.theme.buttonText : props.theme.text};
+  font-size: 16px;
+`;
 
 export default function Stock() {
   const route = useRoute();
@@ -27,29 +55,13 @@ export default function Stock() {
   const lineChartRef = useRef(null);
   const {colors} = useTheme();
   const [saved, setSaved] = useState(false);
-  const [chartType, setChartType] = useState('candleStick');
   const {t, locale} = useLocale();
+  const [tabIndex, setTabIndex] = useState(0);
 
-  const CompanyName = Styled.Text`
-    color: ${(props) => props.theme.text};
-    font-size: 22px;
-    font-weight: bold;
-  `;
-
-  const ChartTypeButton = Styled.TouchableOpacity`
-    background-color: ${(props) =>
-      props.selected ? props.theme.primary : props.theme.background};
-    justify-content: center;
-    align-items: center;
-    padding: 10px 20px;
-    border-radius: 4px;
-  `;
-
-  const ChartTypeButtonText = Styled.Text`
-    color: ${(props) =>
-      props.selected ? props.theme.buttonText : props.theme.text};
-    font-size: 16px;
-  `;
+  const routes = [
+    {key: 'candleStick', title: t('CandleStick Chart')},
+    {key: 'line', title: t('Line Chart')},
+  ];
 
   const onPressSaveSymbol = async () => {
     try {
@@ -135,7 +147,7 @@ export default function Stock() {
       headerRight: () =>
         saved ? (
           <TouchableOpacity onPress={loading ? () => {} : onPressRemoveSymbol}>
-            <Text style={styles.buttonText}>Remove</Text>
+            <Text style={styles.buttonText}>{t('Remove')}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={loading ? () => {} : onPressSaveSymbol}>
@@ -195,6 +207,28 @@ export default function Stock() {
     }
   };
 
+  const _handleIndexChange = (index) => setTabIndex(index);
+
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      case 'candleStick':
+        return <CandleChart ref={chartRef} data={data} />;
+      case 'line':
+        return <LineChart ref={lineChartRef} data={data} ticker={ticker} />;
+      default:
+        return null;
+    }
+  };
+
+  const renderTabBar = (props) => (
+    <TabBar
+      {...props}
+      indicatorStyle={{backgroundColor: colors.primary}}
+      labelStyle={{color: colors.text}}
+      style={{backgroundColor: colors.background}}
+    />
+  );
+
   return (
     <View style={[styles.container, {backgroundColor: colors?.background}]}>
       <View style={styles.titleView}>
@@ -205,7 +239,7 @@ export default function Stock() {
         )}
       </View>
       <LatestPrice />
-      <View style={styles.chartTypeRow}>
+      {/* <View style={styles.chartTypeRow}>
         <ChartTypeButton
           selected={chartType === 'candleStick'}
           onPress={() => setChartType('candleStick')}>
@@ -220,14 +254,18 @@ export default function Stock() {
             {t('Line Chart')}
           </ChartTypeButtonText>
         </ChartTypeButton>
-      </View>
+      </View> */}
       <View style={{height: '55%'}}>
         {!loading && data ? (
-          chartType === 'candleStick' ? (
-            <CandleChart ref={chartRef} data={data} chartType={chartType} />
-          ) : (
-            <LineChart ref={lineChartRef} data={data} chartType={chartType} />
-          )
+          <TabView
+            lazy
+            navigationState={{index: tabIndex, routes}}
+            renderScene={renderScene}
+            renderTabBar={renderTabBar}
+            onIndexChange={_handleIndexChange}
+            initialLayout={{width: Dimensions.get('window').width}}
+            style={styles.container}
+          />
         ) : (
           <Spinner fullscreen />
         )}

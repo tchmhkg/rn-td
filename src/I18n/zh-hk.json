@@ -49,5 +49,8 @@
   "GB": "英國",
   "Country": "國家",
   "Done": "完成",
-  "Close": "關閉"
+  "Close": "關閉",
+  "Remove":"移除",
+  "CandleStick Chart":"蠟燭圖",
+  "Line Chart":"線形圖"
 }

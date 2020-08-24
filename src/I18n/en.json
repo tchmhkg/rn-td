@@ -49,5 +49,8 @@
   "GB": "UK",
   "Country": "Country",
   "Done": "Done",
-  "Close": "Close"
+  "Close": "Close",
+  "Remove":"Remove",
+  "CandleStick Chart":"CandleStick Chart",
+  "Line Chart":"Line Chart"
 }

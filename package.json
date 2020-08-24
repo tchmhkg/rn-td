@@ -35,7 +35,7 @@
     "react-native-paper": "3.8.0",
     "react-native-portalize": "^1.0.4",
     "react-native-raw-bottom-sheet": "^2.2.0",
-    "react-native-reanimated": "^1.10.1",
+    "react-native-reanimated": "^1.13.0",
     "react-native-safe-area-context": "^3.1.1",
     "react-native-screens": "^2.9.0",
     "react-native-tab-view": "^2.15.0",

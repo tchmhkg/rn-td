@@ -3,7 +3,7 @@ import React, {useEffect, useState, forwardRef} from 'react';
 import {candleChartOptionFormatter, lineChartOptionFormatter} from '~/Helper';
 import {useTheme} from '~/Theme';
 
-export const CandleChart = forwardRef(({data, chartType}, ref) => {
+export const CandleChart = forwardRef(({data}, ref) => {
   const [chartOption, setChartOption] = useState({});
   const {mode} = useTheme();
 
