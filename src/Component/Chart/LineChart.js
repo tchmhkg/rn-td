@@ -35,6 +35,10 @@ export const LineChart = forwardRef(({ticker}, ref) => {
         return;
       }
       // setLoading(true);
+      const todayOpen = moment(
+        moment().format('YYYY-MM-DD') + 'T16:00:00+08:00',
+      ).valueOf();
+
       const res = await axios.get(
         `${TDA_BASE_URL}/marketdata/${ticker}/pricehistory`,
         {
@@ -42,12 +46,14 @@ export const LineChart = forwardRef(({ticker}, ref) => {
             Authorization: 'Bearer ' + authInfo?.access_token,
           },
           params: {
-            apikey: TDA_CLIENT_ID,
+            // apikey: TDA_CLIENT_ID,
             // periodType: 'day',
-            period: 5,
+            // period: 5,
             // frequencyType: 'minute',
             // frequency: 1,
             // needExtendedHoursData: false,
+            startDate: todayOpen,
+            endDate: moment().valueOf(),
           },
         },
       );

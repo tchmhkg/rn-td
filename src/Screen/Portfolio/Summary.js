@@ -112,6 +112,7 @@ const Summary = ({navigation}) => {
   const getTDAccounts = async () => {
     try {
       if (authInfo?.access_token) {
+        // console.log(authInfo);
         const res = await axios.get(TDA_BASE_URL + '/accounts', {
           headers: {
             Authorization: 'Bearer ' + authInfo.access_token,
