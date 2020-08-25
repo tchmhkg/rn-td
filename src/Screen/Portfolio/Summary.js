@@ -6,7 +6,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import Button from '~/Component/Button';
 import {TDAWebView} from '~/Component/Modal/TDAWebView';
 import {TDContext} from '~/Context/TDA';
-import {TDA_BASE_URL, TDA_LOGIN_URL} from '~/Util/config';
+import {TDA_BASE_URL, TDA_LOGIN_URL, TDA_CLIENT_ID} from '~/Util/config';
 import {
   View,
   FlatList,
@@ -15,7 +15,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {showMessage} from 'react-native-flash-message';
-// import { getTDARefreshTokenUrl } from '~/Util/apiUrls';
+import {getTDARefreshTokenUrl, TDA_REFRESH_TOKEN_API} from '~/Util/apiUrls';
 import {useIsFocused} from '@react-navigation/native';
 import Separator from '~/Component/Separator';
 import {useLocale} from '~/I18n';
@@ -47,7 +47,7 @@ const Content = Styled.View`
 `;
 
 const Summary = ({navigation}) => {
-  const {tdToken, authInfo, logout} = useContext(TDContext);
+  const {tdToken, authInfo, logout, refreshAccessToken} = useContext(TDContext);
   const modalizeRef = useRef(null);
   const [screenIsFocused, setScreenIsFocused] = useState(false);
   const [activeSections, setActiveSections] = useState([]);
@@ -70,36 +70,44 @@ const Summary = ({navigation}) => {
     getTDAccounts();
   }, [authInfo?.access_token]);
 
-  // const refreshToken = async (callback) => {
-  //   try {
-  //     console.log('refresh token');
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     getTDAccounts();
+  //   }, 5 * 1000);
 
-  //     const res = await axios.post(
-  //       getTDARefreshTokenUrl(authInfo.refresh_token),
-  //       {},
-  //       {
-  //         headers: {
-  //           'Content-Type': 'application/x-www-form-urlencoded',
-  //         },
-  //       },
-  //     );
-  //     if (res.data && res.data) {
-  //       refreshAccessToken(res.data.access_token);
-  //       if (callback) {
-  //         callback();
-  //       }
-  //     }
-  //     console.log(res.data);
-  //   } catch (error) {
-  //     console.log(error.response);
-  //     showMessage({
-  //       message: error.response?.data?.error,
-  //       type: 'danger',
-  //       icon: 'auto',
-  //       duration: 2000,
-  //     });
-  //   }
-  // };
+  //   return () => clearInterval(interval);
+  // }, [authInfo?.access_token]);
+
+  const refreshToken = async (callback) => {
+    try {
+      console.log('refreshToken');
+      let bodyData = new URLSearchParams();
+      bodyData.append('grant_type', 'refresh_token');
+      bodyData.append('refresh_token', authInfo?.refresh_token);
+      bodyData.append('client_id', TDA_CLIENT_ID);
+      const res = await axios.post(TDA_REFRESH_TOKEN_API, bodyData.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+      // console.log(res.data);
+      if (res.data && res.data) {
+        refreshAccessToken(res.data.access_token);
+        if (typeof callback === 'function') {
+          callback();
+        }
+      }
+    } catch (error) {
+      console.log(error.response);
+      showMessage({
+        message: error.response?.data?.error,
+        type: 'danger',
+        icon: 'auto',
+        duration: 2000,
+      });
+      logout();
+    }
+  };
 
   const getTDAccounts = async () => {
     try {
@@ -114,9 +122,9 @@ const Summary = ({navigation}) => {
         });
         if (res.data && res.data.length) {
           setAccounts(res.data);
-          if (!activeSections?.length) {
-            setActiveSections([0]);
-          }
+          // if (!activeSections?.length) {
+          //   setActiveSections([0]);
+          // }
         }
         console.log(res.data);
       }
@@ -124,8 +132,8 @@ const Summary = ({navigation}) => {
       console.log(error.response);
 
       if (error.response?.status === 401) {
-        logout();
-        // refreshToken();
+        // logout();
+        refreshToken();
         // } else {
         // setLoading(false);
         showMessage({
@@ -216,6 +224,11 @@ const Summary = ({navigation}) => {
           onPress={getTDAccounts}
         />
       ) : null} */}
+      <Button
+        style={{marginTop: 20, marginBottom: 20}}
+        label="Refresh token"
+        onPress={refreshToken}
+      />
 
       {authInfo?.access_token ? (
         <ScrollView
@@ -239,7 +252,7 @@ const Summary = ({navigation}) => {
         </ScrollView>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          {!tdToken && (
+          {!authInfo?.access_token && (
             <Button
               style={{marginBottom: 20}}
               label="Login TD Ameritrade"

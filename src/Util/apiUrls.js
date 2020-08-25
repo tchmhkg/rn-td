@@ -27,13 +27,22 @@ export const getYearPriceApi = (ticker) =>
 export const getAdvancedStatsApi = (ticker) =>
   IEX_SANDBOX_BASE_URL + `/stock/${ticker}/advanced-stats`;
 
-export const getTDARefreshTokenUrl = (token) => {
-  return (
-    TDA_BASE_URL +
-    `/oauth2/token?grant_type=refresh_token&refresh_token=${encodeURIComponent(
-      token,
-    )}&access_type=&code&client_id=${encodeURIComponent(
-      TDA_CLIENT_ID,
-    )}&redirect_uri=`
-  );
-};
+export const TDA_REFRESH_TOKEN_API = TDA_BASE_URL + '/oauth2/token';
+
+// export const getTDARefreshTokenUrl = (token) => {
+//   return (
+//     TDA_BASE_URL +
+//     `/oauth2/token?grant_type=refresh_token&refresh_token=${encodeURIComponent(
+//       token,
+//     )}&access_type=&code=&client_id=${encodeURIComponent(TDA_CLIENT_ID)}&redirect_uri=`
+//   );
+// };
+
+// export const getTDARefreshTokenUrl = (token) => {
+//   return (
+//     TDA_BASE_URL +
+//     `/oauth2/token?grant_type=refresh_token&refresh_token=${encodeURIComponent(
+//       token,
+//     )}&client_id=${encodeURIComponent(TDA_CLIENT_ID)}`
+//   );
+// };

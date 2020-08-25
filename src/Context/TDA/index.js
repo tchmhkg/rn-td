@@ -7,7 +7,7 @@ const defaultContext = {
   login: (authData) => {},
   getTDAuthInfo: () => {},
   logout: () => {},
-  // refreshAccessToken: () => {},
+  refreshAccessToken: () => {},
 };
 
 const TDContext = createContext(defaultContext);
@@ -37,25 +37,24 @@ const TDContextProvider = ({children}) => {
       });
   };
 
-  // const refreshAccessToken = (token) => {
-  //   AsyncStorage.getItem('tda_auth')
-  //     .then((value) => {
-  //       if (value) {
-  //         const jsonValue = JSON.parse(value);
-  //         const withNewAccessToken = {...jsonValue, access_token: token};
-  //         // console.log(withNewAccessToken);
-  //         AsyncStorage.setItem(
-  //           'tda_auth',
-  //           JSON.stringify(withNewAccessToken),
-  //         ).then(() => {
-  //           setAuthInfo(JSON.parse(withNewAccessToken));
-  //         });
-  //       }
-  //     })
-  //     .catch(() => {
-  //       setAuthInfo(undefined);
-  //     });
-  // };
+  const refreshAccessToken = (token) => {
+    AsyncStorage.getItem('tda_auth')
+      .then((value) => {
+        if (value) {
+          const jsonValue = JSON.parse(value);
+          const withNewAccessToken = {...jsonValue, access_token: token};
+          AsyncStorage.setItem(
+            'tda_auth',
+            JSON.stringify(withNewAccessToken),
+          ).then(() => {
+            setAuthInfo(withNewAccessToken);
+          });
+        }
+      })
+      .catch(() => {
+        setAuthInfo(undefined);
+      });
+  };
 
   const logout = () => {
     AsyncStorage.removeItem('tda_auth');
@@ -74,7 +73,7 @@ const TDContextProvider = ({children}) => {
         login,
         getTDAuthInfo,
         logout,
-        // refreshAccessToken,
+        refreshAccessToken,
       }}>
       {children}
     </TDContext.Provider>

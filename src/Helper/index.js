@@ -191,9 +191,10 @@ export const lineChartOptionFormatter = (data, mode = 'dark') => {
   const theme = mode === 'dark' ? darkTheme.theme : lightTheme.theme;
   let values = [];
   let dates = [];
-  data?.t?.forEach((d, i) => {
-    dates.push(timestampToDate(d, 'YYYY-MM-DD HH:mm'));
-    values.push(data?.c[i]);
+  data?.forEach((d, i) => {
+    const timestamp = moment(d.datetime).format('YYYY-MM-DD HH:mm');
+    dates.push(timestamp);
+    values.push(d?.close);
   });
 
   const option = {
