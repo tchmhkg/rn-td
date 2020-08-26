@@ -22,6 +22,7 @@ import Spinner from '~/Component/Spinner';
 import CandleChart from '~/Component/Chart/CandleChart';
 import LineChart from '~/Component/Chart/LineChart';
 import {TabView, TabBar} from 'react-native-tab-view';
+import RNShineButton from 'react-native-shine-button'
 
 const CompanyName = Styled.Text`
   color: ${(props) => props.theme.text};
@@ -85,12 +86,12 @@ export default function Stock() {
 
       await AsyncStorage.setItem('symbols', JSON.stringify(newList));
       setSaved(true);
-      showMessage({
-        message: t('Saved successfully!'),
-        type: 'success',
-        icon: 'auto',
-        duration: 2000,
-      });
+      // showMessage({
+      //   message: t('Saved successfully!'),
+      //   type: 'success',
+      //   icon: 'auto',
+      //   duration: 2000,
+      // });
     } catch (e) {
       console.log(e);
       showMessage({
@@ -114,12 +115,12 @@ export default function Stock() {
 
       await AsyncStorage.setItem('symbols', JSON.stringify(newList));
       setSaved(false);
-      showMessage({
-        message: 'Removed successfully!',
-        type: 'success',
-        icon: 'auto',
-        duration: 2000,
-      });
+      // showMessage({
+      //   message: 'Removed successfully!',
+      //   type: 'success',
+      //   icon: 'auto',
+      //   duration: 2000,
+      // });
     } catch (e) {
       console.log(e);
       showMessage({
@@ -146,13 +147,23 @@ export default function Stock() {
     navigation.setOptions({
       headerRight: () =>
         saved ? (
-          <TouchableOpacity onPress={loading ? () => {} : onPressRemoveSymbol}>
-            <Text style={styles.buttonText}>{t('Remove')}</Text>
-          </TouchableOpacity>
+          <RNShineButton
+            shape={'heart'}
+            color={colors.inactiveLegend}
+            fillColor={'#ff0000'}
+            size={25}
+            value={true}
+            onChange={loading ? () => {} : onPressRemoveSymbol}
+          />
         ) : (
-          <TouchableOpacity onPress={loading ? () => {} : onPressSaveSymbol}>
-            <Text style={styles.buttonText}>{t('Save')}</Text>
-          </TouchableOpacity>
+          <RNShineButton
+            shape={'heart'}
+            color={colors.inactiveLegend}
+            fillColor={'#ff0000'}
+            size={25}
+            value={false}
+            onChange={loading ? () => {} : onPressSaveSymbol}
+          />
         ),
     });
   }, [navigation, loading, saved, locale]);
