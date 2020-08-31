@@ -215,6 +215,9 @@ export default function Stock() {
         icon: 'auto',
         duration: 2000,
       });
+      if(error?.response?.status === 404) {
+        navigation.pop();
+      }
     }
   };
 

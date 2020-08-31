@@ -9,8 +9,7 @@ import TickerPreview from '~/Component/Stock/Preview';
 import {useLocale} from '~/I18n';
 import {useTheme} from '~/Theme';
 import finance from '~/Util/finance';
-import Separator from '~/Component/Separator';
-import SuggestionItem from './SuggestionItem';
+import Suggestion from './Suggestion';
 
 const Container = Styled.SafeAreaView`
   flex: 1;
@@ -54,20 +53,6 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
     setSubmittedTicker('');
   };
 
-  const renderItem = ({item}) => {
-    return (
-      <SuggestionItem
-        item={item}
-        navigation={navigation}
-        closeModal={closeModal}
-      />
-    );
-  };
-
-  const renderSeparator = () => {
-    return <Separator />;
-  };
-
   const getSuggestion = (symbol) => {
     setTicker(symbol);
     finance
@@ -82,7 +67,12 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
         return JSON.parse(result);
       })
       .then((json) => {
-        setSuggestion(json.ResultSet.Result);
+        setSuggestion(
+          json?.ResultSet?.Result?.filter(
+            (result) =>
+              result.typeDisp === 'Equity' || result.typeDisp === 'ETF',
+          ),
+        );
       })
       .catch((error) => {
         console.log('Request failed', error);
@@ -114,21 +104,19 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
                 autoFocus
               />
             </View>
-            <FlatList
+            <Suggestion
               data={suggestion}
-              extraData={ticker}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.symbol}
-              ItemSeparatorComponent={renderSeparator}
+              closeModal={closeModal}
+              navigation={navigation}
             />
-            <Button label={t('Search')} onPress={onPressSubmit} />
-            {submitted && submittedTicker ? (
+            {/* <Button label={t('Search')} onPress={onPressSubmit} /> */}
+            {/* {submitted && submittedTicker ? (
               <TickerPreview
                 ticker={submittedTicker}
                 closeModal={closeModal}
                 navigation={navigation}
               />
-            ) : null}
+            ) : null} */}
           </Container>
         </>
       </Modalize>
