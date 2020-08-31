@@ -1,9 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, View, Text, TouchableWithoutFeedback} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import {FINNHUB_API_KEY} from '~/Util/config';
-import {QUOTE_API} from '~/Util/apiUrls';
 import Styled from 'styled-components/native';
 
 const Container = Styled.View`
@@ -31,52 +29,22 @@ const Price = Styled.Text`
 
 const Diff = Styled.Text`
   font-size: 14px;
+  color: ${(props) => props.theme.text};
 `;
 
 const StockItem = ({item, refreshing}) => {
   const navigation = useNavigation();
-  const [price, setPrice] = useState('-');
-  const [previousClosePrice, setPreviousClosePrice] = useState(null);
-
-  useEffect(() => {
-    const getPrice = async () => {
-      const res = await axios.get(QUOTE_API, {
-        params: {
-          symbol: item.symbol.toUpperCase(),
-          token: FINNHUB_API_KEY,
-        },
-      });
-      setPrice(res.data?.c);
-      setPreviousClosePrice(res.data?.pc);
-    };
-    getPrice();
-  }, []);
-
-  useEffect(() => {
-    const getPrice = async () => {
-      console.log('get price');
-      const res = await axios.get(QUOTE_API, {
-        params: {
-          symbol: item.symbol.toUpperCase(),
-          token: FINNHUB_API_KEY,
-        },
-      });
-      setPrice(res.data?.c);
-      setPreviousClosePrice(res.data?.pc);
-    };
-    if (refreshing) {
-      getPrice();
-    }
-  }, [refreshing]);
+  const {lastPrice, closePrice} = item;
+  
 
   const onPressStock = (symbol) => {
     navigation.navigate('Stock', {ticker: symbol});
   };
 
   const getPriceColor = () => {
-    if (price > previousClosePrice) {
+    if (lastPrice > closePrice) {
       return styles.positive;
-    } else if (price < previousClosePrice) {
+    } else if (lastPrice < closePrice) {
       return styles.negative;
     } else {
       return {};
@@ -84,8 +52,8 @@ const StockItem = ({item, refreshing}) => {
   };
 
   const getPriceDiff = () => {
-    const diff = price - previousClosePrice;
-    const diffPercent = (diff / previousClosePrice) * 100;
+    const diff = lastPrice - closePrice;
+    const diffPercent = (diff / closePrice) * 100;
     if (diff > 0) {
       return `+${diff.toFixed(3)}(+${diffPercent.toFixed(2)}%)`;
     } else if (diff < 0) {
@@ -101,11 +69,11 @@ const StockItem = ({item, refreshing}) => {
     <TouchableWithoutFeedback onPress={() => onPressStock(item.symbol)}>
       <Container>
         <View style={styles.stockInfo}>
-          <Name numberOfLines={1}>{item.name}</Name>
+          <Name numberOfLines={1}>{item.description || item.name}</Name>
           <Symbol>{item.symbol}</Symbol>
         </View>
         <View style={styles.stockPrice}>
-          <Price style={getPriceColor()}>{price}</Price>
+          <Price style={getPriceColor()}>{lastPrice}</Price>
           <Diff style={getPriceColor()}>{getPriceDiff()}</Diff>
         </View>
       </Container>

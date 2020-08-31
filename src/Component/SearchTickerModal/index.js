@@ -85,8 +85,8 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
     <Portal>
       <SlidingUpPanel
         ref={ref}
-        draggableRange={{top: 500, bottom: 0}}
-        snappingPoints={[0, 250, 500]}
+        draggableRange={{top: 800, bottom: 0}}
+        snappingPoints={[0, 500, 800]}
         minimumVelocityThreshold={0.9}>
         <Container>
           <View style={styles.inputWrapper}>

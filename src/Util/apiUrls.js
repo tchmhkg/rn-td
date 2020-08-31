@@ -29,6 +29,8 @@ export const getAdvancedStatsApi = (ticker) =>
 
 export const TDA_REFRESH_TOKEN_API = TDA_BASE_URL + '/oauth2/token';
 
+export const TDA_QUOTES_API = TDA_BASE_URL + '/marketdata/quotes';
+
 // export const getTDARefreshTokenUrl = (token) => {
 //   return (
 //     TDA_BASE_URL +

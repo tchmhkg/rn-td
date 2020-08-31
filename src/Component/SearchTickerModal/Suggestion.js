@@ -29,7 +29,7 @@ const Suggestion = ({data, closeModal, navigation}) => {
       data={data}
       renderItem={renderItem}
       keyExtractor={renderKeyExtractor}
-      // ItemSeparatorComponent={renderSeparator}
+      ItemSeparatorComponent={renderSeparator}
     />
   );
 };

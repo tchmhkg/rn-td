@@ -1,4 +1,10 @@
-import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useContext,
+} from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,10 +19,16 @@ import Separator from '~/Component/Separator';
 import Styled from 'styled-components/native';
 import IconButton from '~/Component/IconButton';
 import SearchTickerModal from '~/Component/SearchTickerModal';
+import axios from 'axios';
 import {useLocale} from '~/I18n';
 import {useTheme} from '~/Theme';
 import moment from 'moment';
+import {TDA_QUOTES_API} from '~/Util/apiUrls';
+import {TDContext} from '~/Context/TDA';
 // import SearchTickerModal from '~/Component/SearchTickerModal';
+
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
 
 const Container = Styled.SafeAreaView`
   flex: 1;
@@ -37,6 +49,7 @@ const EmptyDataText = Styled.Text`
 
 function StockList() {
   const navigation = useNavigation();
+  const {authInfo} = useContext(TDContext);
   const [stocks, setStocks] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const modalRef = useRef(null);
@@ -44,6 +57,7 @@ function StockList() {
   const isFocused = useIsFocused();
   const {t} = useLocale();
   const theme = useTheme();
+  let isCancelled = useRef(false);
 
   useLayoutEffect(() => {
     const onPressSearch = () => {
@@ -67,7 +81,12 @@ function StockList() {
         const data = await AsyncStorage.getItem('symbols');
         if (data !== null) {
           console.log(JSON.parse(data));
-          setStocks(JSON.parse(data));
+          const jsonData = JSON.parse(data);
+          if (jsonData?.length) {
+            setStocks(jsonData);
+            const symbolsString = jsonData.map(({symbol}) => symbol).join(',');
+            getQuotes(symbolsString);
+          }
         }
       } catch (e) {
         console.log(e);
@@ -76,6 +95,35 @@ function StockList() {
 
     return unsubscribe;
   }, [navigation]);
+
+  const getQuotes = (symbols) => {
+    axios
+      .get(TDA_QUOTES_API, {
+        cancelToken: source.token,
+        headers: {
+          Authorization: 'Bearer ' + authInfo?.access_token,
+        },
+        params: {
+          symbol: symbols,
+        },
+      })
+      .then((res) => {
+        console.log('isCancelled.current', isCancelled.current);
+        if (res?.data && !isCancelled.current) {
+          setStocks(Object.values(res?.data));
+          console.log(Object.values(res?.data));
+        }
+        setIsRefreshing(false);
+      })
+      .catch(function (thrown) {
+        if (axios.isCancel(thrown)) {
+          console.log('Request canceled', thrown.message);
+        } else {
+          console.log(thrown);
+        }
+        setIsRefreshing(false);
+      });
+  };
 
   const onPressSearchStock = () => {
     navigation.navigate('SearchTicker');
@@ -108,8 +156,14 @@ function StockList() {
         const data = await AsyncStorage.getItem('symbols');
         if (data !== null) {
           console.log(JSON.parse(data));
-          setStocks(JSON.parse(data));
-          setIsRefreshing(false);
+          const jsonData = JSON.parse(data);
+          if (jsonData?.length) {
+            const symbolsString = jsonData.map(({symbol}) => symbol).join(',');
+            getQuotes(symbolsString);
+          } else {
+            setIsRefreshing(false);
+          }
+          // setStocks(JSON.parse(data));
         }
       } catch (e) {
         console.log(e);
@@ -119,7 +173,12 @@ function StockList() {
     if (isRefreshing) {
       fetchStocks();
     }
-  }, [isRefreshing]);
+  }, [isRefreshing, authInfo?.access_token]);
+
+  const renderKeyExtractor = React.useCallback(
+    (item) => item.cusip || item.symbol,
+    [],
+  );
 
   return (
     <>
@@ -129,7 +188,7 @@ function StockList() {
             data={stocks}
             renderItem={renderItem}
             ItemSeparatorComponent={renderSeparator}
-            keyExtractor={(item) => `${item.id.toString()}-${moment().valueOf()}`}
+            keyExtractor={renderKeyExtractor}
             refreshControl={
               <RefreshControl
                 colors={[theme.colors.text]}
