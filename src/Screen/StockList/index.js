@@ -15,6 +15,7 @@ import IconButton from '~/Component/IconButton';
 import SearchTickerModal from '~/Component/SearchTickerModal';
 import {useLocale} from '~/I18n';
 import {useTheme} from '~/Theme';
+import moment from 'moment';
 // import SearchTickerModal from '~/Component/SearchTickerModal';
 
 const Container = Styled.SafeAreaView`
@@ -38,7 +39,7 @@ function StockList() {
   const navigation = useNavigation();
   const [stocks, setStocks] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const modalizeRef = useRef(null);
+  const modalRef = useRef(null);
   const [screenIsFocused, setScreenIsFocused] = useState(false);
   const isFocused = useIsFocused();
   const {t} = useLocale();
@@ -46,7 +47,7 @@ function StockList() {
 
   useLayoutEffect(() => {
     const onPressSearch = () => {
-      modalizeRef.current?.open();
+      modalRef.current?.show(500);
     };
     navigation.setOptions({
       headerRight: (props) => (
@@ -128,7 +129,7 @@ function StockList() {
             data={stocks}
             renderItem={renderItem}
             ItemSeparatorComponent={renderSeparator}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => `${item.id.toString()}-${moment().valueOf()}`}
             refreshControl={
               <RefreshControl
                 colors={[theme.colors.text]}
@@ -154,7 +155,7 @@ function StockList() {
           </EmptyDataText>
         </EmptyContainer>
       )}
-      <SearchTickerModal ref={modalizeRef} />
+      <SearchTickerModal ref={modalRef} />
     </>
   );
 }

@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import Separator from '../Separator';
 import SuggestionItem from './SuggestionItem';
 import {FlatList} from 'react-native-gesture-handler';
+import moment from 'moment';
 
 const Suggestion = ({data, closeModal, navigation}) => {
-  const renderItem = ({item}) => {
+  const renderItem = useCallback(({item}) => {
     return (
       <SuggestionItem
         item={item}
@@ -12,18 +13,23 @@ const Suggestion = ({data, closeModal, navigation}) => {
         closeModal={closeModal}
       />
     );
-  };
+  }, []);
 
-  const renderSeparator = () => {
+  const renderSeparator = React.memo(() => {
     return <Separator />;
-  };
+  });
+
+  const renderKeyExtractor = useCallback(
+    (item) => `symbol-suggestion-key-${item.symbol}-${moment().valueOf()}`,
+    [],
+  );
 
   return (
     <FlatList
       data={data}
       renderItem={renderItem}
-      keyExtractor={(item) => item.symbol}
-      ItemSeparatorComponent={renderSeparator}
+      keyExtractor={renderKeyExtractor}
+      // ItemSeparatorComponent={renderSeparator}
     />
   );
 };

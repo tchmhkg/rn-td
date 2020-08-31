@@ -8,6 +8,8 @@ const Container = Styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  border-bottom-color: ${props => props.theme.border};
+  border-bottom-width: 0.5px;
 `;
 
 const Name = Styled.Text`

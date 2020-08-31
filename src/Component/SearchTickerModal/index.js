@@ -10,6 +10,7 @@ import {useLocale} from '~/I18n';
 import {useTheme} from '~/Theme';
 import finance from '~/Util/finance';
 import Suggestion from './Suggestion';
+import SlidingUpPanel from 'rn-sliding-up-panel';
 
 const Container = Styled.SafeAreaView`
   flex: 1;
@@ -45,12 +46,13 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
   };
 
   const closeModal = () => {
-    ref.current.close();
+    ref.current.hide();
   };
 
   const resetInput = () => {
     setTicker('');
     setSubmittedTicker('');
+    setSuggestion([]);
   };
 
   const getSuggestion = (symbol) => {
@@ -63,7 +65,7 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
           /(YAHOO\.util\.ScriptNodeDataSource\.callbacks\()(.*)(\);)/g,
           '$2',
         );
-        console.log(result);
+        // console.log(result);
         return JSON.parse(result);
       })
       .then((json) => {
@@ -81,45 +83,37 @@ const SearchTickerModal = forwardRef(({...props}, ref) => {
 
   return (
     <Portal>
-      <Modalize
+      <SlidingUpPanel
         ref={ref}
-        // adjustToContentHeight
-        keyboardAvoidingOffset={30}
-        handlePosition="inside"
-        modalStyle={{
-          paddingTop: 25,
-          backgroundColor: theme.colors.background,
-        }}
-        handleStyle={{backgroundColor: theme.colors.text, opacity: 0.7}}
-        onClosed={resetInput}>
-        <>
-          <Container>
-            <View style={styles.inputWrapper}>
-              <Input
-                onChangeText={getSuggestion}
-                autoCapitalize="characters"
-                autoCorrect={false}
-                returnKeyType="done"
-                // value={ticker}
-                autoFocus
-              />
-            </View>
-            <Suggestion
-              data={suggestion}
-              closeModal={closeModal}
-              navigation={navigation}
+        draggableRange={{top: 500, bottom: 0}}
+        snappingPoints={[0, 250, 500]}
+        minimumVelocityThreshold={0.9}>
+        <Container>
+          <View style={styles.inputWrapper}>
+            <Input
+              onChangeText={getSuggestion}
+              autoCapitalize="characters"
+              autoCorrect={false}
+              returnKeyType="done"
+              // value={ticker}
+              autoFocus
             />
-            {/* <Button label={t('Search')} onPress={onPressSubmit} /> */}
-            {/* {submitted && submittedTicker ? (
+          </View>
+          <Suggestion
+            data={suggestion}
+            closeModal={closeModal}
+            navigation={navigation}
+          />
+          {/* <Button label={t('Search')} onPress={onPressSubmit} /> */}
+          {/* {submitted && submittedTicker ? (
               <TickerPreview
                 ticker={submittedTicker}
                 closeModal={closeModal}
                 navigation={navigation}
               />
             ) : null} */}
-          </Container>
-        </>
-      </Modalize>
+        </Container>
+      </SlidingUpPanel>
     </Portal>
   );
 });
