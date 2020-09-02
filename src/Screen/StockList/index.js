@@ -25,7 +25,6 @@ import {useTheme} from '~/Theme';
 import moment from 'moment';
 import {TDA_QUOTES_API} from '~/Util/apiUrls';
 import {TDContext} from '~/Context/TDA';
-// import SearchTickerModal from '~/Component/SearchTickerModal';
 
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
@@ -58,10 +57,16 @@ function StockList() {
   const {t} = useLocale();
   const theme = useTheme();
   let isCancelled = useRef(false);
+  const [ticker, setTicker] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const onDismiss = () => {
+    setModalVisible(false);
+  };
 
   useLayoutEffect(() => {
     const onPressSearch = () => {
-      modalRef.current?.show(500);
+      setModalVisible(true);
+      // modalRef.current?.setModalVisible(true);
     };
     navigation.setOptions({
       headerRight: (props) => (
@@ -214,7 +219,13 @@ function StockList() {
           </EmptyDataText>
         </EmptyContainer>
       )}
-      <SearchTickerModal ref={modalRef} />
+      <SearchTickerModal
+        ref={modalRef}
+        visible={modalVisible}
+        ticker={ticker}
+        setTicker={setTicker}
+        onDismiss={onDismiss}
+      />
     </>
   );
 }

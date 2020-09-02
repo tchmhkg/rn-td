@@ -8,12 +8,11 @@ import Button from '~/Component/Button';
 import TickerPreview from '~/Component/Stock/Preview';
 import {useLocale} from '~/I18n';
 import {useTheme} from '~/Theme';
-import finance from '~/Util/finance';
 import Suggestion from './Suggestion';
-import SlidingUpPanel from 'rn-sliding-up-panel';
+import ActionSheet from 'react-native-actions-sheet';
+import BottomSheet from '../BottomSheet';
 
-const Container = Styled.SafeAreaView`
-  flex: 1;
+const Container = Styled.View`
   padding: 15px;
   background: ${(props) => props.theme.background};
 `;
@@ -28,94 +27,77 @@ const Input = Styled.TextInput`
   border-color: ${(props) => props.theme.border};
 `;
 
-const SearchTickerModal = forwardRef(({...props}, ref) => {
+const SearchTickerModal = forwardRef(({ticker, setTicker, ...props}, ref) => {
   const navigation = useNavigation();
-  const [ticker, setTicker] = useState('');
-  const [submittedTicker, setSubmittedTicker] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [suggestion, setSuggestion] = useState([]);
-  const {t} = useLocale();
-  const theme = useTheme();
+  // const [ticker, setTicker] = useState('');
+  // const [submittedTicker, setSubmittedTicker] = useState('');
+  // const [submitted, setSubmitted] = useState(false);
+  // const {t} = useLocale();
+  // const theme = useTheme();
 
-  const onPressSubmit = (symbol) => {
-    if (!symbol) {
-      return;
-    }
-    setSubmittedTicker(symbol);
-    setSubmitted(true);
-  };
+  // const onPressSubmit = (symbol) => {
+  //   if (!symbol) {
+  //     return;
+  //   }
+  //   setSubmittedTicker(symbol);
+  //   setSubmitted(true);
+  // };
 
   const closeModal = () => {
-    ref.current.hide();
+    props.onDismiss();
+    // ref.current.setModalVisible(false);
   };
 
-  const resetInput = () => {
-    setTicker('');
-    setSubmittedTicker('');
-    setSuggestion([]);
-  };
-
-  const getSuggestion = (symbol) => {
-    setTicker(symbol);
-    finance
-      .symbolSuggest(symbol)
-      .then((response) => response.text())
-      .then((result) => {
-        result = result.replace(
-          /(YAHOO\.util\.ScriptNodeDataSource\.callbacks\()(.*)(\);)/g,
-          '$2',
-        );
-        // console.log(result);
-        return JSON.parse(result);
-      })
-      .then((json) => {
-        setSuggestion(
-          json?.ResultSet?.Result?.filter(
-            (result) =>
-              result.typeDisp === 'Equity' || result.typeDisp === 'ETF',
-          ),
-        );
-      })
-      .catch((error) => {
-        console.log('Request failed', error);
-      });
-  };
-
+  // const resetInput = () => {
+  //   setTicker('');
+  //   setSubmittedTicker('');
+  //   // setSuggestion([]);
+  // };
   return (
-    <Portal>
-      <SlidingUpPanel
-        ref={ref}
-        draggableRange={{top: 800, bottom: 0}}
-        snappingPoints={[0, 500, 800]}
-        minimumVelocityThreshold={0.9}>
-        <Container>
-          <View style={styles.inputWrapper}>
-            <Input
-              onChangeText={getSuggestion}
-              autoCapitalize="characters"
-              autoCorrect={false}
-              returnKeyType="done"
-              // value={ticker}
-              autoFocus
-            />
-          </View>
-          <Suggestion
-            data={suggestion}
-            closeModal={closeModal}
-            navigation={navigation}
+    <BottomSheet visible={props.visible} onDismiss={props.onDismiss}>
+      <Container>
+        <View style={styles.inputWrapper}>
+          <Input
+            onChangeText={setTicker}
+            autoCapitalize="characters"
+            autoCorrect={false}
+            returnKeyType="done"
+            // value={ticker}
+            // autoFocus
           />
-          {/* <Button label={t('Search')} onPress={onPressSubmit} /> */}
-          {/* {submitted && submittedTicker ? (
-              <TickerPreview
-                ticker={submittedTicker}
-                closeModal={closeModal}
-                navigation={navigation}
-              />
-            ) : null} */}
-        </Container>
-      </SlidingUpPanel>
-    </Portal>
+        </View>
+        <Suggestion
+          symbol={ticker}
+          closeModal={closeModal}
+          navigation={navigation}
+        />
+      </Container>
+    </BottomSheet>
   );
+
+  // return (
+  //   <Portal>
+  //     <ActionSheet ref={ref} bounceOnOpen gestureEnabled>
+  //       <Container>
+  //         <View style={styles.inputWrapper}>
+  //           <Input
+  //             onChangeText={setTicker}
+  //             autoCapitalize="characters"
+  //             autoCorrect={false}
+  //             returnKeyType="done"
+  //             // value={ticker}
+  //             // autoFocus
+  //           />
+  //         </View>
+  //         <Suggestion
+  //           symbol={ticker}
+  //           closeModal={closeModal}
+  //           navigation={navigation}
+  //         />
+  //       </Container>
+  //     </ActionSheet>
+  //   </Portal>
+  // );
 });
 
 const styles = StyleSheet.create({
