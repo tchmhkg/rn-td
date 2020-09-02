@@ -5,7 +5,7 @@ import SuggestionItem from './SuggestionItem';
 import moment from 'moment';
 import finance from '~/Util/finance';
 
-const Suggestion = ({symbol, closeModal, navigation}) => {
+const Suggestion = ({symbol, closeModal, navigation, ...props}) => {
   const [suggestion, setSuggestion] = useState([]);
 
   const getSuggestion = () => {
@@ -27,6 +27,7 @@ const Suggestion = ({symbol, closeModal, navigation}) => {
               result.typeDisp === 'Equity' || result.typeDisp === 'ETF',
           ),
         );
+        // props.openModal();
       })
       .catch((error) => {
         console.log('Request failed', error);
@@ -61,7 +62,7 @@ const Suggestion = ({symbol, closeModal, navigation}) => {
 
   return (
     <FlatList
-      style={{maxHeight: 300}}
+      // style={{maxHeight: 300}}
       data={suggestion}
       renderItem={renderItem}
       keyExtractor={renderKeyExtractor}
