@@ -5,7 +5,7 @@ import SuggestionItem from './SuggestionItem';
 import moment from 'moment';
 import finance from '~/Util/finance';
 
-const Suggestion = ({symbol, closeModal, navigation, ...props}) => {
+const Suggestion = ({symbol, closeModal, navigation, visible, ...props}) => {
   const [suggestion, setSuggestion] = useState([]);
 
   const getSuggestion = () => {
@@ -35,11 +35,17 @@ const Suggestion = ({symbol, closeModal, navigation, ...props}) => {
   };
 
   useEffect(() => {
-    if(!symbol) {
+    if(!symbol || !visible) {
       return;
     }
     getSuggestion();
   }, [symbol])
+
+  useEffect(() => {
+    if(!visible) {
+      setSuggestion([]);
+    }
+  },[visible])
 
   const renderItem = useCallback(({item}) => {
     return (

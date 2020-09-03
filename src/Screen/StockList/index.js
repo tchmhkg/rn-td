@@ -60,14 +60,14 @@ function StockList() {
   const [ticker, setTicker] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const onDismiss = () => {
-    // setModalVisible(false);
-      modalRef.current?.close();
+    setModalVisible(false);
+      // modalRef.current?.close();
   };
 
   useLayoutEffect(() => {
     const onPressSearch = () => {
-      // setModalVisible(true);
-      modalRef.current?.open();
+      setModalVisible(true);
+      // modalRef.current?.open();
     };
     navigation.setOptions({
       headerRight: (props) => (

@@ -5562,6 +5562,10 @@ rimraf@~2.2.6:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
+rn-swipeable-panel@tchmhkg/rn-swipeable-panel:
+  version "1.2.1"
+  resolved "https://codeload.github.com/tchmhkg/rn-swipeable-panel/tar.gz/844602c49326aba18e5f06064439c58e71d3e193"
+
 rsvp@^4.8.4:
   version "4.8.5"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-4.8.5.tgz#c8f155311d167f68f21e168df71ec5b083113734"

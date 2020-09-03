@@ -1,5 +1,5 @@
-import React, {useState, forwardRef, useCallback, useEffect} from 'react';
-import {StyleSheet, View, Text, FlatList} from 'react-native';
+import React, {useState, forwardRef, useCallback, useEffect, useRef} from 'react';
+import {StyleSheet, View, Text, FlatList, KeyboardAvoidingView, Keyboard} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Modalize} from 'react-native-modalize';
 import {Portal} from 'react-native-portalize';
@@ -9,13 +9,14 @@ import TickerPreview from '~/Component/Stock/Preview';
 import {useLocale} from '~/I18n';
 import {useTheme} from '~/Theme';
 import Separator from '~/Component/Separator';
-// import Suggestion from './Suggestion';
+import Suggestion from './Suggestion';
 import SuggestionItem from './SuggestionItem';
 import ActionSheet from 'react-native-actions-sheet';
 import BottomSheet from '../BottomSheet';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import finance from '~/Util/finance';
 import moment from 'moment';
+import {SwipeablePanel} from 'rn-swipeable-panel';
 
 const Container = Styled.View`
   padding: 15px;
@@ -65,12 +66,12 @@ const SearchTickerModal = forwardRef(({ticker, setTicker, ...props}, ref) => {
   //   // setSuggestion([]);
   // };
 
-  useEffect(() => {
-    if (!ticker) {
-      return;
-    }
-    getSuggestion();
-  }, [ticker]);
+  // useEffect(() => {
+  //   if (!ticker) {
+  //     return;
+  //   }
+  //   getSuggestion();
+  // }, [ticker]);
 
   const getSuggestion = () => {
     finance
@@ -133,25 +134,31 @@ const SearchTickerModal = forwardRef(({ticker, setTicker, ...props}, ref) => {
 
   return (
     <Portal>
-      <Modalize
+      <SwipeablePanel
         ref={ref}
-        // contentRef={contentRef}
-        HeaderComponent={renderHeader}
-        snapPoint={400}
-        modalHeight={750}
-        handlePosition="inside"
-        flatListProps={{
-          data: suggestion,
-          renderItem: renderItem,
-          // showsVerticalScrollIndicator: false,
-          // onScroll: Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-          //   useNativeDriver: true,
-          // }),
-          // scrollEventThrottle: 16,
-          keyExtractor: renderKeyExtractor,
-          ItemSeparatorComponent: renderSeparator,
-        }}
-      />
+        fullWidth
+        isActive={props.visible}
+        // openLarge
+        closeOnTouchOutside
+        onClose={props.onDismiss}
+        >
+        <Container>
+          <View style={styles.inputWrapper}>
+            <Input
+              onChangeText={setTicker}
+              autoCapitalize="characters"
+              autoCorrect={false}
+              returnKeyType="done"
+            />
+          </View>
+          <Suggestion
+            symbol={ticker}
+            closeModal={closeModal}
+            navigation={navigation}
+            visible={props.visible}
+          />
+        </Container>
+      </SwipeablePanel>
     </Portal>
   );
 
