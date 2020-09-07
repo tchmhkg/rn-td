@@ -1,42 +1,44 @@
-import React, {useRef} from 'react';
-import {FlatList, RefreshControl, StatusBar, StyleSheet} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {FlatList, RefreshControl, StatusBar, StyleSheet, Dimensions} from 'react-native';
 import Styled from 'styled-components/native';
 
-import NewsRow from '~/Component/News/Row';
-import Spinner from '~/Component/Spinner';
+// import NewsRow from '~/Component/News/Row';
+// import Spinner from '~/Component/Spinner';
 import {useTheme} from '~/Theme';
-import PickerModal from '~/Component/News/PickerModal';
+// import PickerModal from '~/Component/News/PickerModal';
 import {useLocale} from '~/I18n';
 import {NEWS_CATEGORIES, NEWS_COUNTRIES} from '~/Helper/constraint';
-import {useNewsApi} from '~/Hook';
+// import {useNewsApi} from '~/Hook';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import NewsList from '~/Component/News/List';
 
-const Label = Styled.Text`
-  font-size: 18px;
-  color: ${(props) => props.theme.text};
-`;
+// const Label = Styled.Text`
+//   font-size: 18px;
+//   color: ${(props) => props.theme.text};
+// `;
 
-const FilterWrapper = Styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-`;
+// const FilterWrapper = Styled.View`
+//   flex-direction: row;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 10px;
+// `;
 
-const FilterItemWrapper = Styled.View`
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
-`;
+// const FilterItemWrapper = Styled.View`
+//   flex: 1;
+//   flex-direction: row;
+//   align-items: center;
+// `;
 
-const SelectedFilter = Styled.TouchableOpacity`
-  flex: 1;
-  margin-left: 10px;
-  padding: 10px;
-  border-width: 1px;
-  border-color: ${(props) => props.theme.border};
-  justify-content: center;
-  align-items: center;
-`;
+// const SelectedFilter = Styled.TouchableOpacity`
+//   flex: 1;
+//   margin-left: 10px;
+//   padding: 10px;
+//   border-width: 1px;
+//   border-color: ${(props) => props.theme.border};
+//   justify-content: center;
+//   align-items: center;
+// `;
 
 const Container = Styled.SafeAreaView`
   flex: 1;
@@ -44,61 +46,41 @@ const Container = Styled.SafeAreaView`
 `;
 
 function News(props) {
-  const categoryPickerRef = useRef(null);
   const countryPickerRef = useRef(null);
-  const flatListRef = useRef(null);
   const theme = useTheme();
   const {t} = useLocale();
-  const [
-    {data, isLoading, totalCount, page, country, category, isRefreshing},
-    setPage,
-    setCategory,
-    setCountry,
-    setIsRefreshing,
-  ] = useNewsApi();
+  const [country, setCountry] = useState('hk');
+  const [tabIndex, setTabIndex] = useState(0);
 
-  const renderItem = ({item}) => {
-    return <NewsRow item={item} />;
-  };
+  const routes = NEWS_CATEGORIES.map(cate => ({key: cate, title: t(cate)}));
 
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    setPage(1);
-  };
+  // const openCountryPicker = () => {
+  //   countryPickerRef.current?.open();
+  // };
 
-  const handleLoadMore = () => {
-    if (isLoading || data.length >= totalCount) {
-      return false;
+  // const handleChangeCountry = (cty) => {
+  //   setCountry(cty);
+  // };
+
+  const _handleIndexChange = (index) => setTabIndex(index);
+
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      default:
+        return <NewsList category={route.key} country={country}/>;
     }
-    setPage(page + 1);
   };
 
-  const renderFooter = () => {
-    if (!isLoading || isRefreshing) {
-      return null;
-    }
-    return <Spinner />;
-  };
-
-  const openCategoryPicker = () => {
-    categoryPickerRef.current?.open();
-  };
-
-  const openCountryPicker = () => {
-    countryPickerRef.current?.open();
-  };
-
-  const handleChangeCategory = (cate) => {
-    setCategory(cate);
-    handleRefresh();
-    flatListRef.current?.scrollToIndex({animated: true, index: 0});
-  };
-
-  const handleChangeCountry = (cty) => {
-    setCountry(cty);
-    handleRefresh();
-    flatListRef.current?.scrollToIndex({animated: true, index: 0});
-  };
+  const renderTabBar = (props) => (
+    <TabBar
+      {...props}
+      scrollEnabled
+      tabStyle={{width: 'auto'}}
+      indicatorStyle={{backgroundColor: theme.colors.primary}}
+      labelStyle={{color: theme.colors.text}}
+      style={{backgroundColor: theme.colors.background}}
+    />
+  );
 
   return (
     <>
@@ -106,7 +88,7 @@ function News(props) {
         barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
       />
       <Container>
-        <FilterWrapper>
+        {/* <FilterWrapper>
           <FilterItemWrapper>
             <Label>{t('Country')}:</Label>
             <SelectedFilter
@@ -115,43 +97,23 @@ function News(props) {
               <Label numberOfLines={1}>{t(country.toUpperCase())}</Label>
             </SelectedFilter>
           </FilterItemWrapper>
-          <FilterItemWrapper>
-            <Label>{t('Category')}:</Label>
-            <SelectedFilter onPress={openCategoryPicker}>
-              <Label numberOfLines={1}>{t(category.toUpperCase())}</Label>
-            </SelectedFilter>
-          </FilterItemWrapper>
-        </FilterWrapper>
-        <FlatList
-          ref={flatListRef}
-          data={data}
-          renderItem={renderItem}
-          ListFooterComponent={renderFooter}
-          keyExtractor={(item) => item.title}
-          onEndReachedThreshold={0.1}
-          onEndReached={handleLoadMore}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={handleRefresh}
-              tintColor={theme.colors.text}
-              colors={[theme.colors.text]}
-            />
-          }
-        />
+        </FilterWrapper> */}
+        <TabView
+            lazy
+            navigationState={{index: tabIndex, routes}}
+            renderScene={renderScene}
+            renderTabBar={renderTabBar}
+            onIndexChange={_handleIndexChange}
+            initialLayout={{width: Dimensions.get('window').width}}
+            style={styles.container}
+          />
       </Container>
-      <PickerModal
-        ref={categoryPickerRef}
-        data={NEWS_CATEGORIES}
-        selectedValue={category}
-        onValueChange={handleChangeCategory}
-      />
-      <PickerModal
+      {/* <PickerModal
         ref={countryPickerRef}
         data={NEWS_COUNTRIES}
         selectedValue={country}
         onValueChange={handleChangeCountry}
-      />
+      /> */}
     </>
   );
 }

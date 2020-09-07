@@ -3,12 +3,12 @@ import axios from 'axios';
 import {HK_NEWS_API} from '~/Util/apiUrls';
 import {showMessage} from 'react-native-flash-message';
 
-export const useNewsApi = () => {
+export const useNewsApi = (country = 'hk', category = 'general') => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [category, setCategory] = useState('general');
-  const [country, setCountry] = useState('hk');
+  // const [category, setCategory] = useState('general');
+  // const [country, setCountry] = useState('hk');
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -40,6 +40,7 @@ export const useNewsApi = () => {
       });
 
       const resData = res.data?.articles || [];
+      console.log(res);
       setData(page === 1 ? resData : [...data, ...resData]);
       setTotalCount(res.data?.totalResults);
       setIsRefreshing(false);
@@ -64,13 +65,13 @@ export const useNewsApi = () => {
       isError,
       totalCount,
       page,
-      country,
-      category,
+      // country,
+      // category,
       isRefreshing,
     },
     setPage,
-    setCategory,
-    setCountry,
+    // setCategory,
+    // setCountry,
     setIsRefreshing,
   ];
 };
