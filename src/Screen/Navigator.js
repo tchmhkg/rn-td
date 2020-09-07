@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useIsFocused} from '@react-navigation/native';
 import {createNativeStackNavigator} from 'react-native-screens/native-stack';
 // import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -439,11 +439,12 @@ const SafeAreaBottom = Styled.SafeAreaView`
 
 export default () => {
   const {userInfo} = useContext(UserContext);
+  const {tdToken, authInfo, logout, refreshAccessToken} = useContext(TDContext);
 
   return (
     <ThemeManager>
       <NavigationContainer>
-        <Host>{userInfo ? <MainNavi /> : <LoginStackNavi />}</Host>
+        <Host>{authInfo?.access_token ? <MainNavi /> : <LoginStackNavi />}</Host>
       </NavigationContainer>
       <SafeAreaBottom />
     </ThemeManager>

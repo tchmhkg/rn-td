@@ -1,6 +1,6 @@
 import React, {useState, forwardRef, useCallback, useEffect, useRef} from 'react';
 import {StyleSheet, View, Text, FlatList, KeyboardAvoidingView, Keyboard} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {Modalize} from 'react-native-modalize';
 import {Portal} from 'react-native-portalize';
 import Styled from 'styled-components/native';
@@ -36,6 +36,8 @@ const Input = Styled.TextInput`
 const SearchTickerModal = forwardRef(({ticker, setTicker, ...props}, ref) => {
   const navigation = useNavigation();
   const [suggestion, setSuggestion] = useState([]);
+  const {colors} = useTheme();
+  const isFocused = useIsFocused();
 
   // const [ticker, setTicker] = useState('');
   // const [submittedTicker, setSubmittedTicker] = useState('');
@@ -138,9 +140,11 @@ const SearchTickerModal = forwardRef(({ticker, setTicker, ...props}, ref) => {
         ref={ref}
         fullWidth
         isActive={props.visible}
+        isFocused={isFocused}
         // openLarge
         closeOnTouchOutside
         onClose={props.onDismiss}
+        style={{backgroundColor: colors.background}}
         >
         <Container>
           <View style={styles.inputWrapper}>
