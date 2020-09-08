@@ -5,10 +5,10 @@ import SuggestionItem from './SuggestionItem';
 import moment from 'moment';
 import finance from '~/Util/finance';
 
-const Suggestion = ({symbol, closeModal, navigation, visible, ...props}) => {
+const Suggestion = ({symbol, closeModal, navigation, visible, headerComponent = () => {}, ...props}) => {
   const [suggestion, setSuggestion] = useState([]);
 
-  const getSuggestion = () => {
+  const getSuggestion = React.useCallback(() => {
     finance
       .symbolSuggest(symbol)
       .then((response) => response.text())
@@ -32,7 +32,7 @@ const Suggestion = ({symbol, closeModal, navigation, visible, ...props}) => {
       .catch((error) => {
         console.log('Request failed', error);
       });
-  };
+  }, [symbol]);
 
   useEffect(() => {
     if(!symbol || !visible) {
@@ -73,6 +73,7 @@ const Suggestion = ({symbol, closeModal, navigation, visible, ...props}) => {
       renderItem={renderItem}
       keyExtractor={renderKeyExtractor}
       ItemSeparatorComponent={renderSeparator}
+      ListHeaderComponent={headerComponent}
     />
   );
 };
