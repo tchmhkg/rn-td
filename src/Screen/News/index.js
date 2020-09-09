@@ -5,40 +5,40 @@ import Styled from 'styled-components/native';
 // import NewsRow from '~/Component/News/Row';
 // import Spinner from '~/Component/Spinner';
 import {useTheme} from '~/Theme';
-// import PickerModal from '~/Component/News/PickerModal';
+import PickerModal from '~/Component/News/PickerModal';
 import {useLocale} from '~/I18n';
 import {NEWS_CATEGORIES, NEWS_COUNTRIES} from '~/Helper/constraint';
 // import {useNewsApi} from '~/Hook';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import NewsList from '~/Component/News/List';
 
-// const Label = Styled.Text`
-//   font-size: 18px;
-//   color: ${(props) => props.theme.text};
-// `;
+const Label = Styled.Text`
+  font-size: 18px;
+  color: ${(props) => props.theme.text};
+`;
 
-// const FilterWrapper = Styled.View`
-//   flex-direction: row;
-//   justify-content: center;
-//   align-items: center;
-//   padding: 10px;
-// `;
+const FilterWrapper = Styled.View`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+`;
 
-// const FilterItemWrapper = Styled.View`
-//   flex: 1;
-//   flex-direction: row;
-//   align-items: center;
-// `;
+const FilterItemWrapper = Styled.View`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+`;
 
-// const SelectedFilter = Styled.TouchableOpacity`
-//   flex: 1;
-//   margin-left: 10px;
-//   padding: 10px;
-//   border-width: 1px;
-//   border-color: ${(props) => props.theme.border};
-//   justify-content: center;
-//   align-items: center;
-// `;
+const SelectedFilter = Styled.TouchableOpacity`
+  flex: 1;
+  margin-left: 10px;
+  padding: 10px;
+  border-width: 1px;
+  border-color: ${(props) => props.theme.border};
+  justify-content: center;
+  align-items: center;
+`;
 
 const Container = Styled.SafeAreaView`
   flex: 1;
@@ -50,24 +50,26 @@ function News(props) {
   const theme = useTheme();
   const {t} = useLocale();
   const [country, setCountry] = useState('hk');
+  const [prevCountry, setPrevCountry] = useState(null);
   const [tabIndex, setTabIndex] = useState(0);
 
-  const routes = NEWS_CATEGORIES.map(cate => ({key: cate, title: t(cate)}));
+  const routes = NEWS_CATEGORIES.map((cate, idx) => ({key: cate, title: t(cate), index: idx}));
 
-  // const openCountryPicker = () => {
-  //   countryPickerRef.current?.open();
-  // };
+  const openCountryPicker = () => {
+    countryPickerRef.current?.open();
+  };
 
-  // const handleChangeCountry = (cty) => {
-  //   setCountry(cty);
-  // };
+  const handleChangeCountry = (cty) => {
+    setPrevCountry(country);
+    setCountry(cty);
+  };
 
   const _handleIndexChange = (index) => setTabIndex(index);
 
   const renderScene = ({route}) => {
     switch (route.key) {
       default:
-        return <NewsList category={route.key} country={country}/>;
+        return <NewsList category={route.key} prevCountry={prevCountry} country={country} index={route.index} currentIndex={tabIndex} />;
     }
   };
 
@@ -88,7 +90,7 @@ function News(props) {
         barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
       />
       <Container>
-        {/* <FilterWrapper>
+        <FilterWrapper>
           <FilterItemWrapper>
             <Label>{t('Country')}:</Label>
             <SelectedFilter
@@ -97,7 +99,7 @@ function News(props) {
               <Label numberOfLines={1}>{t(country.toUpperCase())}</Label>
             </SelectedFilter>
           </FilterItemWrapper>
-        </FilterWrapper> */}
+        </FilterWrapper>
         <TabView
             lazy
             navigationState={{index: tabIndex, routes}}
@@ -108,12 +110,12 @@ function News(props) {
             style={styles.container}
           />
       </Container>
-      {/* <PickerModal
+      <PickerModal
         ref={countryPickerRef}
         data={NEWS_COUNTRIES}
         selectedValue={country}
         onValueChange={handleChangeCountry}
-      /> */}
+      />
     </>
   );
 }
