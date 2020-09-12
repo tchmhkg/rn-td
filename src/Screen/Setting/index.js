@@ -1,18 +1,22 @@
 import React, {useRef, useEffect, useState} from 'react';
 import Styled from 'styled-components/native';
-import {StyleSheet, ScrollView, Switch, Pressable} from 'react-native';
+import {StyleSheet, ScrollView, Switch, Pressable, View} from 'react-native';
 import {useTheme} from '~/Theme';
 import {useLocale} from '~/I18n';
 import {Modalize} from 'react-native-modalize';
 import {Portal} from 'react-native-portalize';
 import {useIsFocused} from '@react-navigation/native';
+import {
+  Transitioning,
+  TransitioningView,
+  Transition,
+} from 'react-native-reanimated';
 
 const languages = ['en', 'zh-hk'];
 
-const Container = Styled.SafeAreaView`
+const Container = Styled(Transitioning.View)`
   flex: 1;
   justify-content: center;
-  background: ${(props) => props.theme.background};
 `;
 
 const Row = Styled.View`
@@ -47,11 +51,19 @@ const LangButtonText = Styled.Text`
 `;
 
 const Setting = () => {
+  const ref = useRef(null);
   const theme = useTheme();
   const [screenIsFocused, setScreenIsFocused] = useState(false);
   const {setLocale, t, locale} = useLocale();
   const bottomSheetRef = useRef(null);
   const isFocused = useIsFocused();
+
+  const transition = (
+    <Transition.Together>
+      <Transition.In type="fade" durationMs={80} />
+      <Transition.Out type="fade" durationMs={80} />
+    </Transition.Together>
+  );
 
   useEffect(() => {
     setScreenIsFocused(isFocused);
@@ -82,13 +94,26 @@ const Setting = () => {
   };
 
   return (
-    <Container>
+    <Container {...{ ref, transition }}>
+    {theme.mode === 'dark' && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: theme.colors.background,
+          }}
+        />
+      )}
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Row>
           <ItemLebel>{t('Dark Mode')}</ItemLebel>
           <Switch
             value={theme.mode === 'dark'}
-            onValueChange={(value) => theme.setMode(value ? 'dark' : 'light')}
+            onValueChange={(value) => {
+              if (ref.current) {
+                ref.current.animateNextTransition();
+              }
+              theme.setMode(value ? 'dark' : 'light')
+              }}
             trackColor={{true: theme.colors.primary}}
           />
         </Row>
