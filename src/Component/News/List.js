@@ -12,7 +12,7 @@ function News({country, category, index, currentIndex, prevCountry}) {
     {data, isLoading, totalCount, page, isRefreshing},
     setPage,
     setIsRefreshing,
-  ] = useNewsApi(country, category, prevCountry, index, currentIndex);
+  ] = useNewsApi(country, category, prevCountry, index, currentIndex, flatListRef);
 
 //   useEffect(() => {
 //     if(!isLoading) {
