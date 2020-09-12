@@ -3,7 +3,14 @@ import axios from 'axios';
 import {HK_NEWS_API} from '~/Util/apiUrls';
 import {showMessage} from 'react-native-flash-message';
 
-export const useNewsApi = (country = 'hk', category = 'general') => {
+export const useNewsApi = (
+  country = 'hk',
+  category = 'general',
+  prevCountry,
+  index,
+  currentIndex,
+  flatListRef,
+) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -14,10 +21,20 @@ export const useNewsApi = (country = 'hk', category = 'general') => {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && index === currentIndex) {
       fetchData();
     }
-  }, [page, category, country]);
+  }, [page, category, index, currentIndex]);
+
+  useEffect(() => {
+    if (prevCountry && prevCountry !== country && index === currentIndex) {
+      setIsRefreshing(true);
+      setPage(1);
+      if (data && data.length) {
+        flatListRef.current?.scrollToIndex({animated: true, index: 0});
+      }
+    }
+  }, [country, prevCountry, index, currentIndex]);
 
   useEffect(() => {
     if (isRefreshing) {

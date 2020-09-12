@@ -5,14 +5,14 @@ import Spinner from '~/Component/Spinner';
 import {useTheme} from '~/Theme';
 import {useNewsApi} from '~/Hook';
 
-function News({country, category}) {
+function News({country, category, index, currentIndex, prevCountry}) {
   const flatListRef = useRef(null);
   const theme = useTheme();
   const [
     {data, isLoading, totalCount, page, isRefreshing},
     setPage,
     setIsRefreshing,
-  ] = useNewsApi(country, category);
+  ] = useNewsApi(country, category, prevCountry, index, currentIndex, flatListRef);
 
 //   useEffect(() => {
 //     if(!isLoading) {

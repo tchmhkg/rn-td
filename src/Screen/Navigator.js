@@ -438,7 +438,6 @@ const SafeAreaBottom = Styled.SafeAreaView`
 `;
 
 export default () => {
-  const {userInfo} = useContext(UserContext);
   const {tdToken, authInfo, logout, refreshAccessToken} = useContext(TDContext);
 
   return (
