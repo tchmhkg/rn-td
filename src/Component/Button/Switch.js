@@ -1,1 +1,0 @@
-//? https://medium.com/timeless/react-native-reanimated-switch-83c331af7877

@@ -7,6 +7,7 @@ import {Modalize} from 'react-native-modalize';
 import {Portal} from 'react-native-portalize';
 import {useIsFocused} from '@react-navigation/native';
 import {Transitioning, Transition} from 'react-native-reanimated';
+import DarkModeSwitch from '~/Component/Button/DarkModeSwitch';
 
 const languages = ['en', 'zh-hk'];
 
@@ -103,15 +104,15 @@ const Setting = () => {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Row>
           <ItemLebel>{t('Dark Mode')}</ItemLebel>
-          <Switch
-            value={theme.mode === 'dark'}
-            onValueChange={(value) => {
+          <DarkModeSwitch
+            handleOnPress={(value) => {
               if (ref.current) {
                 ref.current.animateNextTransition();
               }
               theme.setMode(value ? 'dark' : 'light');
             }}
-            trackColor={{true: theme.colors.primary}}
+            activeTrackColor={theme.colors.primary}
+            value={theme.mode === 'dark'}
           />
         </Row>
         <Row>
