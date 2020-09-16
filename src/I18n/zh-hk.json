@@ -52,5 +52,11 @@
   "Close": "關閉",
   "Remove":"移除",
   "CandleStick Chart":"蠟燭圖",
-  "Line Chart":"線形圖"
+  "Line Chart":"線形圖",
+  "symbol":"代號",
+  "averagePrice":"均價",
+  "longQuantity":"數量",
+  "marketValue":"市值",
+  "currentDayProfitLoss":"當日盈虧",
+  "currentDayProfitLossPercentage":"當日盈虧%"
 }

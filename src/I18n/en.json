@@ -52,5 +52,11 @@
   "Close": "Close",
   "Remove":"Remove",
   "CandleStick Chart":"CandleStick Chart",
-  "Line Chart":"Line Chart"
+  "Line Chart":"Line Chart",
+  "symbol":"Symbol",
+  "averagePrice":"Avg. Price",
+  "longQuantity":"Qty",
+  "marketValue":"Market Value",
+  "currentDayProfitLoss":"P/L Day",
+  "currentDayProfitLossPercentage":"P/L Day %"
 }

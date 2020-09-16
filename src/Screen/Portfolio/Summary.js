@@ -10,6 +10,7 @@ import {TDA_BASE_URL, TDA_LOGIN_URL, TDA_CLIENT_ID} from '~/Util/config';
 import {
   View,
   FlatList,
+  Text,
   RefreshControl,
   ScrollView,
   ActivityIndicator,
@@ -44,6 +45,12 @@ const Content = Styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+`;
+const Cell = Styled.View`
+  padding: 15px;
+  background-color: ${(props) => props.theme.borderAlt};
+  align-items: center;
+  justify-content: center;
 `;
 
 const Summary = ({navigation}) => {
@@ -172,46 +179,86 @@ const Summary = ({navigation}) => {
     );
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = (item) => {
     return (
-      <Content>
+      <Content key={item[0]}>
         <Label>{t(item[0])}:</Label>
         <Label>${item[1].toFixed(2)}</Label>
       </Content>
     );
   };
 
-  const renderSeparator = () => {
-    return <Separator />;
-  };
+  // const renderSeparator = () => {
+  //   return <Separator />;
+  // };
 
   const handleRefresh = () => {
     setIsRefreshing(true);
   };
 
+  const fields = [
+    'cashBalance',
+    'longMarketValue',
+    'shortMarketValue',
+    'moneyMarketFund',
+    'liquidationValue',
+    'cashAvailableForTrading',
+    'cashAvailableForWithdrawal',
+  ];
+  const priceFormatter = value => {
+    return value
+  }
+
+  const positionFields = React.useMemo(() => [
+    {label: 'averagePrice', formatter: (value) => `$${value?.toFixed(2)}`},
+    {label: 'longQuantity'},
+    {label: 'marketValue', formatter: (value) => `$${value?.toFixed(2)}`},
+    {label: 'currentDayProfitLoss', formatter: (value) => `$${value?.toFixed(2)}`},
+    {label: 'currentDayProfitLossPercentage', formatter: (value) => `${value?.toFixed(2)}%`},
+  ], []);
+
   const _renderContent = ({securitiesAccount}) => {
-    const fields = [
-      'cashBalance',
-      'longMarketValue',
-      'shortMarketValue',
-      'moneyMarketFund',
-      'liquidationValue',
-      'cashAvailableForTrading',
-      'cashAvailableForWithdrawal',
-    ];
+    
     const currentBalances = Object.entries(
       securitiesAccount?.currentBalances,
     ).filter((field) => {
       return fields.includes(field[0]);
     });
+    const {positions = []} = securitiesAccount;
+    
     return (
-      <FlatList
-        data={currentBalances}
-        renderItem={renderItem}
-        ItemSeparatorComponent={renderSeparator}
-        keyExtractor={(item) => item[0]}
-        scrollEnabled={false}
-      />
+      <>
+        {currentBalances?.map((i) => renderItem(i))}
+        {positions?.length ? (
+          <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+          <View>
+            <Content>
+              <Label>{t('symbol')}</Label>
+            </Content>
+            {positions?.map((p, i) => (
+              <Content key={'symbol-' + p.instrument?.symbol}>
+                <Label>{p.instrument?.symbol}</Label>
+              </Content>
+            ))}
+          </View>
+          <ScrollView horizontal bounces={false} showsHorizontalScrollIndicator={false}>
+            {positionFields.map(({label, formatter}) => (
+              <View key={label}>
+                <Cell>
+                  <Label>{t(label)}</Label>
+                </Cell>
+                {positions?.map((p, i) => (
+                  <Cell key={'cell-' + p.instrument?.symbol}>
+                    <Label>{formatter ? formatter(p?.[label]) : p?.[label]}</Label>
+                  </Cell>
+                ))}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+        ) : null}
+        
+      </>
     );
   };
 
