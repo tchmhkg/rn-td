@@ -6,7 +6,7 @@ const light = {
     borderAlt: '#bdbdbd',
     text: '#171717',
     buttonText: '#ebffff',
-    primary: '#1de9b6',
+    primary: '#0ECD9D',
     inactive: '#2E3440',
     chartLine: '#171717',
     inactiveLegend: '#777777',

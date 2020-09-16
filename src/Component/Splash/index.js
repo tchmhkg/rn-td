@@ -1,7 +1,7 @@
 import React, {createRef, useRef, useEffect, useState} from 'react';
 import {View, Image, Animated, StatusBar, StyleSheet} from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
-import logo from '~/Asset/smile.png';
+import logo from '~/Asset/twitter.png';
 
 const App = ({isLoaded, children}) => {
   const [animationDone, setAnimationDone] = useState(false);
@@ -37,19 +37,20 @@ const App = ({isLoaded, children}) => {
     ],
   };
 
-  const appScale = {
-    transform: [
-      {
-        scale: loadingProgress.interpolate({
-          inputRange: [0, 7, 100],
-          outputRange: [1.1, 1.03, 1],
-        }),
-      },
-    ],
-  };
+  // StatusBar Bug
+  // const appScale = {
+  //   transform: [
+  //     {
+  //       scale: loadingProgress.interpolate({
+  //         inputRange: [0, 7, 100],
+  //         outputRange: [1.1, 1.03, 1],
+  //       }),
+  //     },
+  //   ],
+  // };
 
   const fullScreenBlueLayer = animationDone ? null : (
-    <View style={[StyleSheet.absoluteFill, {backgroundColor: '#1DA1F2'}]} />
+    <View style={[StyleSheet.absoluteFill, {backgroundColor: '#1de9b6'}]} />
   );
   const fullScreenWhiteLayer = animationDone ? null : (
     <View style={[StyleSheet.absoluteFill, {backgroundColor: '#ffffff'}]} />
@@ -71,7 +72,7 @@ const App = ({isLoaded, children}) => {
           </View>
         }>
         {fullScreenWhiteLayer}
-        <Animated.View style={[opacityClearToVisible, appScale, {flex: 1}]}>
+        <Animated.View style={[opacityClearToVisible, {flex: 1}]}>
           {children}
         </Animated.View>
       </MaskedView>
