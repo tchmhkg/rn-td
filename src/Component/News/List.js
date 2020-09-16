@@ -1,6 +1,7 @@
 import React, {useRef, useEffect} from 'react';
 import {FlatList, RefreshControl} from 'react-native';
 import NewsRow from '~/Component/News/Row';
+import NewsItemPlaceholder from '~/Component/Placeholder/NewsItem';
 import Spinner from '~/Component/Spinner';
 import {useTheme} from '~/Theme';
 import {useNewsApi} from '~/Hook';
@@ -45,6 +46,16 @@ function News({country, category, index, currentIndex, prevCountry}) {
     }
     return <Spinner />;
   };
+
+  const renderPlaceHolder = () => [...new Array(10).fill({})].map((e, i) => <NewsItemPlaceholder key={i} />);
+
+  if(isLoading && !data?.length) {
+    return (
+      <>
+        {renderPlaceHolder()}
+      </>
+    );
+  }
 
   return (
     <FlatList

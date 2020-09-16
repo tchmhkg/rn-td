@@ -5578,6 +5578,10 @@ rimraf@~2.2.6:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
+rn-placeholder@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/rn-placeholder/-/rn-placeholder-3.0.1.tgz#5073210e9d35791e379df9604414d3c6d531a3ee"
+
 rn-swipeable-panel@tchmhkg/rn-swipeable-panel:
   version "1.2.2"
   resolved "https://codeload.github.com/tchmhkg/rn-swipeable-panel/tar.gz/4215da40c06f0e5720c38bbf0d3b345beeeea515"

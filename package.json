@@ -47,6 +47,7 @@
     "react-native-webview": "^10.3.2",
     "react-navigation": "^4.4.0",
     "reconnecting-websocket": "^4.4.0",
+    "rn-placeholder": "^3.0.1",
     "rn-swipeable-panel": "tchmhkg/rn-swipeable-panel",
     "styled-components": "^5.1.1"
   },
