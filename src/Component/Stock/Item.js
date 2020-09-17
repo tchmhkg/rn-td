@@ -34,7 +34,7 @@ const Diff = Styled.Text`
 
 const StockItem = ({item, refreshing}) => {
   const navigation = useNavigation();
-  const {lastPrice, closePrice} = item;
+  const {lastPrice = item.lastPriceInDouble, closePrice} = item;
   
 
   const onPressStock = (symbol) => {

@@ -25,6 +25,7 @@ import {useTheme} from '~/Theme';
 import moment from 'moment';
 import {TDA_QUOTES_API} from '~/Util/apiUrls';
 import {TDContext} from '~/Context/TDA';
+import IndexContainer from '~/Component/Stock/IndexContainer';
 
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
@@ -110,12 +111,12 @@ function StockList() {
           Authorization: 'Bearer ' + authInfo?.access_token,
         },
         params: {
-          symbol: symbols,
+          symbol: symbols
         },
       })
       .then((res) => {
-        console.log('isCancelled.current', isCancelled.current);
         if (res?.data && !isCancelled.current) {
+          // console.log(res.data);
           setStocks(Object.values(res?.data));
           console.log(Object.values(res?.data));
         }
@@ -188,6 +189,7 @@ function StockList() {
 
   return (
     <>
+      <IndexContainer isFocused={isFocused}/>
       {stocks && stocks.length ? (
         <Container>
           <FlatList
