@@ -87,7 +87,7 @@ function StockList() {
       try {
         const data = await AsyncStorage.getItem('symbols');
         if (data !== null) {
-          console.log(JSON.parse(data));
+          // console.log(JSON.parse(data));
           const jsonData = JSON.parse(data);
           if (jsonData?.length) {
             setStocks(jsonData);
@@ -118,7 +118,7 @@ function StockList() {
         if (res?.data && !isCancelled.current) {
           // console.log(res.data);
           setStocks(Object.values(res?.data));
-          console.log(Object.values(res?.data));
+          // console.log(Object.values(res?.data));
         }
         setIsRefreshing(false);
       })
@@ -162,7 +162,7 @@ function StockList() {
       try {
         const data = await AsyncStorage.getItem('symbols');
         if (data !== null) {
-          console.log(JSON.parse(data));
+          // console.log(JSON.parse(data));
           const jsonData = JSON.parse(data);
           if (jsonData?.length) {
             const symbolsString = jsonData.map(({symbol}) => symbol).join(',');
