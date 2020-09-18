@@ -7,6 +7,7 @@ import Styled from 'styled-components/native';
 import {useLocale} from '~/I18n';
 import {TDA_QUOTES_API} from '~/Util/apiUrls';
 import {useTheme} from '~/Theme';
+import IndexPrice from './IndexPrice';
 
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
@@ -18,12 +19,6 @@ const Wrapper = Styled.View`
 
 const Container = Styled.View`
   background-color: ${(props) => props.theme.background}
-`;
-
-const Price = Styled.Text`
-  color: ${(props) => props.theme.text}
-  font-size: 20px;
-  font-weight: bold;
 `;
 
 const Label = Styled.Text`
@@ -73,67 +68,17 @@ export default ({isFocused}) => {
       });
   };
 
-  const getPriceColor = (priceObj, isFuture = false) => {
-    const lastPrice = isFuture
-      ? priceObj?.lastPriceInDouble
-      : priceObj?.lastPrice;
-    const closePrice = isFuture
-      ? priceObj?.closePriceInDouble
-      : priceObj?.closePrice;
-    if (lastPrice > closePrice) {
-      return styles.positive;
-    } else if (lastPrice < closePrice) {
-      return styles.negative;
-    } else {
-      return {};
-    }
-  };
-
-  const getPriceDiff = (priceObj, isFuture = false) => {
-    const lastPrice = isFuture
-      ? priceObj?.lastPriceInDouble
-      : priceObj?.lastPrice;
-    const closePrice = isFuture
-      ? priceObj?.closePriceInDouble
-      : priceObj?.closePrice;
-    const diff = lastPrice - closePrice;
-    const diffPercent = (diff / closePrice) * 100;
-    if (diff > 0) {
-      return `+${diff.toFixed(2)}(+${diffPercent.toFixed(2)}%)`;
-    } else if (diff < 0) {
-      return `${diff.toFixed(2)}(${diffPercent.toFixed(2)}%)`;
-    } else if (diff === 0) {
-      return '0(+0%)';
-    } else {
-      return '';
-    }
-  };
-
   const renderIndexContent = (priceObj) => (
     <Wrapper key={priceObj?.symbol}>
       <Label numberOfLines={2}>{priceObj?.description}</Label>
-      <View style={{flexGrow: 1, justifyContent: 'flex-end'}}>
-        <Price style={getPriceColor(priceObj)}>
-          {priceObj?.lastPrice?.toFixed(priceObj)}
-        </Price>
-        <Price style={getPriceColor(priceObj)}>
-          <Text style={styles.priceDiff}>{getPriceDiff(priceObj)}</Text>
-        </Price>
-      </View>
+      <IndexPrice priceObj={priceObj}/>
     </Wrapper>
   );
 
   const renderFutureContent = (priceObj) => (
     <Wrapper key={priceObj?.symbol}>
       <Label numberOfLines={2}>{priceObj?.description}</Label>
-      <View style={{flexGrow: 1, justifyContent: 'flex-end'}}>
-        <Price style={getPriceColor(priceObj, true)}>
-          {priceObj?.lastPriceInDouble?.toFixed(priceObj)}
-        </Price>
-        <Price style={getPriceColor(priceObj, true)}>
-          <Text style={styles.priceDiff}>{getPriceDiff(priceObj, true)}</Text>
-        </Price>
-      </View>
+      <IndexPrice priceObj={priceObj} isFuture/>
     </Wrapper>
   );
 
@@ -159,14 +104,3 @@ export default ({isFocused}) => {
     </Container>
   );
 };
-const styles = StyleSheet.create({
-  positive: {
-    color: '#4DBD33',
-  },
-  negative: {
-    color: '#FD1050',
-  },
-  priceDiff: {
-    fontSize: 14,
-  },
-});
