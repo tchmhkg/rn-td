@@ -35,7 +35,7 @@ export default ({isFocused}) => {
   useEffect(() => {
     const interval = setInterval(() => {
       getQuotes();
-    }, 500);
+    }, 1000);
     if (!isFocused) {
       clearInterval(interval);
     }
@@ -63,6 +63,7 @@ export default ({isFocused}) => {
           console.log('Request canceled', thrown.message);
         } else {
           console.log(thrown);
+          console.log(thrown?.response);
         }
         // setIsRefreshing(false);
       });
