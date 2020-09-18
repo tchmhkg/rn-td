@@ -10,12 +10,12 @@ const Price = Styled.Text`
 
 const IndexPrice = ({priceObj, isFuture = false}) => {
   const getPriceColor = () => {
-    const lastPrice = isFuture
+    const lastPrice = (isFuture
       ? priceObj?.lastPriceInDouble
-      : priceObj?.lastPrice;
-    const closePrice = isFuture
+      : priceObj?.lastPrice).toFixed(2);
+    const closePrice = (isFuture
       ? priceObj?.closePriceInDouble
-      : priceObj?.closePrice;
+      : priceObj?.closePrice).toFixed(2);
     if (lastPrice > closePrice) {
       return styles.positive;
     } else if (lastPrice < closePrice) {
@@ -26,12 +26,12 @@ const IndexPrice = ({priceObj, isFuture = false}) => {
   };
 
   const getPriceDiff = () => {
-    const lastPrice = isFuture
+    const lastPrice = (isFuture
       ? priceObj?.lastPriceInDouble
-      : priceObj?.lastPrice;
-    const closePrice = isFuture
+      : priceObj?.lastPrice).toFixed(2);
+    const closePrice = (isFuture
       ? priceObj?.closePriceInDouble
-      : priceObj?.closePrice;
+      : priceObj?.closePrice).toFixed(2);
     const diff = lastPrice - closePrice;
     const diffPercent = (diff / closePrice) * 100;
     if (diff > 0) {
