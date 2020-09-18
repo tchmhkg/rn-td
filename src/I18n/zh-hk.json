@@ -58,5 +58,7 @@
   "longQuantity":"數量",
   "marketValue":"市值",
   "currentDayProfitLoss":"當日盈虧",
-  "currentDayProfitLossPercentage":"當日盈虧%"
+  "currentDayProfitLossPercentage":"當日盈虧%",
+  "Index":"指數",
+  "Future":"期貨"
 }

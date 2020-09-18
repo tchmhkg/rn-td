@@ -1,17 +1,23 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {useRoute} from '@react-navigation/native';
+import {StyleSheet, SwipeableListView, Text, View} from 'react-native';
+import SegmentedControl from '@react-native-community/segmented-control';
 import {TDA_CLIENT_ID} from '~/Util/config';
 import axios from 'axios';
 import Styled from 'styled-components/native';
 import {useLocale} from '~/I18n';
 import {TDA_QUOTES_API} from '~/Util/apiUrls';
+import {useTheme} from '~/Theme';
+
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 
-const Container = Styled.View`
+const Wrapper = Styled.View`
   margin: 5px 10px;
   flex: 1;
+`;
+
+const Container = Styled.View`
+  background-color: ${(props) => props.theme.background}
 `;
 
 const Price = Styled.Text`
@@ -20,12 +26,16 @@ const Price = Styled.Text`
   font-weight: bold;
 `;
 
+const Label = Styled.Text`
+  color: ${(props) => props.theme.text}
+`;
+
 export default ({isFocused}) => {
-  const route = useRoute();
   const [prices, setPrices] = useState([]);
+  const [viewIndex, setViewIndex] = useState(0);
   let isCancelled = useRef(false);
-  //   const [previousClosePrice, setPreviousClosePrice] = useState({});
   const {t} = useLocale();
+  const {colors, mode} = useTheme();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,12 +53,12 @@ export default ({isFocused}) => {
         cancelToken: source.token,
         params: {
           apikey: TDA_CLIENT_ID,
-          symbol: '/YM,/NQ,/ES,$DJI,$COMPX,$SPX.X',
+          symbol: '$DJI,$COMPX,$SPX.X,/YM,/NQ,/ES',
         },
       })
       .then((res) => {
         if (res?.data && !isCancelled.current) {
-          console.log(Object.values(res?.data));
+          // console.log(Object.values(res?.data));
           setPrices(Object.values(res?.data));
         }
         // setIsRefreshing(false);
@@ -63,19 +73,31 @@ export default ({isFocused}) => {
       });
   };
 
-  const getPriceColor = (priceObj) => {
-    if (priceObj?.lastPriceInDouble > priceObj?.closePriceInDouble) {
+  const getPriceColor = (priceObj, isFuture = false) => {
+    const lastPrice = isFuture
+      ? priceObj?.lastPriceInDouble
+      : priceObj?.lastPrice;
+    const closePrice = isFuture
+      ? priceObj?.closePriceInDouble
+      : priceObj?.closePrice;
+    if (lastPrice > closePrice) {
       return styles.positive;
-    } else if (priceObj?.lastPriceInDouble < priceObj?.closePriceInDouble) {
+    } else if (lastPrice < closePrice) {
       return styles.negative;
     } else {
       return {};
     }
   };
 
-  const getPriceDiff = (priceObj) => {
-    const diff = priceObj?.lastPriceInDouble - priceObj?.closePriceInDouble;
-    const diffPercent = (diff / priceObj?.closePriceInDouble) * 100;
+  const getPriceDiff = (priceObj, isFuture = false) => {
+    const lastPrice = isFuture
+      ? priceObj?.lastPriceInDouble
+      : priceObj?.lastPrice;
+    const closePrice = isFuture
+      ? priceObj?.closePriceInDouble
+      : priceObj?.closePrice;
+    const diff = lastPrice - closePrice;
+    const diffPercent = (diff / closePrice) * 100;
     if (diff > 0) {
       return `+${diff.toFixed(2)}(+${diffPercent.toFixed(2)}%)`;
     } else if (diff < 0) {
@@ -87,22 +109,54 @@ export default ({isFocused}) => {
     }
   };
 
+  const renderIndexContent = (priceObj) => (
+    <Wrapper key={priceObj?.symbol}>
+      <Label numberOfLines={2}>{priceObj?.description}</Label>
+      <View style={{flexGrow: 1, justifyContent: 'flex-end'}}>
+        <Price style={getPriceColor(priceObj)}>
+          {priceObj?.lastPrice?.toFixed(priceObj)}
+        </Price>
+        <Price style={getPriceColor(priceObj)}>
+          <Text style={styles.priceDiff}>{getPriceDiff(priceObj)}</Text>
+        </Price>
+      </View>
+    </Wrapper>
+  );
+
+  const renderFutureContent = (priceObj) => (
+    <Wrapper key={priceObj?.symbol}>
+      <Label numberOfLines={2}>{priceObj?.description}</Label>
+      <View style={{flexGrow: 1, justifyContent: 'flex-end'}}>
+        <Price style={getPriceColor(priceObj, true)}>
+          {priceObj?.lastPriceInDouble?.toFixed(priceObj)}
+        </Price>
+        <Price style={getPriceColor(priceObj, true)}>
+          <Text style={styles.priceDiff}>{getPriceDiff(priceObj, true)}</Text>
+        </Price>
+      </View>
+    </Wrapper>
+  );
+
   return (
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      {prices?.slice(0, 3).map((price) => {
-        return (
-          <Container>
-            <Text numberOfLines={2}>{price?.description} </Text>
-            <Price style={getPriceColor(price)}>
-              {price?.lastPriceInDouble?.toFixed(price)}
-            </Price>
-            <Price style={getPriceColor(price)}>
-              <Text style={styles.priceDiff}>{getPriceDiff(price)}</Text>
-            </Price>
-          </Container>
-        );
-      })}
-    </View>
+    <Container>
+      <SegmentedControl
+        style={{backgroundColor: colors.background}}
+        fontStyle={{color: colors.text}}
+        activeFontStyle={{
+          color: mode === 'dark' ? colors.background : colors.text,
+        }}
+        values={[t('Index'), t('Future')]}
+        selectedIndex={viewIndex}
+        onChange={(event) =>
+          setViewIndex(event.nativeEvent.selectedSegmentIndex)
+        }
+      />
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        {viewIndex === 0
+          ? prices?.slice(0, 3).map(renderIndexContent)
+          : prices?.slice(3, 6).map(renderFutureContent)}
+      </View>
+    </Container>
   );
 };
 const styles = StyleSheet.create({

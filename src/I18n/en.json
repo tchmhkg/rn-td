@@ -58,5 +58,7 @@
   "longQuantity":"Qty",
   "marketValue":"Market Value",
   "currentDayProfitLoss":"P/L Day",
-  "currentDayProfitLossPercentage":"P/L Day %"
+  "currentDayProfitLossPercentage":"P/L Day %",
+  "Index":"Index",
+  "Future":"Future"
 }
