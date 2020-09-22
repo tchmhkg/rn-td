@@ -26,6 +26,7 @@ import moment from 'moment';
 import {TDA_QUOTES_API} from '~/Util/apiUrls';
 import {TDContext} from '~/Context/TDA';
 import IndexContainer from '~/Component/Stock/IndexContainer';
+import SearchInput from '~/Component/Input/Search';
 
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
@@ -157,6 +158,14 @@ function StockList() {
     setIsRefreshing(true);
   };
 
+  const onChangeTicker = (e) => {
+    setTicker(e?.nativeEvent?.text);
+  }
+
+  const resetTicker = () => {
+    setTicker('');
+  }
+
   useEffect(() => {
     const fetchStocks = async () => {
       try {
@@ -189,6 +198,12 @@ function StockList() {
 
   return (
     <>
+      <SearchInput 
+        value={ticker}
+        onChange={onChangeTicker}
+        onSearchClear={resetTicker}
+        navigation={navigation}
+      />
       <IndexContainer isFocused={isFocused}/>
       {stocks && stocks.length ? (
         <Container>
@@ -222,13 +237,13 @@ function StockList() {
           </EmptyDataText>
         </EmptyContainer>
       )}
-      <SearchTickerModal
+      {/* <SearchTickerModal
         ref={modalRef}
         visible={modalVisible}
         ticker={ticker}
         setTicker={setTicker}
         onDismiss={onDismiss}
-      />
+      /> */}
     </>
   );
 }

@@ -1,3 +1,6 @@
+import axios from 'axios';
+let cancelToken;
+
 exports.getStock = function getStock(opts, type) {
     const defs = {
       baseURL: 'https://query.yahooapis.com/v1/public/yql?q=',
@@ -127,8 +130,28 @@ exports.getStock = function getStock(opts, type) {
       .catch(err => console.error(err));
   };
   
-  exports.symbolSuggest = function symbolSuggest(query) {
+  exports.symbolSuggest = async (query) => {
+    //Check if there are any previous pending requests
+    if (typeof cancelToken != typeof undefined) {
+      cancelToken.cancel("Operation canceled due to new request.");
+    }
+
+    //Save the cancel token for the current request
+    cancelToken = axios.CancelToken.source();
     const url = `http://d.yimg.com/aq/autoc?query=${query}&region=US&lang=en-US&callback=YAHOO.util.ScriptNodeDataSource.callbacks`;
-    console.log(url);
-    return fetch(url).catch(err => console.error(err));  // eslint-disable-line no-undef
+    // console.log(url);
+    try {
+    const res = await axios.get(url, { cancelToken: cancelToken.token });
+      if(res?.data) {
+        const results = res?.data?.replace(
+                /(YAHOO\.util\.ScriptNodeDataSource\.callbacks\()(.*)(\);)/g,
+                '$2',
+              );
+        return JSON.parse(results)?.ResultSet?.Result;
+      }
+      return [];  // eslint-disable-line no-undef
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
   };

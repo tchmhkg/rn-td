@@ -5,33 +5,18 @@ import SuggestionItem from './SuggestionItem';
 import moment from 'moment';
 import finance from '~/Util/finance';
 
-const Suggestion = ({symbol, closeModal, navigation, visible, headerComponent = () => {}, ...props}) => {
+const Suggestion = ({symbol, closeModal = () => {}, navigation, visible, headerComponent = () => null, ...props}) => {
   const [suggestion, setSuggestion] = useState([]);
 
-  const getSuggestion = React.useCallback(() => {
-    finance
-      .symbolSuggest(symbol)
-      .then((response) => response.text())
-      .then((result) => {
-        result = result.replace(
-          /(YAHOO\.util\.ScriptNodeDataSource\.callbacks\()(.*)(\);)/g,
-          '$2',
-        );
-        // console.log(result);
-        return JSON.parse(result);
-      })
-      .then((json) => {
-        setSuggestion(
-          json?.ResultSet?.Result?.filter(
-            (result) =>
-              result.typeDisp === 'Equity' || result.typeDisp === 'ETF',
-          ),
-        );
-        // props.openModal();
-      })
-      .catch((error) => {
-        console.log('Request failed', error);
-      });
+  const getSuggestion = React.useCallback(async() => {
+    const results = await finance.symbolSuggest(symbol);
+    // console.log('result => ',results);
+    setSuggestion(
+      results?.filter(
+        (result) =>
+          result.typeDisp === 'Equity' || result.typeDisp === 'ETF',
+      ),
+    );
   }, [symbol]);
 
   useEffect(() => {
