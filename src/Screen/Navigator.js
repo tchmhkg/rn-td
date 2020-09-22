@@ -203,7 +203,7 @@ const StockStackNavi = ({navigation}) => {
       <Stack.Screen
         name="Stock"
         component={Stock}
-        options={{headerTitle: t('Stock')}}
+        options={{headerTitle: t('Stock'), stackPresentation: 'modal'}}
       />
       <Stack.Screen
         name="Modal"

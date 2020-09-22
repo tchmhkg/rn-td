@@ -18,11 +18,11 @@ import StockItem from '~/Component/Stock/Item';
 import Separator from '~/Component/Separator';
 import Styled from 'styled-components/native';
 import IconButton from '~/Component/IconButton';
-import SearchTickerModal from '~/Component/SearchTickerModal';
+// import SearchTickerModal from '~/Component/SearchTickerModal';
 import axios from 'axios';
 import {useLocale} from '~/I18n';
 import {useTheme} from '~/Theme';
-import moment from 'moment';
+// import moment from 'moment';
 import {TDA_QUOTES_API} from '~/Util/apiUrls';
 import {TDContext} from '~/Context/TDA';
 import IndexContainer from '~/Component/Stock/IndexContainer';
@@ -53,7 +53,7 @@ function StockList() {
   const {authInfo} = useContext(TDContext);
   const [stocks, setStocks] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const modalRef = useRef(null);
+  // const modalRef = useRef(null);
   const [screenIsFocused, setScreenIsFocused] = useState(false);
   const isFocused = useIsFocused();
   const {t} = useLocale();
@@ -61,10 +61,10 @@ function StockList() {
   let isCancelled = useRef(false);
   const [ticker, setTicker] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const onDismiss = () => {
-    setModalVisible(false);
-      // modalRef.current?.close();
-  };
+  // const onDismiss = () => {
+  //   setModalVisible(false);
+  //     // modalRef.current?.close();
+  // };
 
   useLayoutEffect(() => {
     const onPressSearch = () => {

@@ -11,9 +11,9 @@ const Container = Styled.TouchableOpacity`
   margin-left: 8px;
 `;
 
-const IconButton = ({iconName, color, size = 24, onPress}) => {
+const IconButton = ({iconName, color, size = 24, onPress, style = {}}) => {
   return (
-    <Container onPress={onPress}>
+    <Container onPress={onPress} style={style}>
       <Icon name={iconName} color={color ? color : 'white'} size={size} />
     </Container>
   );

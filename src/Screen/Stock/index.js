@@ -23,6 +23,7 @@ import CandleChart from '~/Component/Chart/CandleChart';
 import LineChart from '~/Component/Chart/LineChart';
 import {TabView, TabBar} from 'react-native-tab-view';
 import RNShineButton from 'react-native-shine-button'
+import IconButton from '~/Component/IconButton';
 
 const CompanyName = Styled.Text`
   color: ${(props) => props.theme.text};
@@ -30,20 +31,20 @@ const CompanyName = Styled.Text`
   font-weight: bold;
 `;
 
-const ChartTypeButton = Styled.TouchableOpacity`
-  background-color: ${(props) =>
-    props.selected ? props.theme.primary : props.theme.background};
-  justify-content: center;
-  align-items: center;
-  padding: 10px 20px;
-  border-radius: 4px;
-`;
+// const ChartTypeButton = Styled.TouchableOpacity`
+//   background-color: ${(props) =>
+//     props.selected ? props.theme.primary : props.theme.background};
+//   justify-content: center;
+//   align-items: center;
+//   padding: 10px 20px;
+//   border-radius: 4px;
+// `;
 
-const ChartTypeButtonText = Styled.Text`
-  color: ${(props) =>
-    props.selected ? props.theme.buttonText : props.theme.text};
-  font-size: 16px;
-`;
+// const ChartTypeButtonText = Styled.Text`
+//   color: ${(props) =>
+//     props.selected ? props.theme.buttonText : props.theme.text};
+//   font-size: 16px;
+// `;
 
 export default function Stock() {
   const route = useRoute();
@@ -243,13 +244,20 @@ export default function Stock() {
     />
   );
 
+  const onPressClose = () => {
+    navigation.pop();
+  }
+
   return (
     <View style={[styles.container, {backgroundColor: colors?.background}]}>
       <View style={styles.titleView}>
         {info && (
-          <CompanyName>
-            {info['companyName']} <Text style={styles.ticker}>({ticker})</Text>
-          </CompanyName>
+          <>
+            <CompanyName>
+              {info['companyName']} <Text style={styles.ticker}>({ticker})</Text>
+            </CompanyName>
+            <IconButton iconName="cancel" color={colors?.inactiveLegend} size={26} onPress={onPressClose}/>
+          </>
         )}
       </View>
       <LatestPrice />
@@ -278,7 +286,7 @@ export default function Stock() {
             renderTabBar={renderTabBar}
             onIndexChange={_handleIndexChange}
             initialLayout={{width: Dimensions.get('window').width}}
-            style={styles.container}
+            style={styles.tabViewContainer}
           />
         ) : (
           <Spinner fullscreen />
@@ -291,13 +299,18 @@ export default function Stock() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    padding: 15
+  },
+  tabViewContainer: {
+    flex: 1,
   },
 
   titleView: {
     marginTop: 10,
     marginHorizontal: 10,
-    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   title: {
     color: '#fff',
