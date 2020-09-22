@@ -33,6 +33,7 @@ const styledTheme = {
 
 const textInputWidth = new Value(0);
 const cancelTextOpacity = new Value(0);
+const suggestionBoxOpacity = new Value(0);
 
 const SearchIcon = ({theme}) => {
   return (
@@ -75,6 +76,7 @@ const SearchComponent = (props) => {
   const {t} = useLocale();
   const searchTextInput = useRef(null);
   const [searchInputFocussed, setSearchInputFocussed] = useState(false);
+  const [showSuggestion, setShowSuggestion] = useState(false);
   const width = useWindowDimensions().width;
   const height = useWindowDimensions().height;
   const memoizedTextInputOnFocusWidth = useMemo(() => width - (50 + 32 + 32), [
@@ -109,6 +111,7 @@ const SearchComponent = (props) => {
         duration: 200,
         easing: Easing.linear,
       }).start();
+      setShowSuggestion(true);
     } else {
       spring(textInputWidth, {
         toValue: memoizedTextInputOnBlurWidth,
@@ -121,8 +124,24 @@ const SearchComponent = (props) => {
         duration: 200,
         easing: Easing.linear,
       }).start();
+      if(props?.value?.length === 0) {
+        timing(suggestionBoxOpacity, {
+          toValue: 0,
+          duration: 200,
+          easing: Easing.linear,
+        }).start(() => setShowSuggestion(false));
+      }
     }
   }, [searchInputFocussed]);
+  useEffect(() => {
+    if(showSuggestion){
+      timing(suggestionBoxOpacity, {
+        toValue: 1,
+        duration: 200,
+        easing: Easing.linear,
+      }).start();
+    }
+  }, [showSuggestion]);
   return (
     <>
       <Animated.View style={[styles.searchInputWrapper]}>
@@ -173,22 +192,23 @@ const SearchComponent = (props) => {
           </Animated.Text>
         </TouchableOpacity>
       </Animated.View>
-      {(props?.value?.length > 0) && (
-        <View
+      {(showSuggestion) && (
+        <Animated.View
           style={{
             backgroundColor: colors.background,
             position: 'absolute',
             left: 0,
             top: 50,
             zIndex: 99,
-            height: height - 50, width: width
+            height: height - 50, width: width,
+            opacity: suggestionBoxOpacity,
           }}>
           <Suggestion
             symbol={props?.value}
             navigation={props?.navigation}
             visible={props?.value?.length > 0}
           />
-        </View>
+        </Animated.View>
       )}
     </>
   );
