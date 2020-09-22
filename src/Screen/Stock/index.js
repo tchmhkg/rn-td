@@ -1,10 +1,11 @@
-import React, {useEffect, useState, useRef, useLayoutEffect} from 'react';
+import React, {useEffect, useState, useRef, useLayoutEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   Dimensions,
+  FlatList
 } from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -24,6 +25,9 @@ import LineChart from '~/Component/Chart/LineChart';
 import {TabView, TabBar} from 'react-native-tab-view';
 import RNShineButton from 'react-native-shine-button'
 import IconButton from '~/Component/IconButton';
+import finance from '~/Util/finance';
+import NewsItem from '~/Component/Stock/NewsItem';
+import Separator from '~/Component/Separator';
 
 const CompanyName = Styled.Text`
   color: ${(props) => props.theme.text};
@@ -59,6 +63,7 @@ export default function Stock() {
   const [saved, setSaved] = useState(false);
   const {t, locale} = useLocale();
   const [tabIndex, setTabIndex] = useState(0);
+  const [news, setNews] = useState([]);
 
   const routes = [
     {key: 'candleStick', title: t('CandleStick Chart')},
@@ -132,6 +137,15 @@ export default function Stock() {
       });
     }
   };
+
+  useEffect(() => {
+    const getNews = async () =>{
+       const news = await finance.getNews(ticker);
+      //  console.log('news',news);
+      setNews(news);
+    };
+    getNews();
+  }, [])
 
   useEffect(() => {
     const getStatusFromStorage = async () => {
@@ -248,6 +262,24 @@ export default function Stock() {
     navigation.pop();
   }
 
+  const renderItem = useCallback(({item}) => {
+    return (
+      <NewsItem
+        item={item}
+        navigation={navigation}
+      />
+    );
+  }, []);
+
+  const renderSeparator = React.memo(() => {
+    return <Separator />;
+  });
+
+  const renderKeyExtractor = useCallback(
+    (item) => item.id,
+    [],
+  );
+
   return (
     <View style={[styles.container, {backgroundColor: colors?.background}]}>
       <View style={styles.titleView}>
@@ -292,6 +324,12 @@ export default function Stock() {
           <Spinner fullscreen />
         )}
       </View>
+      <FlatList
+        data={news}
+        renderItem={renderItem}
+        keyExtractor={renderKeyExtractor}
+        ItemSeparatorComponent={renderSeparator}
+      />
       {/* <Container /> */}
     </View>
   );

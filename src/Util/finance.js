@@ -1,4 +1,6 @@
 import axios from 'axios';
+import rssParser from 'react-native-rss-parser';
+
 let cancelToken;
 
 exports.getStock = function getStock(opts, type) {
@@ -122,12 +124,25 @@ exports.getStock = function getStock(opts, type) {
     'YearRange',
   ];
   
-  exports.getNews = function getNews(symbol) {
+  exports.getNews = async (symbol) => {
+    if (typeof cancelToken != typeof undefined) {
+      cancelToken.cancel("Operation canceled due to new request.");
+    }
+    cancelToken = axios.CancelToken.source();
+
     const url = `https://feeds.finance.yahoo.com/rss/2.0/headline?s=${symbol}&region=US&lang=en-US`;
     console.log(url);
-    return fetch(url)  // eslint-disable-line no-undef
-      .then(response => response.text())
-      .catch(err => console.error(err));
+    try {
+      const res = await axios.get(url, { cancelToken: cancelToken.token });
+        if(res?.data) {
+          const news = await rssParser.parse(res.data);
+          return news?.items;
+        }
+        return [];  // eslint-disable-line no-undef
+      } catch (error) {
+        console.log(error);
+        return [];
+    }
   };
   
   exports.symbolSuggest = async (query) => {

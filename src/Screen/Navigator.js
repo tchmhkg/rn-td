@@ -206,6 +206,11 @@ const StockStackNavi = ({navigation}) => {
         options={{headerTitle: t('Stock'), stackPresentation: 'modal'}}
       />
       <Stack.Screen
+        name="WebView"
+        component={WebView}
+        options={{stackPresentation: 'modal'}}
+      />
+      <Stack.Screen
         name="Modal"
         component={Modal}
         options={{stackPresentation: 'modal'}}

@@ -5385,6 +5385,12 @@ react-native-reanimated@^1.13.0:
   dependencies:
     fbjs "^1.0.0"
 
+react-native-rss-parser@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-rss-parser/-/react-native-rss-parser-1.4.0.tgz#5a96879b817e316fe95040868267e42c49c2cd26"
+  dependencies:
+    xmldom "^0.1.27"
+
 react-native-safe-area-context@^3.1.1:
   version "3.1.8"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-3.1.8.tgz#7a9883aa0f38f9c77d4bef2b89e4e285bc1024a3"
@@ -6728,7 +6734,7 @@ xmldoc@^1.1.2:
   dependencies:
     sax "^1.2.1"
 
-xmldom@0.1.x:
+xmldom@0.1.x, xmldom@^0.1.27:
   version "0.1.31"
   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.31.tgz#b76c9a1bd9f0a9737e5a72dc37231cf38375e2ff"
 

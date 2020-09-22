@@ -39,6 +39,7 @@
     "react-native-portalize": "^1.0.4",
     "react-native-raw-bottom-sheet": "^2.2.0",
     "react-native-reanimated": "^1.13.0",
+    "react-native-rss-parser": "^1.4.0",
     "react-native-safe-area-context": "^3.1.1",
     "react-native-screens": "^2.10.1",
     "react-native-shine-button": "tchmhkg/react-native-shine-button",
