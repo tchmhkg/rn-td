@@ -93,11 +93,29 @@ const SearchComponent = (props) => {
   );
   const handleClearSearch = useCallback(() => {
     props?.onSearchClear();
+    if(!searchInputFocussed) {
+        timing(suggestionBoxOpacity, {
+            toValue: 0,
+            duration: 200,
+            easing: Easing.linear,
+        }).start(() => setShowSuggestion(false));
+    }
   });
   const handlePressCancel = useCallback(() => {
     searchTextInput?.current?.blur();
     props?.onSearchClear();
   });
+
+  const closeSearch = useCallback(() => {
+    searchTextInput?.current?.blur();
+    props?.onSearchClear();
+    timing(suggestionBoxOpacity, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.linear,
+    }).start(() => setShowSuggestion(false));
+  })
+
   useEffect(() => {
     if (searchInputFocussed) {
       spring(textInputWidth, {
@@ -207,6 +225,7 @@ const SearchComponent = (props) => {
             symbol={props?.value}
             navigation={props?.navigation}
             visible={props?.value?.length > 0}
+            closeSearch={closeSearch}
           />
         </Animated.View>
       )}

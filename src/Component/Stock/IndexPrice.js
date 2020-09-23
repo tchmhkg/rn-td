@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     color: '#FD1050',
   },
   priceDiff: {
-    fontSize: 14,
+    fontSize: 13,
   },
 });
 

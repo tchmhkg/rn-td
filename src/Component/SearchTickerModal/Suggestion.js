@@ -5,7 +5,7 @@ import SuggestionItem from './SuggestionItem';
 import moment from 'moment';
 import finance from '~/Util/finance';
 
-const Suggestion = ({symbol, closeModal = () => {}, navigation, visible, headerComponent = () => null, ...props}) => {
+const Suggestion = ({symbol, closeModal = () => {}, navigation, visible, headerComponent = () => null, closeSearch = () => {}, ...props}) => {
   const [suggestion, setSuggestion] = useState([]);
 
   const getSuggestion = React.useCallback(async() => {
@@ -37,7 +37,7 @@ const Suggestion = ({symbol, closeModal = () => {}, navigation, visible, headerC
       <SuggestionItem
         item={item}
         navigation={navigation}
-        closeModal={closeModal}
+        closeSearch={closeSearch}
       />
     );
   }, []);

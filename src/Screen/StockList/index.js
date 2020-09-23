@@ -60,23 +60,23 @@ function StockList() {
   const theme = useTheme();
   let isCancelled = useRef(false);
   const [ticker, setTicker] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
+  // const [modalVisible, setModalVisible] = useState(false);
   // const onDismiss = () => {
   //   setModalVisible(false);
   //     // modalRef.current?.close();
   // };
 
-  useLayoutEffect(() => {
-    const onPressSearch = () => {
-      setModalVisible(true);
-      // modalRef.current?.open();
-    };
-    navigation.setOptions({
-      headerRight: (props) => (
-        <IconButton iconName="search" onPress={onPressSearch} />
-      ),
-    });
-  }, [navigation, isFocused]);
+  // useLayoutEffect(() => {
+  //   const onPressSearch = () => {
+  //     setModalVisible(true);
+  //     // modalRef.current?.open();
+  //   };
+  //   navigation.setOptions({
+  //     headerRight: (props) => (
+  //       <IconButton iconName="search" onPress={onPressSearch} />
+  //     ),
+  //   });
+  // }, [navigation, isFocused]);
 
   useEffect(() => {
     console.log('isFocused', isFocused);

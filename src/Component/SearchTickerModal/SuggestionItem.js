@@ -20,9 +20,9 @@ const Symbol = Styled.Text`
   color: ${(props) => props.theme.text};
 `;
 
-const SuggestionItem = ({item, navigation, closeModal}) => {
+const SuggestionItem = ({item, navigation, closeSearch}) => {
   const onPressStock = (symbol) => {
-    closeModal();
+    closeSearch();
     navigation.navigate('Stock', {ticker: symbol});
   };
 

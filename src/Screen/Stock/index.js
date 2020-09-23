@@ -1,11 +1,16 @@
-import React, {useEffect, useState, useRef, useLayoutEffect, useCallback} from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   Dimensions,
-  FlatList
+  FlatList,
 } from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -23,32 +28,18 @@ import Spinner from '~/Component/Spinner';
 import CandleChart from '~/Component/Chart/CandleChart';
 import LineChart from '~/Component/Chart/LineChart';
 import {TabView, TabBar} from 'react-native-tab-view';
-import RNShineButton from 'react-native-shine-button'
 import IconButton from '~/Component/IconButton';
 import finance from '~/Util/finance';
 import NewsItem from '~/Component/Stock/NewsItem';
 import Separator from '~/Component/Separator';
+import LottieView from 'lottie-react-native';
+import LottieFav from '~/Component/IconButton/LottieFav';
 
 const CompanyName = Styled.Text`
   color: ${(props) => props.theme.text};
   font-size: 22px;
   font-weight: bold;
 `;
-
-// const ChartTypeButton = Styled.TouchableOpacity`
-//   background-color: ${(props) =>
-//     props.selected ? props.theme.primary : props.theme.background};
-//   justify-content: center;
-//   align-items: center;
-//   padding: 10px 20px;
-//   border-radius: 4px;
-// `;
-
-// const ChartTypeButtonText = Styled.Text`
-//   color: ${(props) =>
-//     props.selected ? props.theme.buttonText : props.theme.text};
-//   font-size: 16px;
-// `;
 
 export default function Stock() {
   const route = useRoute();
@@ -64,6 +55,7 @@ export default function Stock() {
   const {t, locale} = useLocale();
   const [tabIndex, setTabIndex] = useState(0);
   const [news, setNews] = useState([]);
+  const heartRef = useRef(null);
 
   const routes = [
     {key: 'candleStick', title: t('CandleStick Chart')},
@@ -92,12 +84,7 @@ export default function Stock() {
 
       await AsyncStorage.setItem('symbols', JSON.stringify(newList));
       setSaved(true);
-      // showMessage({
-      //   message: t('Saved successfully!'),
-      //   type: 'success',
-      //   icon: 'auto',
-      //   duration: 2000,
-      // });
+      heartRef?.current?.play();
     } catch (e) {
       console.log(e);
       showMessage({
@@ -121,12 +108,7 @@ export default function Stock() {
 
       await AsyncStorage.setItem('symbols', JSON.stringify(newList));
       setSaved(false);
-      // showMessage({
-      //   message: 'Removed successfully!',
-      //   type: 'success',
-      //   icon: 'auto',
-      //   duration: 2000,
-      // });
+      heartRef?.current?.reset();
     } catch (e) {
       console.log(e);
       showMessage({
@@ -139,13 +121,13 @@ export default function Stock() {
   };
 
   useEffect(() => {
-    const getNews = async () =>{
-       const news = await finance.getNews(ticker);
+    const getNews = async () => {
+      const news = await finance.getNews(ticker);
       //  console.log('news',news);
       setNews(news);
     };
     getNews();
-  }, [])
+  }, []);
 
   useEffect(() => {
     const getStatusFromStorage = async () => {
@@ -157,31 +139,6 @@ export default function Stock() {
     };
     getStatusFromStorage();
   }, []);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () =>
-        saved ? (
-          <RNShineButton
-            shape={'heart'}
-            color={colors.inactiveLegend}
-            fillColor={'#ff0000'}
-            size={25}
-            value={true}
-            onChange={loading ? () => {} : onPressRemoveSymbol}
-          />
-        ) : (
-          <RNShineButton
-            shape={'heart'}
-            color={colors.inactiveLegend}
-            fillColor={'#ff0000'}
-            size={25}
-            value={false}
-            onChange={loading ? () => {} : onPressSaveSymbol}
-          />
-        ),
-    });
-  }, [navigation, loading, saved, locale]);
 
   useEffect(() => {
     fetchStock();
@@ -230,7 +187,7 @@ export default function Stock() {
         icon: 'auto',
         duration: 2000,
       });
-      if(error?.response?.status === 404) {
+      if (error?.response?.status === 404) {
         navigation.pop();
       }
     }
@@ -260,35 +217,39 @@ export default function Stock() {
 
   const onPressClose = () => {
     navigation.pop();
-  }
+  };
 
   const renderItem = useCallback(({item}) => {
-    return (
-      <NewsItem
-        item={item}
-        navigation={navigation}
-      />
-    );
+    return <NewsItem item={item} navigation={navigation} />;
   }, []);
 
   const renderSeparator = React.memo(() => {
     return <Separator />;
   });
 
-  const renderKeyExtractor = useCallback(
-    (item) => item.id,
-    [],
-  );
+  const renderKeyExtractor = useCallback((item) => item.id, []);
 
   return (
     <View style={[styles.container, {backgroundColor: colors?.background}]}>
+      <IconButton
+        style={{alignSelf: 'flex-end'}}
+        iconName="cancel"
+        color={colors?.inactiveLegend}
+        size={26}
+        onPress={onPressClose}
+      />
       <View style={styles.titleView}>
         {info && (
           <>
             <CompanyName>
-              {info['companyName']} <Text style={styles.ticker}>({ticker})</Text>
+              {info['companyName']}{' '}
+              <Text style={styles.ticker}>({ticker})</Text>
             </CompanyName>
-            <IconButton iconName="cancel" color={colors?.inactiveLegend} size={26} onPress={onPressClose}/>
+            <LottieFav 
+              saved={saved}
+              ref={heartRef}
+              onPress={loading ? () => {} : (saved ? onPressRemoveSymbol : onPressSaveSymbol)}
+            />
           </>
         )}
       </View>
@@ -337,7 +298,7 @@ export default function Stock() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15
+    padding: 15,
   },
   tabViewContainer: {
     flex: 1,
@@ -348,7 +309,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   title: {
     color: '#fff',
