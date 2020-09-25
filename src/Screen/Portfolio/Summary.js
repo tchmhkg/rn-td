@@ -13,7 +13,7 @@ import {
   Text,
   RefreshControl,
   ScrollView,
-  ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {getTDARefreshTokenUrl, TDA_REFRESH_TOKEN_API} from '~/Util/apiUrls';
@@ -205,16 +205,30 @@ const Summary = ({navigation}) => {
     'cashAvailableForTrading',
     'cashAvailableForWithdrawal',
   ];
-  const priceFormatter = value => {
-    return value
+  const priceFormatter = ({value, prefix = '', suffix = '', isPL= false}) => {
+    const formattedValue = `${prefix}${value?.toFixed(2)}${suffix}`;
+    if(isPL) {
+      return (
+        <Text style={isPositive(value) ? styles.positive : (isZero(value) ? {} : styles.negative)}>{formattedValue}</Text>
+      )
+    }
+    return formattedValue;
+  }
+
+  const isPositive = value => {
+    return value > 0;
+  }
+
+  const isZero = value => {
+    return value === 0;
   }
 
   const positionFields = React.useMemo(() => [
-    {label: 'averagePrice', formatter: (value) => `$${value?.toFixed(2)}`},
+    {label: 'averagePrice', formatter: (value) => priceFormatter({value, prefix: '$'})},
     {label: 'longQuantity'},
-    {label: 'marketValue', formatter: (value) => `$${value?.toFixed(2)}`},
-    {label: 'currentDayProfitLoss', formatter: (value) => `$${value?.toFixed(2)}`},
-    {label: 'currentDayProfitLossPercentage', formatter: (value) => `${value?.toFixed(2)}%`},
+    {label: 'marketValue', formatter: (value) => priceFormatter({value, prefix: '$'})},
+    {label: 'currentDayProfitLoss', formatter: (value) => priceFormatter({value, prefix: '$', isPL: true})},
+    {label: 'currentDayProfitLossPercentage', formatter: (value) => priceFormatter({value, suffix: '%', isPL: true})},
   ], []);
 
   const _renderContent = ({securitiesAccount}) => {
@@ -314,5 +328,14 @@ const Summary = ({navigation}) => {
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  positive: {
+    color: '#42f5a1',
+  },
+  negative: {
+    color: '#bf0404',
+  },
+});
 
 export default Summary;

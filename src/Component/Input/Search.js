@@ -13,6 +13,7 @@ import Svg, {Path} from 'react-native-svg';
 import {useLocale} from '~/I18n';
 import {useTheme} from '~/Theme';
 import Suggestion from '~/Component/SearchTickerModal/Suggestion';
+import Styled from 'styled-components/native';
 
 const styledTheme = {
   light: {
@@ -25,7 +26,7 @@ const styledTheme = {
   dark: {
     background: '#000000',
     textColor: '#FFFFFF',
-    placeholderTextColor: '#636366',
+    placeholderTextColor: '#e1e1e1',
     textInputBackground: 'rgba(44,44,46,0.8)',
     searchFill: '#b0b0b2',
   },
@@ -70,7 +71,15 @@ const CloseIcon = ({theme}) => {
     </Svg>
   );
 };
-
+const InputWrapper = Styled(Animated.View)`
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  z-index: 10;
+  background-color: ${props => props.theme.background}
+`;
 const SearchComponent = (props) => {
   const {mode: theme, colors} = useTheme();
   const {t} = useLocale();
@@ -162,7 +171,7 @@ const SearchComponent = (props) => {
   }, [showSuggestion]);
   return (
     <>
-      <Animated.View style={[styles.searchInputWrapper]}>
+      <InputWrapper>
         <Animated.View style={styles.searchIconWrapper}>
           <SearchIcon theme={theme} />
         </Animated.View>
@@ -209,7 +218,7 @@ const SearchComponent = (props) => {
             {t('Cancel')}
           </Animated.Text>
         </TouchableOpacity>
-      </Animated.View>
+      </InputWrapper>
       {(showSuggestion) && (
         <Animated.View
           style={{

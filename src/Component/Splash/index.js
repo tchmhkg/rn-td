@@ -1,7 +1,7 @@
 import React, {createRef, useRef, useEffect, useState} from 'react';
 import {View, Image, Animated, StatusBar, StyleSheet} from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
-import logo from '~/Asset/twitter.png';
+import logo from '~/Asset/pug.png';
 
 const App = ({isLoaded, children}) => {
   const [animationDone, setAnimationDone] = useState(false);
@@ -30,8 +30,8 @@ const App = ({isLoaded, children}) => {
     transform: [
       {
         scale: loadingProgress.interpolate({
-          inputRange: [0, 10, 100],
-          outputRange: [1, 0.8, 70],
+          inputRange: [0, 10, 20, 100],
+          outputRange: [1, 0.8, 100, 500],
         }),
       },
     ],

@@ -256,6 +256,7 @@ const TabNavi = () => {
   return (
     <Tab.Navigator
       tabBarOptions={{
+        showLabel: false,
         activeTintColor: colors.primary,
         inactiveBackgroundColor: colors.background,
         activeBackgroundColor: colors.background,
