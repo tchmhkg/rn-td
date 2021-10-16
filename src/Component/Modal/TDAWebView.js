@@ -25,6 +25,7 @@ import {useCombinedRefs} from '~/Util/useCombinedRefs';
 import {useTheme} from '~/Theme';
 import { showMessage } from 'react-native-flash-message';
 import { useLocale } from '~/I18n';
+import { TDA_AUTH_HOST } from '~/Util/config';
 
 const {width, height: initialHeight} = Dimensions.get('window');
 const isAndroid = Platform.OS === 'android';
@@ -81,7 +82,6 @@ const getAuthDataScript = `
     }
     true;
   `;
-const base_url = 'https://chmtdsapi.herokuapp.com';
 
 export const TDAWebView = forwardRef((_, ref) => {
   const modalizeRef = useRef(null);
@@ -134,8 +134,7 @@ export const TDAWebView = forwardRef((_, ref) => {
       if (syntheticEvent) {
         const {nativeEvent} = syntheticEvent;
         const currentUrl = new URL(nativeEvent.url);
-        if (currentUrl && currentUrl.origin === base_url) {
-          console.log(currentUrl);
+        if (currentUrl && currentUrl.origin === TDA_AUTH_HOST) {
           webViewRef.current.injectJavaScript(getAuthDataScript);
         }
       }
