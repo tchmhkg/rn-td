@@ -11,5 +11,5 @@ export const IEX_SANDBOX_API_KEY = 'Tsk_9b260400520a4d23abfe1ef6cb0d3feb';
 export const TDA_CLIENT_ID = 'BUBO593GYIXB8RUB13COZ1BMBB79WJTJ';
 export const TDA_AUTH_HOST = 'https://nextjs-td-auth.vercel.app';
 
-export const TDA_AUTH_URL = TDA_AUTH_HOST + '/api/auth';
+export const TDA_AUTH_URL = TDA_AUTH_HOST + '/auth';
 export const TDA_LOGIN_URL = `https://auth.tdameritrade.com/auth?response_type=code&redirect_uri=${encodeURIComponent(TDA_AUTH_URL)}&client_id=${TDA_CLIENT_ID}%40AMER.OAUTHAP`;

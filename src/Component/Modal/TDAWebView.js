@@ -74,7 +74,7 @@ const documentHeightCallbackScript = `
 const getAuthDataScript = `
     try {
       function loadPageEnd() {
-        window.ReactNativeWebView.postMessage(document.getElementsByTagName('pre')[0].innerText)
+        window.ReactNativeWebView.postMessage(document.getElementById('auth_response').innerText)
       }
       window.onload = loadPageEnd();
     } catch(e) {
@@ -135,6 +135,7 @@ export const TDAWebView = forwardRef((_, ref) => {
         const {nativeEvent} = syntheticEvent;
         const currentUrl = new URL(nativeEvent.url);
         if (currentUrl && currentUrl.origin === TDA_AUTH_HOST) {
+          console.log('Inject Auth Data Script');
           webViewRef.current.injectJavaScript(getAuthDataScript);
         }
       }
